@@ -7,6 +7,7 @@ TODO: short project description, some sample screenshots or mockups
 ## For Grading 
 
 - [first team meeting worksheet](https://github.com/dartmouth-cs52-20X/project-open-stata/wiki/First-Team-Meeting)
+- [feature spec](https://github.com/dartmouth-cs52-20X/project-open-stata/wiki/Feature-Spec)
 
 ## Architecture
 
