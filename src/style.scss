@@ -1,0 +1,30 @@
+body,
+html {
+  font-family: 'Roboto', sans-serif;
+  background-color: grey;
+  height: 100%;
+}
+
+.active {
+  color: pink;
+}
+
+#welcome-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: lightgray;
+  height: 750px;
+  width: 1000px;
+  padding: 10px;
+  margin: 0 auto;
+  border-radius: 20px;
+}
+
+.signup-container {
+  background-color: lightgrey;
+  padding: 20px;
+  border-radius: 20px;
+}
