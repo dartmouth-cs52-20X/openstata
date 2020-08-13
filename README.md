@@ -1,32 +1,46 @@
 # Open Stata
 
+
 ## What is Open Stata?
 
-TODO: short project description, some sample screenshots or mockups
-
-## For Grading
-
-- [first team meeting worksheet](https://github.com/dartmouth-cs52-20X/project-open-stata/wiki/First-Team-Meeting)
-- [feature spec](https://github.com/dartmouth-cs52-20X/project-open-stata/wiki/Feature-Spec)
+Open Stata is an in-browser open-source replication of the basic functionality of the statistical software Stata.
 
 ## Architecture
 
-We will decide on architecture at our next team meeting (08-09-2020, Noon EST).
+**Frontend** 
+    - UI Syling: CSS and Material-UI
+    - Frontend structure: React
+    - Frontend state management: Redux
+    - API calls: Axios
+    - Command parsing - ask Tim?
+    - Authentication/user data: Firebase
+**Backend**
+    - Platform: Flask
+    - Interpretation: (Nearley?)
+    - API: Axios
+    - Python libraries for statistics commands implementation (e.g. econtools, sci-kit learn)
+    - Database: GCP/Firebase -  csv(?) - aks Tim?
 
 ## Setup
 
-TODO: how to get the project dev environment up and running, npm install etc
+To get backend running, [Flask startup]. Hosted on Heroku.
 
 ## Deployment
 
-TODO: how to deploy the project
+Frontend: Surge
+Backend: Heroku
 
 ## Authors
+
+![Team Photo](Insert a Team Photo URL here)
 
 - [Jared Cole](https://github.com/jcole13)
 - [Jeff Liu](https://github.com/jeffzyliu)
 - [Arjun Srinivasan](https://github.com/arjunsrini)
 - [Jack Keane](https://github.com/jakeane)
 - [Val Werner](https://github.com/valrw)
+- [Chris Sykes](https://github.com/chriscsykes)
 
 ## Acknowledgments
+
+The CS52 TA and Teaching team!
