@@ -33,7 +33,6 @@ Backend: Heroku
 ## Authors
 
 
-
 | | | |
 |:-------------------------:|:-------------------------:|:-------------------------:|
 |<img width="1604" alt="Jared Cole" src="https://ca.slack-edge.com/EQ19QMD6Z-W010PHYJ09K-4da5de6cc77e-512">  [Jared Cole](https://github.com/jcole13) |  <img width="1604" alt="Arjun Srinivasan" src="https://avatars1.githubusercontent.com/u/45978377?s=460&u=2a9922baf91b1020c1ae653413de2f99226cce38&v=4"> [Arjun Srinivasan](https://github.com/arjunsrini) |<img width="1604" alt="Jeff Liu" src="https://avatars2.githubusercontent.com/u/28827171?s=400&u=be3d4e6655e44e616ffa29eef48d8d1128b2285a&v=4"> [Jeff Liu](https://github.com/jeffzyliu) |
@@ -42,4 +41,4 @@ Backend: Heroku
 
 ## Acknowledgments
 
-The CS52 Teaching team!
+Tim Tregubov and the CS52 Teaching team!
