@@ -10,15 +10,15 @@ Open Stata is an in-browser open-source replication of the basic functionality o
 - UI Syling: CSS and Material-UI
 - Frontend structure: React
 - Frontend state management: Redux
+- Stata transpiler: Nearley
 - API calls: Axios
-- Authentication/user data: Firebase
+- Authentication/user data: Mongo, JWT
 
 **Backend**
-- Platform: Flask
-- Interpretation: (Nearley?)
-- API: Axios
-- Python libraries for statistics commands implementation (e.g. econtools, sci-kit learn)
-- Database: GCP/Firebase
+- Platform: Flask, Gunicorn
+- Econometrics and statistics: scipy, pandas, numpy, econtools, scikitlearn, etc.
+- Database: PyMongo
+- Persistent file storage (stretch goal): s3
 
 ## Setup
 
