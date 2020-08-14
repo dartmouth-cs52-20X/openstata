@@ -1,11 +1,10 @@
 const readline = require('readline');
-const nearley = require("nearley");
+const nearley = require('nearley');
 const grammar = require('./reg-grammar');
-
 
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
 });
 
 console.log('interpret some line!');
@@ -19,4 +18,3 @@ rl.on('line', (input) => {
     console.log(error);
   }
 });
-
