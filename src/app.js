@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './style.scss';
 import Welcome from './pages/welcome';
 import SignUp from './pages/signup';
+import Home from './pages/home';
+import CodeEditor from './pages/codeEditor';
+import Profile from './pages/profile';
 
 const FallBack = (props) => {
   return <div>URL Not Found</div>;
@@ -15,6 +18,9 @@ const App = () => {
         <Switch>
           <Route exact path="/" component={Welcome} />
           <Route path="/signup" component={SignUp} />
+          <Route path="/home" component={Home} />
+          <Route path="/editor" component={CodeEditor} />
+          <Route path="/profile" component={Profile} />
           <Route component={FallBack} />
         </Switch>
       </div>
