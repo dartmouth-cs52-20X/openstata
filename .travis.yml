@@ -1,6 +1,7 @@
 language: node_js
 node_js:
-  - "0.12"
-after_success:
-  - yarn build
-  - surge --project ./dist --domain open-stata.surge.sh
+  - "13"
+install:
+  - yarn --ignore-engines
+script:
+  - yarn deploy
