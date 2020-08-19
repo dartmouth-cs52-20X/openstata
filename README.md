@@ -2,36 +2,44 @@
 
 ## What is Open Stata?
 
-Open Stata is an in-browser open-source replication of the basic functionality of the statistical software Stata.
+Open Stata is an in-browser open-source replication of the basic functionality of the proprietary statistical software Stata,
+combined with free tutorials and sample datasets to get anyone started with learning it.
 
 ## Architecture
 
 **Frontend** 
-- UI Syling: CSS and Material-UI
+- UI Styling: CSS and Material-UI
 - Frontend structure: React
 - Frontend state management: Redux
-- Stata transpiler: Nearley
 - API calls: Axios
-- Authentication/user data: Mongo, JWT
+- Authentication: jwt
 
 **Backend**
-- Platform: Flask, Gunicorn
-- Econometrics and statistics: scipy, pandas, numpy, econtools, scikitlearn, etc.
-- Database: PyMongo
-- Persistent file storage (stretch goal): s3
+- Platform: Node/Express
+- Parser generator: Nearley.js
+- Microservice HTTP calls: Axios
+- Database: MongoDB and Mongoose
+- Authentication: Passport.js
+
+**Statistics Microservice**
+- Platform: Flask
+- Statistics: numpy, pandas, scipy, scikitlearn, etc.
 
 ## Setup
 
-To get backend running, [Flask startup]. Hosted on Heroku.
+To get frontend running, yarn start.
 
 ## Deployment
 
 Frontend: Surge
+http://project-open-stata.surge.sh
 
 Backend: Heroku
+https://open-stata.herokuapp.com/
+
+Backend Microservice: Heroku
 
 ## Authors
-
 
 | | | |
 |:-------------------------:|:-------------------------:|:-------------------------:|
@@ -41,4 +49,4 @@ Backend: Heroku
 
 ## Acknowledgments
 
-Tim Tregubov and the CS52 Teaching team!
+The CS52 Teaching team!
