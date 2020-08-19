@@ -23,8 +23,27 @@ html {
   border-radius: 20px;
 }
 
+div.comp {
+  width: 500px;
+  height: 300px;
+  background-color: white;
+  padding: 20px;
+}
+
+div.editorView {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
 .signup-container {
   background-color: lightgrey;
   padding: 20px;
   border-radius: 20px;
+}
+
+#editor {
+  width: 500px;
+  height: 300px;
+  background-color: white;
 }
