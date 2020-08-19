@@ -10,7 +10,7 @@
     "test": "./node_modules/.bin/eslint src",
     "build": "yarn clean; NODE_ENV=production webpack --colors",
     "clean": "rimraf dist",
-    "deploy": "yarn build; surge -p dist -d starterpack-jakeane.surge.sh; yarn clean"
+    "deploy": "yarn build; surge -p dist -d project-open-stata.surge.sh; yarn clean"
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",
@@ -54,6 +54,7 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-simple-code-editor": "^0.11.0",
+    "react-router-modal": "^1.5.2",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0"
   }
