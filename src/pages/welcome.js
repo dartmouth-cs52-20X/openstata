@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import AppBar from '@material-ui/core/Appbar';
+import 'react-router-modal/css/react-router-modal.css';
+
+import AppBar from '@material-ui/core/AppBar';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
@@ -8,6 +10,7 @@ import Person from '@material-ui/icons/Person';
 import Computer from '@material-ui/icons/Computer';
 import axios from 'axios';
 
+// placeholder, will replace with our own NavBar
 const MUIAppBar = () => {
   return (
     <AppBar position="static">
@@ -41,9 +44,13 @@ const Welcome = (props) => {
       <MUIAppBar />
       <div id="welcome-box">
         <h1>Open Stata</h1>
-        <h5>You get a Stata. You get a Stata. Everyone gets a Stata!</h5>
+        <h2>An online, open-source text editor and tutorial for learning Stata</h2>
         <IconButton component={NavLink} to="/signup">
           <Typography variant="body1">Sign Up</Typography>
+          <Person />
+        </IconButton>
+        <IconButton component={NavLink} to="/signin">
+          <Typography variant="body1">Sign In</Typography>
           <Person />
         </IconButton>
         <IconButton onClick={callAPI}>
