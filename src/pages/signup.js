@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+
   },
   avatar: {
     margin: theme.spacing(1),
@@ -138,6 +139,8 @@ const SignUp = () => {
               variant="contained"
               color="primary"
               className={classes.submit}
+              component={NavLink}
+              to="/home"
             >
               Sign Up
             </Button>
