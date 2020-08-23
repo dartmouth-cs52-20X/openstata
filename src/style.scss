@@ -24,11 +24,19 @@ html {
   border-radius: 20px;
 }
 
+div.logo {
+  background-color: grey;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 div.comp {
   position: relative;
   width: 50%;
   background-color: white;
-  padding: 20px;
 }
 
 div.editorView {
@@ -55,7 +63,6 @@ div.divider {
 
 #editor {
   position: relative;
-
   height: 100%;
   background-color: green;
 }

@@ -19,6 +19,8 @@ import 'ace-builds/src-noconflict/mode-jsx';
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/theme-github';
 
+import NavBar, { FillerBar } from '../components/navbar';
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -26,8 +28,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
   },
   appBar: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
+    zIndex: theme.zIndex.drawer + 1,
   },
   drawer: {
     width: drawerWidth,
@@ -37,8 +38,9 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
     backgroundColor: 'grey',
   },
-  // necessary for content to be below app bar
-  toolbar: theme.mixins.toolbar,
+  drawerContainer: {
+    overflow: 'auto',
+  },
   content: {
     flexGrow: 1,
     backgroundColor: 'grey',
@@ -68,7 +70,9 @@ function CodeEditor() {
   };
 
   return (
-    <div className="editorView">
+    <div className={classes.root}>
+      {/* <CssBaseline /> */}
+      <NavBar className={classes.appBar} page="editor" />
       <Drawer
         className={classes.drawer}
         variant="permanent"
@@ -76,36 +80,39 @@ function CodeEditor() {
           paper: classes.drawerPaper,
         }}
       >
-        <div className={classes.toolbar} />
-        <Divider />
-        <List>
-          {doFiles.map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {otherData.map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
+        <FillerBar />
+        <div className={classes.drawerContainer}>
+          <List>
+            {doFiles.map((text, index) => (
+              <ListItem button key={text}>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
+          <Divider />
+          <List>
+            {otherData.map((text, index) => (
+              <ListItem button key={text}>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
+        </div>
       </Drawer>
       <div className={classes.content}>
         <div className="comp">
+          <FillerBar />
           <p>{compilation}</p>
         </div>
         <div className="divider" />
         <div className="editorContainer">
+          <FillerBar />
           <AppBar position="static">
             <Grid container direction="row" justify="flex-end">
               <IconButton onClick={() => runCode()}>
