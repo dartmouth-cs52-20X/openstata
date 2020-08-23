@@ -25,16 +25,16 @@ html {
 }
 
 div.comp {
-  width: 500px;
-  height: 300px;
+  position: relative;
+  width: 50%;
   background-color: white;
   padding: 20px;
 }
 
 div.editorView {
+  position: relative;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
 }
 
 .signup-container {
@@ -43,11 +43,21 @@ div.editorView {
   border-radius: 20px;
 }
 
+div.editorContainer {
+  position: relative;
+  width: 50%;
+}
+
+div.divider {
+  background-color: black;
+  width: 10px;
+}
 
 #editor {
-  width: 500px;
-  height: 300px;
-  background-color: white;
+  position: relative;
+
+  height: 100%;
+  background-color: green;
 }
 
 .homepage-container {
@@ -61,7 +71,6 @@ div.editorView {
   height: 100vh;
   background-color: white;
   box-shadow: 10px 0 5px -2px #888;
-
 }
 
 .MuiListItemIcon-root {
