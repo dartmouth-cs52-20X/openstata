@@ -18,108 +18,121 @@ const data = {
   content: {
     tutorials: [
       {
-        modName: 'Tutorial Module 1',
-        options: [
-          {
-            tutorialName: 'Tutorial Mod 1 Tutorial 1',
-            content: 'tutorial goes here',
-          },
-          {
-            tutorialName: 'Tutorial Mod 1 Tutorial 2',
-            content: 'tutorial goes here',
-          },
-          {
-            tutorialName: 'Tutorial Mod 1 Tutorial 3',
-            content: 'tutorial goes here',
-          },
-        ],
+        mod: {
+          name: 'Tutorial Module 1',
+          options: [
+            {
+              tutorialName: 'Tutorial Mod 1 Tutorial 1',
+              content: 'tutorial goes here',
+            },
+            {
+              tutorialName: 'Tutorial Mod 1 Tutorial 2',
+              content: 'tutorial goes here',
+            },
+            {
+              tutorialName: 'Tutorial Mod 1 Tutorial 3',
+              content: 'tutorial goes here',
+            },
+          ],
+        },
       },
       {
-        modName: 'Tutorial Module 2',
-        options: [
-          {
-            tutorialName: 'Tutorial Mod 2 Tutorial 1',
-            content: 'tutorial goes here',
-          },
-          {
-            tutorialName: 'Tutorial Mod 2 Tutorial 2',
-            content: 'tutorial goes here',
-          },
-          {
-            tutorialName: 'Tutorial Mod 2 Tutorial 3',
-            content: 'tutorial goes here',
-          },
-        ],
+        mod: {
+          name: 'Tutorial Module 2',
+          options: [
+            {
+              tutorialName: 'Tutorial Mod 2 Tutorial 1',
+              content: 'tutorial goes here',
+            },
+            {
+              tutorialName: 'Tutorial Mod 2 Tutorial 2',
+              content: 'tutorial goes here',
+            },
+            {
+              tutorialName: 'Tutorial Mod 2 Tutorial 3',
+              content: 'tutorial goes here',
+            },
+          ],
+        },
       },
       {
-        modName: 'Tutorial Module 3',
-        options: [
-          {
-            tutorialName: 'Tutorial Mod 3 Tutorial 1',
-            content: 'tutorial goes here',
-          },
-          {
-            tutorialName: 'Tutorial Mod 3 Tutorial 2',
-            content: 'tutorial goes here',
-          },
-          {
-            tutorialName: 'Tutorial Mod 3 Tutorial 3',
-            content: 'tutorial goes here',
-          },
-        ],
+        mod: {
+          name: 'Tutorial Module 3',
+          options: [
+            {
+              tutorialName: 'Tutorial Mod 3 Tutorial 1',
+              content: 'tutorial goes here',
+            },
+            {
+              tutorialName: 'Tutorial Mod 3 Tutorial 2',
+              content: 'tutorial goes here',
+            },
+            {
+              tutorialName: 'Tutorial Mod 3 Tutorial 3',
+              content: 'tutorial goes here',
+            },
+          ],
+        },
       },
     ],
+
     projects: [
       {
-        modName: 'Project Module 1',
-        options: [
-          {
-            projectName: 'Project Mod 1 Project 1',
-            content: 'project content goes here',
-          },
-          {
-            projectName: 'Project Mod 1 Project 2',
-            content: 'project content goes here',
-          },
-          {
-            projectName: 'Project Mod 1 Project 3',
-            content: 'project content goes here',
-          },
-        ],
+        mod: {
+          name: 'Project Module 1',
+          options: [
+            {
+              projectName: 'Project Mod 1 Project 1',
+              content: 'Project goes here',
+            },
+            {
+              projectName: 'Project Mod 1 Project 2',
+              content: 'Project goes here',
+            },
+            {
+              projectName: 'Project Mod 1 Project 3',
+              content: 'Project goes here',
+            },
+          ],
+        },
       },
       {
-        modName: 'Project Module 2',
-        options: [
-          {
-            projectName: 'Project Mod 2 Project 1',
-            content: 'project content goes here',
-          },
-          {
-            projectName: 'Project Mod 2 Project 2',
-            content: 'project content goes here',
-          },
-          {
-            projectName: 'Project Mod 2 Project 3',
-            content: 'project content goes here',
-          },
-        ],
+        mod: {
+          name: 'Project Module 2',
+          options: [
+            {
+              projectName: 'Project Mod 2 Project 1',
+              content: 'Project goes here',
+            },
+            {
+              projectName: 'Project Mod 2 Project 2',
+              content: 'Project goes here',
+            },
+            {
+              projectName: 'Project Mod 2 Project 3',
+              content: 'Project goes here',
+            },
+          ],
+        },
       },
       {
-        modName: 'Project Module 3',
-        options: [
-          {
-            projectName: 'Project Mod 3 Project 1',
-            content: 'project content goes here',
-          },
-          {
-            projectName: 'Project Mod 3 Project 2',
-            content: 'project content goes here',
-          },
-          {
-            projectName: 'Project Mod 3 Project 3',
-            content: 'project content goes here',
-          },
-        ],
+        mod: {
+          name: 'Project Module 3',
+          options: [
+            {
+              projectName: 'Project Mod 3 Project 1',
+              content: 'Project goes here',
+            },
+            {
+              projectName: 'Project Mod 3 Project 2',
+              content: 'Project goes here',
+            },
+            {
+              projectName: 'Project Mod 3 Project 3',
+              content: 'Project goes here',
+            },
+          ],
+        },
       },
     ],
   },
@@ -157,31 +170,25 @@ function a11yProps(index) {
 function populateTutorialOptions(moduleName) {
   // add a check here that checks moduleName?
   console.log(moduleName);
-  if (moduleName === data.content.tutorials.modName) {
-    return (
-      <div className="lessons-container">
-        {data.content.tutorials.map((key) => (
-          <div className="full-name-edit-btn">
-            {key.options.map((c, i) => (
-              <Fab component={NavLink}
-                to="/editor"
-                variant="extended"
-                color="primary"
-                aria-label="add"
-                className="edit-btn"
-              >
-                {c.tutorialName}
-              </Fab>
-            ))}
-          </div>
-        ))}
-      </div>
-    );
-  } else {
-    return (
-      <h3> Hello</h3>
-    );
-  }
+  return (
+    <div className="lessons-container">
+      {data.content.tutorials.map((key) => (
+        <div className="full-name-edit-btn">
+          {key.mod.options.map((c, i) => (
+            <Fab component={NavLink}
+              to="/editor"
+              variant="extended"
+              color="primary"
+              aria-label="add"
+              className="edit-btn"
+            >
+              {c.tutorialName}
+            </Fab>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
 }
 
 function populateProjectOptions(moduleName) {
@@ -189,7 +196,7 @@ function populateProjectOptions(moduleName) {
     <div className="lessons-container">
       {data.content.projects.map((key) => (
         <div className="full-name-edit-btn">
-          {key.options.map((c, i) => (
+          {key.mod.options.map((c, i) => (
             <Fab component={NavLink}
               to="/editor"
               variant="extended"
@@ -210,11 +217,11 @@ function populateTutorialModules() {
   return (
     <List className="listItem" component="nav" aria-label="tutorials">
       {data.content.tutorials.map((key) => (
-        <ListItem button onClick={() => populateTutorialOptions(key.modName)}>
+        <ListItem button onClick={() => populateTutorialOptions(key.mod.name)}>
           <ListItemIcon>
             <FolderIcon />
           </ListItemIcon>
-          <ListItemText primary={key.modName} />
+          <ListItemText primary={key.mod.name} />
         </ListItem>
       ))}
     </List>
@@ -225,11 +232,11 @@ function populateProjectModules() {
   return (
     <List className="listItem" component="nav" aria-label="projects">
       {data.content.projects.map((key) => (
-        <ListItem button onClick={() => populateProjectOptions(key.modName)}>
+        <ListItem button onClick={() => populateProjectOptions(key.mod.name)}>
           <ListItemIcon>
             <FolderIcon />
           </ListItemIcon>
-          <ListItemText primary={key.modName} />
+          <ListItemText primary={key.mod.name} />
         </ListItem>
       ))}
     </List>
