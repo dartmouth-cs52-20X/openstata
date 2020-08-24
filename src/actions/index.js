@@ -27,10 +27,10 @@ export function signupUser({ email, password, username }, history) {
   return (dispatch) => {
     axios.post(`${ROOT_URL}/signup`, { email, password, username })
       .then((response) => {
+        history.push('/home');
         dispatch({ type: ActionTypes.AUTH_USER });
         localStorage.setItem('token', response.data.token);
       })
-      .then(history.push('/home'))
       .catch((error) => {
         dispatch(`Sign Up Failed: ${error.response.data}`);
       });
