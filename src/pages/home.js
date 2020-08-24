@@ -171,6 +171,7 @@ function populateTutorialOptions(moduleName) {
   const target = data.content.tutorials.find((el) => el.mod.name === moduleName);
   console.log(target);
 
+  // Not working
   return (
     <div className="lessons-container">
       {target.mod.options.map((key) => (
@@ -190,6 +191,7 @@ function populateTutorialOptions(moduleName) {
       ))}
     </div>
   );
+  // Uncomment this to get screen to actually load and show that mod is being returned
   // return (
   //   <div className="lessons-container">
   //     {data.content.tutorials.map((key) => (
