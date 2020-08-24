@@ -8,6 +8,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { ThemeProvider } from '@material-ui/core/styles';
 import thunk from 'redux-thunk';
 
+import { ActionTypes } from './actions';
 import reducers from './reducers';
 import App from './app';
 import MainTheme from './themes';
@@ -23,14 +24,19 @@ const store = createStore(
   )
 );
 
+const token = localStorage.getItem('token');
+if (token) {
+  store.dispatch({ type: ActionTypes.AUTH_USER });
+}
+
 ReactDOM.render(
   <Provider store={store}>
-    <BrowserRouter>
-      <ThemeProvider theme={MainTheme}>
+    <ThemeProvider theme={MainTheme}>
+      <BrowserRouter>
         <App />
         <ModalContainer />
-      </ThemeProvider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </ThemeProvider>
   </Provider>,
   document.getElementById('main')
 );
