@@ -168,7 +168,6 @@ function a11yProps(index) {
 }
 
 function populateTutorialOptions(moduleName) {
-  // const selectedMod = data.content.tutorials
   const target = data.content.tutorials.find((el) => el.mod.name === moduleName);
   console.log(target);
 
@@ -176,6 +175,7 @@ function populateTutorialOptions(moduleName) {
     <div className="lessons-container">
       {target.mod.options.map((key) => (
         <div className="full-name-edit-btn">
+
           <Fab component={NavLink}
             to="/editor"
             variant="extended"
@@ -185,10 +185,30 @@ function populateTutorialOptions(moduleName) {
           >
             {key.tutorialName}
           </Fab>
+
         </div>
       ))}
     </div>
   );
+  // return (
+  //   <div className="lessons-container">
+  //     {data.content.tutorials.map((key) => (
+  //       <div className="full-name-edit-btn">
+  //         {key.mod.options.map((c, i) => (
+  //           <Fab component={NavLink}
+  //             to="/editor"
+  //             variant="extended"
+  //             color="primary"
+  //             aria-label="add"
+  //             className="edit-btn"
+  //           >
+  //             {c.tutorialName}
+  //           </Fab>
+  //         ))}
+  //       </div>
+  //     ))}
+  //   </div>
+  // );
 }
 
 function populateProjectOptions(moduleName) {
