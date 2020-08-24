@@ -4,10 +4,12 @@ import ReactDOM from 'react-dom';
 import { ModalContainer } from 'react-router-modal';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
+import { ThemeProvider } from '@material-ui/core/styles';
 import thunk from 'redux-thunk';
 
 import reducers from './reducers';
 import App from './app';
+import MainTheme from './themes';
 
 const store = createStore(
   reducers,
@@ -22,8 +24,10 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
-    <ModalContainer />
+    <ThemeProvider theme={MainTheme}>
+      <App />
+      <ModalContainer />
+    </ThemeProvider>
   </Provider>,
   document.getElementById('main')
 );
