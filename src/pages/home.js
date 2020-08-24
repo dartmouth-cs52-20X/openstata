@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -11,12 +12,13 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import FolderIcon from '@material-ui/icons/Folder';
 import Fab from '@material-ui/core/Fab';
-import { NavLink, withRouter } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+
+import { getDoFiles } from '../actions';
 
 function TabPanel(props) {
-  const {
-    children, value, index, ...other
-  } = props;
+  // eslint-disable-next-line object-curly-newline
+  const { children, value, index, ...other } = props;
 
   return (
     <div
@@ -57,10 +59,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SimpleTabs() {
+function SimpleTabs(props) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [isTutorial, setIsTutorial] = useState(null);
+
+  console.log('token', localStorage.getItem('token'));
+
+  useEffect(() => {
+    console.log('asdf');
+    props.getDoFiles();
+  }, []);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -86,13 +95,26 @@ function SimpleTabs() {
       <div className="homepage-container">
         <div className="sidebar">
           <div className={classes.root}>
-            <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="simple tabs example"
+            >
               <Tab style={tabStyle} label="Tutorials" {...a11yProps(0)} />
               <Tab style={tabStyle} label="Projects" {...a11yProps(1)} />
             </Tabs>
             <TabPanel value={value} index={0}>
-              <List className={classes.ListItem} component="nav" aria-label="tutorials">
-                <ListItem button onClick={() => { console.log('onClick'); }}>
+              <List
+                className={classes.ListItem}
+                component="nav"
+                aria-label="tutorials"
+              >
+                <ListItem
+                  button
+                  onClick={() => {
+                    console.log('onClick');
+                  }}
+                >
                   <ListItemIcon>
                     <FolderIcon />
                   </ListItemIcon>
@@ -112,7 +134,6 @@ function SimpleTabs() {
                 </ListItem>
               </List>
             </TabPanel>
-
           </div>
         </div>
         <div className="main-page">
@@ -121,7 +142,8 @@ function SimpleTabs() {
           </div>
           <div className="lessons-container">
             <div className="full-name-edit-btn">
-              <Fab component={NavLink}
+              <Fab
+                component={NavLink}
                 to="/editor"
                 variant="extended"
                 color="primary"
@@ -132,17 +154,32 @@ function SimpleTabs() {
               </Fab>
             </div>
             <div className="full-name-edit-btn">
-              <Fab variant="extended" color="primary" aria-label="add" className="edit-btn">
-                Lesson 1.2:  Data Import/Export Commands
+              <Fab
+                variant="extended"
+                color="primary"
+                aria-label="add"
+                className="edit-btn"
+              >
+                Lesson 1.2: Data Import/Export Commands
               </Fab>
             </div>
             <div className="full-name-edit-btn">
-              <Fab variant="extended" color="primary" aria-label="add" className="edit-btn">
+              <Fab
+                variant="extended"
+                color="primary"
+                aria-label="add"
+                className="edit-btn"
+              >
                 Lesson 1.3: Data Transformation
               </Fab>
             </div>
             <div className="full-name-edit-btn">
-              <Fab variant="extended" color="primary" aria-label="add" className="edit-btn">
+              <Fab
+                variant="extended"
+                color="primary"
+                aria-label="add"
+                className="edit-btn"
+              >
                 Lesson 1.4: Data Analysis Commands
               </Fab>
             </div>
@@ -155,12 +192,20 @@ function SimpleTabs() {
       <div className="homepage-container">
         <div className="sidebar">
           <div className={classes.root}>
-            <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="simple tabs example"
+            >
               <Tab style={tabStyle} label="Tutorials" {...a11yProps(0)} />
               <Tab style={tabStyle} label="Projects" {...a11yProps(1)} />
             </Tabs>
             <TabPanel value={value} index={0}>
-              <List className={classes.ListItem} component="nav" aria-label="tutorials">
+              <List
+                className={classes.ListItem}
+                component="nav"
+                aria-label="tutorials"
+              >
                 <ListItem button>
                   <ListItemIcon>
                     <FolderIcon />
@@ -211,22 +256,42 @@ function SimpleTabs() {
           </div>
           <div className="lessons-container">
             <div className="full-name-edit-btn">
-              <Fab variant="extended" color="primary" aria-label="add" className="edit-btn">
+              <Fab
+                variant="extended"
+                color="primary"
+                aria-label="add"
+                className="edit-btn"
+              >
                 Test Project
               </Fab>
             </div>
             <div className="full-name-edit-btn">
-              <Fab variant="extended" color="primary" aria-label="add" className="edit-btn">
+              <Fab
+                variant="extended"
+                color="primary"
+                aria-label="add"
+                className="edit-btn"
+              >
                 Play with data
               </Fab>
             </div>
             <div className="full-name-edit-btn">
-              <Fab variant="extended" color="primary" aria-label="add" className="edit-btn">
+              <Fab
+                variant="extended"
+                color="primary"
+                aria-label="add"
+                className="edit-btn"
+              >
                 Group project
               </Fab>
             </div>
             <div className="full-name-edit-btn">
-              <Fab variant="extended" color="primary" aria-label="add" className="edit-btn">
+              <Fab
+                variant="extended"
+                color="primary"
+                aria-label="add"
+                className="edit-btn"
+              >
                 Other stuff
               </Fab>
             </div>
@@ -237,4 +302,4 @@ function SimpleTabs() {
   }
 }
 
-export default withRouter(SimpleTabs);
+export default connect(null, { getDoFiles })(SimpleTabs);
