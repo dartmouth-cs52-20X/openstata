@@ -4,4 +4,10 @@ node_js:
 install:
   - yarn --ignore-engines
 script:
-  - yarn deploy
+  - yarn build
+deploy:
+  provider: surge
+  project: ./dist/
+  domain: project-open-stata.surge.sh
+  on:
+    branch: master

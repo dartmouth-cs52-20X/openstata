@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+
 import AppBar from '@material-ui/core/AppBar';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
@@ -7,13 +10,15 @@ import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import LockOpen from '@material-ui/icons/LockOpen';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme) => ({
+
+const styles = (theme) => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
   },
-}));
+});
 
 const NavBar = (props) => {
   const classes = useStyles();
@@ -60,4 +65,8 @@ export const FillerBar = () => {
   );
 };
 
-export default NavBar;
+const mapStateToProps = (reduxState) => ({
+  authenticated: reduxState.auth.authenticated,
+});
+
+export default withStyles(styles)(withRouter(connect(mapStateToProps, { signoutUser })(NavBar)));
