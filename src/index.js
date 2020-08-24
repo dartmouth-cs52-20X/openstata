@@ -5,11 +5,13 @@ import { BrowserRouter } from 'react-router-dom';
 import { ModalContainer } from 'react-router-modal';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
+import { ThemeProvider } from '@material-ui/core/styles';
 import thunk from 'redux-thunk';
 
 import { ActionTypes } from './actions';
 import reducers from './reducers';
 import App from './app';
+import MainTheme from './themes';
 
 const store = createStore(
   reducers,
@@ -29,10 +31,12 @@ if (token) {
 
 ReactDOM.render(
   <Provider store={store}>
-    <BrowserRouter>
-      <App />
-      <ModalContainer />
-    </BrowserRouter>
+    <ThemeProvider theme={MainTheme}>
+      <BrowserRouter>
+        <App />
+        <ModalContainer />
+      </BrowserRouter>
+    </ThemeProvider>
   </Provider>,
   document.getElementById('main')
 );
