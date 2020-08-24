@@ -1,6 +1,7 @@
 /* eslint-disable comma-dangle */
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { ModalContainer } from 'react-router-modal';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
@@ -24,10 +25,12 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    <ThemeProvider theme={MainTheme}>
-      <App />
-      <ModalContainer />
-    </ThemeProvider>
+    <BrowserRouter>
+      <ThemeProvider theme={MainTheme}>
+        <App />
+        <ModalContainer />
+      </ThemeProvider>
+    </BrowserRouter>
   </Provider>,
   document.getElementById('main')
 );
