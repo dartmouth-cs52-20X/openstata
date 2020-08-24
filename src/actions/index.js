@@ -6,12 +6,13 @@ export const ActionTypes = {
   AUTH_USER: 'AUTH_USER',
   DEAUTH_USER: 'DEAUTH_USER',
   AUTH_ERROR: 'AUTH_ERROR',
-
+  GET_DOFILES: 'GET_DOFILES',
 };
 
 export function signinUser(user, history) {
   return (dispatch) => {
-    axios.post(`${ROOT_URL}/signin`, user)
+    axios
+      .post(`${ROOT_URL}/signin`, user)
       .then((response) => {
         history.push('/home');
         dispatch({ type: ActionTypes.AUTH_USER });
@@ -23,9 +24,10 @@ export function signinUser(user, history) {
   };
 }
 
-export function signupUser({ email, password, username }, history) {
+export function signupUser({ email, password, username }, history, onError) {
   return (dispatch) => {
-    axios.post(`${ROOT_URL}/signup`, { email, password, username })
+    axios
+      .post(`${ROOT_URL}/signup`, { email, password, username })
       .then((response) => {
         history.push('/home');
         dispatch({ type: ActionTypes.AUTH_USER });
@@ -33,6 +35,7 @@ export function signupUser({ email, password, username }, history) {
       })
       .catch((error) => {
         dispatch(`Sign Up Failed: ${error.response.data}`);
+        onError();
       });
   };
 }
@@ -51,3 +54,19 @@ export function authError(error) {
     message: error,
   };
 }
+
+export const getDoFiles = () => (dispatch) => {
+  console.log('getting dofiles');
+  axios
+    .get(`${ROOT_URL}/dofiles`)
+    .then((res) => {
+      console.log('response', res);
+      dispatch({
+        type: ActionTypes.GET_DOFILES,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
