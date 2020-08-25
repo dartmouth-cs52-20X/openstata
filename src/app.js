@@ -2,9 +2,12 @@ import React from 'react';
 import {
   BrowserRouter as Router, Route, Switch,
 } from 'react-router-dom';
-import { ModalRoute } from 'react-router-modal';
 import './style.scss';
-// import PrivateRoute from './components/privateRoute';
+
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+
+import PrivateRoute from './components/privateRoute';
 import Welcome from './pages/welcome';
 import SignUp from './components/signup';
 import SignIn from './components/signin';
@@ -16,8 +19,28 @@ const FallBack = (props) => {
   return <div>URL Not Found</div>;
 };
 
+const SigninModal = (props) => {
+  return (
+    <Dialog open>
+      <DialogContent>
+        <SignIn />
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const SignupModal = (props) => {
+  return (
+    <Dialog open>
+      <DialogContent>
+        <SignUp />
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 // the signin and signup routes are inside the switch to keep the welcome page rendered
-// the ModalRoutes are outside the switch to render the actual modals
+// the routes outside the switch are to render the actual modals
 const App = () => {
   return (
     <Router>
@@ -26,12 +49,12 @@ const App = () => {
           <Route exact path="/" component={Welcome} />
           <Route path="/signup" component={Welcome} />
           <Route path="/signin" component={Welcome} />
-          <Route path="/home" component={Home} />
-          <Route path="/editor" component={CodeEditor} />
+          <PrivateRoute path="/home" component={Home} />
+          <PrivateRoute path="/editor" component={CodeEditor} />
           <Route component={FallBack} />
         </Switch>
-        <ModalRoute path="/signup" component={SignUp} />
-        <ModalRoute path="/signin" component={SignIn} />
+        <Route path="/signup" component={SignupModal} />
+        <Route path="/signin" component={SigninModal} />
       </div>
     </Router>
   );

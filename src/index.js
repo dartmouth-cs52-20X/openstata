@@ -2,7 +2,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { ModalContainer } from 'react-router-modal';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { ThemeProvider } from '@material-ui/core/styles';
@@ -34,7 +33,6 @@ ReactDOM.render(
     <ThemeProvider theme={MainTheme}>
       <BrowserRouter>
         <App />
-        <ModalContainer />
       </BrowserRouter>
     </ThemeProvider>
   </Provider>,
