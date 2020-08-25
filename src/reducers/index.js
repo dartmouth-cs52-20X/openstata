@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
-import SomeReducer from './placeholder';
+import AuthReducer from './auth-reducer';
+import DoFileReducer from './dofile-reducer';
 
 const rootReducer = combineReducers({
-  placeholder: SomeReducer,
+  auth: AuthReducer,
+  dofiles: DoFileReducer,
 });
 
 export default rootReducer;

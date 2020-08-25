@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -8,8 +10,10 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { makeStyles } from '@material-ui/core/styles';
+
+import { signinUser } from '../actions';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -31,18 +35,43 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// should look into displaying the landing page behind the modal
-// documentation recommends removing "exact" so "/" and "/signin" both load
-// but that does not allow the modal to load
-const SignIn = () => {
+const SignIn = (props) => {
   const classes = useStyles();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [signInError, setSignInError] = useState(false);
+
+  const onError = () => {
+    setSignInError(true);
+  };
+
+  const handleSignIn = () => {
+    setSignInError(false);
+
+    // Input checking
+    setEmailError(email.trim() === '');
+    setPasswordError(password.trim() === '');
+
+    // Cont'd
+    if (email.trim() === '' || password.trim() === '') {
+      console.log('Invalid input');
+    } else {
+      // Arrange user data and make API call
+      const user = {
+        email: email.trim(),
+        password: password.trim(),
+      };
+      props.signinUser(user, props.history, onError);
+    }
+  };
+
   return (
     <div>
       <Container component="main" maxWidth="sm" className="signin-modal">
-        <IconButton
-          type="button"
-          href="/"
-        >
+        <IconButton type="button" href="/">
           <CloseIcon />
         </IconButton>
         <div className={classes.paper}>
@@ -63,6 +92,8 @@ const SignIn = () => {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  onChange={(event) => setEmail(event.target.value)}
+                  error={emailError}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -75,19 +106,28 @@ const SignIn = () => {
                   type="password"
                   id="password"
                   autoComplete="current-password"
+                  onChange={(event) => setPassword(event.target.value)}
+                  error={passwordError}
                 />
               </Grid>
             </Grid>
             <Button
-              type="submit"
+              type="button"
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}
-              href="/home"
+              onClick={handleSignIn}
             >
               Sign In
             </Button>
+            <Grid container direction="row" justify="center">
+              {signInError ? (
+                <Typography variant="subtitle1">
+                  Error during sign up. Please try again.
+                </Typography>
+              ) : undefined}
+            </Grid>
           </form>
         </div>
       </Container>
@@ -95,4 +135,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default withRouter(connect(null, { signinUser })(SignIn));

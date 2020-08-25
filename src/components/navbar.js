@@ -7,9 +7,7 @@ import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import LockOpen from '@material-ui/icons/LockOpen';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
-
-import MainTheme from '../themes';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -20,37 +18,35 @@ const useStyles = makeStyles((theme) => ({
 const NavBar = (props) => {
   const classes = useStyles();
   return (
-    <ThemeProvider theme={MainTheme}>
-      <AppBar position="fixed" className={classes.appBar}>
-        <Grid container direction="row" justify="space-between">
-          <Grid item className="logo">
-            <LockOpen />
-            <Typography varient="body1">Open Stata</Typography>
-          </Grid>
-          {props.page === 'landing' ? (
-            <Grid item>
-              <IconButton>
-                <Typography varient="body1">Sign Up</Typography>
-              </IconButton>
-              <IconButton>
-                <Typography varient="body1">Log In</Typography>
-              </IconButton>
-            </Grid>
-          ) : (
-            <Grid item>
-              <IconButton>
-                <ExitToApp />
-                <Typography varient="body1">Log Out</Typography>
-              </IconButton>
-              <IconButton>
-                <AccountCircle />
-                <Typography varient="body1">Profile</Typography>
-              </IconButton>
-            </Grid>
-          )}
+    <AppBar position="fixed" className={classes.appBar}>
+      <Grid container direction="row" justify="space-between">
+        <Grid item className="logo">
+          <LockOpen />
+          <Typography varient="body1">Open Stata</Typography>
         </Grid>
-      </AppBar>
-    </ThemeProvider>
+        {props.page === 'landing' ? (
+          <Grid item>
+            <IconButton>
+              <Typography varient="body1">Sign Up</Typography>
+            </IconButton>
+            <IconButton>
+              <Typography varient="body1">Log In</Typography>
+            </IconButton>
+          </Grid>
+        ) : (
+          <Grid item>
+            <IconButton>
+              <ExitToApp />
+              <Typography varient="body1">Log Out</Typography>
+            </IconButton>
+            <IconButton>
+              <AccountCircle />
+              <Typography varient="body1">Profile</Typography>
+            </IconButton>
+          </Grid>
+        )}
+      </Grid>
+    </AppBar>
   );
 };
 
