@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 import React, { useState } from 'react';
 import axios from 'axios';
 import List from '@material-ui/core/List';
@@ -14,6 +15,7 @@ import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import Save from '@material-ui/icons/Save';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-jsx';
 import 'ace-builds/src-noconflict/theme-monokai';
@@ -45,15 +47,19 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: 'grey',
     display: 'flex',
-    flexDirection: 'row',
-    height: '100vh',
+  },
+  codeBar: {
+    top: 'auto',
+    bottom: 0,
   },
 }));
 
 function CodeEditor() {
   const classes = useStyles();
   const [code, setCode] = useState('');
-  const [compilation, setCompilation] = useState('');
+  const [compilation, setCompilation] = useState(
+    'f\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\n'
+  );
 
   const doFiles = ['Inbox', 'Starred', 'Send email', 'Drafts'];
   const otherData = ['All mail', 'Trash', 'Spam'];
@@ -106,28 +112,21 @@ function CodeEditor() {
         </div>
       </Drawer>
       <div className={classes.content}>
-        <div className="comp">
-          <FillerBar />
-          <p>{compilation}</p>
+        <div className="compContainer">
+          <div className="comp">
+            <p className="compText">{compilation}</p>
+          </div>
         </div>
         <div className="divider" />
         <div className="editorContainer">
-          <FillerBar />
-          <AppBar position="static">
-            <Grid container direction="row" justify="flex-end">
-              <IconButton onClick={() => runCode()}>
-                <Typography variant="body1">Run Code</Typography>
-                <PlayArrow />
-              </IconButton>
-            </Grid>
-          </AppBar>
           <AceEditor
             placeholder="Enter code here"
-            mode="xml"
+            mode=""
             theme="github"
             onChange={(newCode) => setCode(newCode)}
             fontSize={14}
             value={code}
+            highlightActiveLine={false}
             setOptions={{
               enableBasicAutocompletion: false,
               enableLiveAutocompletion: false,
@@ -138,6 +137,18 @@ function CodeEditor() {
             height="100%"
             width="100%"
           />
+          <AppBar position="fixed" className={classes.codeBar}>
+            <Grid container direction="row" justify="flex-end">
+              <IconButton onClick={() => runCode()}>
+                <Typography variant="body1">Save Code</Typography>
+                <Save />
+              </IconButton>
+              <IconButton onClick={() => runCode()}>
+                <Typography variant="body1">Run Code</Typography>
+                <PlayArrow />
+              </IconButton>
+            </Grid>
+          </AppBar>
         </div>
       </div>
     </div>

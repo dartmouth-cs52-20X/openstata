@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 import 'react-router-modal/css/react-router-modal.css';
 
 import AppBar from '@material-ui/core/AppBar';
@@ -49,4 +49,4 @@ const Welcome = (props) => {
   );
 };
 
-export default Welcome;
+export default withRouter(Welcome);

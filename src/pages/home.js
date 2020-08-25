@@ -1,5 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
+<<<<<<< HEAD
 import React, { useState } from 'react';
+=======
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
+>>>>>>> origin/master
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
@@ -167,10 +173,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+import { getDoFiles } from '../actions';
+
 function TabPanel(props) {
-  const {
-    children, value, index, ...other
-  } = props;
+  // eslint-disable-next-line object-curly-newline
+  const { children, value, index, ...other } = props;
 
   return (
     <div
@@ -227,6 +234,7 @@ function populateTutorialOptions(moduleName) {
   );
 }
 
+<<<<<<< HEAD
 function populateProjectOptions(moduleName) {
   let target = '';
   if (moduleName === undefined) {
@@ -288,9 +296,19 @@ function populateProjectModules() {
 }
 
 export default function HomePage() {
+=======
+function SimpleTabs(props) {
+>>>>>>> origin/master
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [isTutorial, setIsTutorial] = useState(null);
+
+  console.log('token', localStorage.getItem('token'));
+
+  useEffect(() => {
+    console.log('asdf');
+    props.getDoFiles();
+  }, []);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -311,6 +329,7 @@ export default function HomePage() {
 
   if (!isTutorial) {
     return (
+<<<<<<< HEAD
       <div>
         <NavBar className={classes.appBar} page="home" />
         <div className="homepage-container">
@@ -331,6 +350,98 @@ export default function HomePage() {
           <div className="main-page">
             <div className="main-page-title">
               <h1>Tutorials:</h1>
+=======
+      <div className="homepage-container">
+        <div className="sidebar">
+          <div className={classes.root}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="simple tabs example"
+            >
+              <Tab style={tabStyle} label="Tutorials" {...a11yProps(0)} />
+              <Tab style={tabStyle} label="Projects" {...a11yProps(1)} />
+            </Tabs>
+            <TabPanel value={value} index={0}>
+              <List
+                className={classes.ListItem}
+                component="nav"
+                aria-label="tutorials"
+              >
+                <ListItem
+                  button
+                  onClick={() => {
+                    console.log('onClick');
+                  }}
+                >
+                  <ListItemIcon>
+                    <FolderIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Tutorial Module 1" />
+                </ListItem>
+                <ListItem button>
+                  <ListItemIcon>
+                    <FolderIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Tutorial Module 2" />
+                </ListItem>
+                <ListItem button>
+                  <ListItemIcon>
+                    <FolderIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Tutorial Module 3" />
+                </ListItem>
+              </List>
+            </TabPanel>
+          </div>
+        </div>
+        <div className="main-page">
+          <div className="main-page-title">
+            <h1>Tutorials:</h1>
+          </div>
+          <div className="lessons-container">
+            <div className="full-name-edit-btn">
+              <Fab
+                component={NavLink}
+                to="/editor"
+                variant="extended"
+                color="primary"
+                aria-label="add"
+                className="edit-btn"
+              >
+                Lesson 1.1: Basic Commands
+              </Fab>
+            </div>
+            <div className="full-name-edit-btn">
+              <Fab
+                variant="extended"
+                color="primary"
+                aria-label="add"
+                className="edit-btn"
+              >
+                Lesson 1.2: Data Import/Export Commands
+              </Fab>
+            </div>
+            <div className="full-name-edit-btn">
+              <Fab
+                variant="extended"
+                color="primary"
+                aria-label="add"
+                className="edit-btn"
+              >
+                Lesson 1.3: Data Transformation
+              </Fab>
+            </div>
+            <div className="full-name-edit-btn">
+              <Fab
+                variant="extended"
+                color="primary"
+                aria-label="add"
+                className="edit-btn"
+              >
+                Lesson 1.4: Data Analysis Commands
+              </Fab>
+>>>>>>> origin/master
             </div>
             {populateTutorialOptions()}
           </div>
@@ -340,6 +451,7 @@ export default function HomePage() {
     );
   } else {
     return (
+<<<<<<< HEAD
       <div>
         <NavBar className={classes.appBar} page="home" />
         <div className="homepage-container">
@@ -360,6 +472,113 @@ export default function HomePage() {
           <div className="main-page">
             <div className="main-page-title">
               <h1>Projects:</h1>
+=======
+      <div className="homepage-container">
+        <div className="sidebar">
+          <div className={classes.root}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="simple tabs example"
+            >
+              <Tab style={tabStyle} label="Tutorials" {...a11yProps(0)} />
+              <Tab style={tabStyle} label="Projects" {...a11yProps(1)} />
+            </Tabs>
+            <TabPanel value={value} index={0}>
+              <List
+                className={classes.ListItem}
+                component="nav"
+                aria-label="tutorials"
+              >
+                <ListItem button>
+                  <ListItemIcon>
+                    <FolderIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Tutorial Module 1" />
+                </ListItem>
+                <ListItem button>
+                  <ListItemIcon>
+                    <FolderIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Tutorial Module 2" />
+                </ListItem>
+                <ListItem button>
+                  <ListItemIcon>
+                    <FolderIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Tutorial Module 3" />
+                </ListItem>
+              </List>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <List component="nav" aria-label="projects">
+                <ListItem button>
+                  <ListItemIcon>
+                    <FolderIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Project Module 1" />
+                </ListItem>
+                <ListItem button>
+                  <ListItemIcon>
+                    <FolderIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Project Module 2" />
+                </ListItem>
+                <ListItem button>
+                  <ListItemIcon>
+                    <FolderIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Project Module 3" />
+                </ListItem>
+              </List>
+            </TabPanel>
+          </div>
+        </div>
+        <div className="main-page">
+          <div className="main-page-title">
+            <h1>Projects:</h1>
+          </div>
+          <div className="lessons-container">
+            <div className="full-name-edit-btn">
+              <Fab
+                variant="extended"
+                color="primary"
+                aria-label="add"
+                className="edit-btn"
+              >
+                Test Project
+              </Fab>
+            </div>
+            <div className="full-name-edit-btn">
+              <Fab
+                variant="extended"
+                color="primary"
+                aria-label="add"
+                className="edit-btn"
+              >
+                Play with data
+              </Fab>
+            </div>
+            <div className="full-name-edit-btn">
+              <Fab
+                variant="extended"
+                color="primary"
+                aria-label="add"
+                className="edit-btn"
+              >
+                Group project
+              </Fab>
+            </div>
+            <div className="full-name-edit-btn">
+              <Fab
+                variant="extended"
+                color="primary"
+                aria-label="add"
+                className="edit-btn"
+              >
+                Other stuff
+              </Fab>
+>>>>>>> origin/master
             </div>
             {populateProjectOptions()}
           </div>
@@ -368,3 +587,5 @@ export default function HomePage() {
     );
   }
 }
+
+export default connect(null, { getDoFiles })(SimpleTabs);

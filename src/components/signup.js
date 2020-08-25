@@ -1,18 +1,22 @@
-import React from 'react';
+/* eslint-disable comma-dangle */
+/* eslint-disable operator-linebreak */
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { makeStyles } from '@material-ui/core/styles';
+
+import { signupUser } from '../actions';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -34,18 +38,52 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// should look into displaying the landing page behind the modal
-// documentation recommends removing "exact" so "/" and "/signup" both load
-// but that does not allow the modal to load
-const SignUp = () => {
+const SignUp = (props) => {
   const classes = useStyles();
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const [usernameError, setUsernameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [signUpError, setSignUpError] = useState(false);
+
+  const onError = () => {
+    setSignUpError(true);
+  };
+
+  const handleSignUp = () => {
+    setSignUpError(false);
+    // Input checking
+    setUsernameError(username.trim() === '');
+    setEmailError(email.trim() === '');
+    setPasswordError(
+      !password.match(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$/)
+    );
+
+    // Cont'd
+    if (
+      username.trim() === '' ||
+      email.trim() === '' ||
+      !password.match(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$/)
+    ) {
+      console.log('Invalid input');
+    } else {
+      // Arrange user data and make API call
+      const user = {
+        username: username.trim(),
+        email: email.trim(),
+        password: password.trim(),
+      };
+      props.signupUser(user, props.history, onError);
+    }
+  };
+
   return (
     <div>
       <Container component="main" maxWidth="sm" className="signup-modal">
-        <IconButton
-          type="button"
-          href="/"
-        >
+        <IconButton type="button" href="/">
           <CloseIcon />
         </IconButton>
         <div className={classes.paper}>
@@ -57,27 +95,17 @@ const SignUp = () => {
           </Typography>
           <form className={classes.form} noValidate>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="fname"
-                  name="firstName"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                   variant="outlined"
                   required
                   fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="lname"
+                  id="usename"
+                  label="Username"
+                  name="username"
+                  autoComplete="username"
+                  onChange={(event) => setUsername(event.target.value)}
+                  error={usernameError}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -89,6 +117,8 @@ const SignUp = () => {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  onChange={(event) => setEmail(event.target.value)}
+                  error={emailError}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -101,24 +131,23 @@ const SignUp = () => {
                   type="password"
                   id="password"
                   autoComplete="current-password"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
+                  onChange={(event) => setPassword(event.target.value)}
+                  error={passwordError}
+                  helperText={
+                    passwordError
+                      ? 'You need at least one uppercase letter, one lowercase letter, and one number'
+                      : 'One uppercase letter, one lowercase letter, and one number is required.'
                   }
-                  label="I want to receive inspiration, marketing promotions and updates via email."
                 />
               </Grid>
             </Grid>
             <Button
-              type="submit"
+              type="button"
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}
-              href="/home"
+              onClick={handleSignUp}
             >
               Sign Up
             </Button>
@@ -129,6 +158,13 @@ const SignUp = () => {
                 </Link>
               </Grid>
             </Grid>
+            <Grid container direction="row" justify="center">
+              {signUpError ? (
+                <Typography variant="subtitle1">
+                  Error during sign up. Please try again.
+                </Typography>
+              ) : undefined}
+            </Grid>
           </form>
         </div>
       </Container>
@@ -136,4 +172,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default withRouter(connect(null, { signupUser })(SignUp));
