@@ -13,9 +13,9 @@ export function signinUser(user, history) {
   return (dispatch) => {
     axios.post(`${ROOT_URL}/signin`, user)
       .then((response) => {
-        history.push('/home');
-        dispatch({ type: ActionTypes.AUTH_USER });
         localStorage.setItem('token', response.data.token);
+        dispatch({ type: ActionTypes.AUTH_USER });
+        history.push('/home');
       })
       .catch((error) => {
         dispatch(`Sign In Failed: ${error.response.data}`);
@@ -27,9 +27,9 @@ export function signupUser({ email, password, username }, history) {
   return (dispatch) => {
     axios.post(`${ROOT_URL}/signup`, { email, password, username })
       .then((response) => {
-        history.push('/home');
-        dispatch({ type: ActionTypes.AUTH_USER });
         localStorage.setItem('token', response.data.token);
+        dispatch({ type: ActionTypes.AUTH_USER });
+        history.push('/home');
       })
       .catch((error) => {
         dispatch(`Sign Up Failed: ${error.response.data}`);

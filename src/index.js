@@ -2,7 +2,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { ModalContainer } from 'react-router-modal';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
@@ -31,7 +30,6 @@ ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <App />
-      <ModalContainer />
     </BrowserRouter>
   </Provider>,
   document.getElementById('main')
