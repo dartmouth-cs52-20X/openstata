@@ -3,9 +3,11 @@ import {
   BrowserRouter as Router, Route, Switch,
 } from 'react-router-dom';
 import './style.scss';
-// import PrivateRoute from './components/privateRoute';
+
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
+
+import PrivateRoute from './components/privateRoute';
 import Welcome from './pages/welcome';
 import SignUp from './components/signup';
 import SignIn from './components/signin';
@@ -47,8 +49,8 @@ const App = () => {
           <Route exact path="/" component={Welcome} />
           <Route path="/signup" component={Welcome} />
           <Route path="/signin" component={Welcome} />
-          <Route path="/home" component={Home} />
-          <Route path="/editor" component={CodeEditor} />
+          <PrivateRoute path="/home" component={Home} />
+          <PrivateRoute path="/editor" component={CodeEditor} />
           <Route component={FallBack} />
         </Switch>
         <Route path="/signup" component={SignupModal} />
