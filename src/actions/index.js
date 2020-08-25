@@ -59,7 +59,7 @@ export function authError(error) {
   };
 }
 
-export const getDoFiles = () => (dispatch) => {
+export const getDoFiles = (setInitialized) => (dispatch) => {
   axios
     .get(`${ROOT_URL}/dofiles`, {
       headers: { authorization: localStorage.getItem('token') },
@@ -70,6 +70,7 @@ export const getDoFiles = () => (dispatch) => {
         type: ActionTypes.GET_DOFILES,
         payload: res.data,
       });
+      if (setInitialized) setInitialized(true);
     })
     .catch((err) => {
       console.error(err);
@@ -90,7 +91,7 @@ export const createDoFile = (file) => (dispatch) => {
     });
 };
 
-export const getSingleDoFile = (fileID) => (dispatch) => {
+export const getSingleDoFile = (fileID, setInitialized) => (dispatch) => {
   axios
     .get(`${ROOT_URL}/dofiles/${fileID}`, {
       headers: { authorization: localStorage.getItem('token') },
@@ -101,15 +102,16 @@ export const getSingleDoFile = (fileID) => (dispatch) => {
         type: ActionTypes.GET_SINGLE_DOFILE,
         payload: res.data,
       });
+      if (setInitialized) setInitialized(true);
     })
     .catch((err) => {
       console.error(err);
     });
 };
 
-export const saveDoFile = (file) => (dispatch) => {
+export const saveDoFile = (file, fileid) => (dispatch) => {
   axios
-    .put(`${ROOT_URL}/dofiles/${file.id}`, file, {
+    .put(`${ROOT_URL}/dofiles/${fileid}`, file, {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
