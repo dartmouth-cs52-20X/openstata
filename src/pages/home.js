@@ -200,7 +200,7 @@ function populateTutorialOptions(moduleName) {
   let target = '';
   if (moduleName === undefined) {
     target = data.content.tutorials.find((el) => el.mod.name === 'Tutorial Module 1');
-    console.log('no module selected. name was undefined!');
+    console.log('name was undefined!');
   } else {
     target = data.content.tutorials.find((el) => el.mod.name === moduleName);
     console.log('module was pressed. new target:');
@@ -228,8 +228,15 @@ function populateTutorialOptions(moduleName) {
 }
 
 function populateProjectOptions(moduleName) {
-  const target = data.content.projects.find((el) => el.mod.name === moduleName);
-  console.log(target);
+  let target = '';
+  if (moduleName === undefined) {
+    target = data.content.projects.find((el) => el.mod.name === 'Project Module 1');
+    console.log('name was undefined!');
+  } else {
+    target = data.content.projects.find((el) => el.mod.name === moduleName);
+    console.log('module was pressed. new target:');
+    console.log(target);
+  }
 
   return (
     <div className="lessons-container">
@@ -354,7 +361,7 @@ export default function HomePage() {
             <div className="main-page-title">
               <h1>Projects:</h1>
             </div>
-            {populateProjectOptions('Project Module 1')}
+            {populateProjectOptions()}
           </div>
         </div>
       </div>
