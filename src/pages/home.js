@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
@@ -14,9 +15,16 @@ import FolderIcon from '@material-ui/icons/Folder';
 import Fab from '@material-ui/core/Fab';
 import { NavLink } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import Add from '@material-ui/icons/Add';
 import NavBar from '../components/navbar';
 
-import { getDoFiles } from '../actions';
+import { getDoFiles, createDoFile } from '../actions';
+
+const mapStateToProps = (reduxState) => ({
+  dofiles: reduxState.dofiles.all,
+});
 
 // temporary until we set up the database...
 const data = {
@@ -84,26 +92,26 @@ const data = {
     projects: [
       {
         mod: {
-          name: 'Project Module 1',
+          name: 'My Do Files',
           options: [
             {
-              projectName: 'Project Mod 1 Project 1',
-              content: 'Project goes here',
+              projectName: 'Hello world',
+              content: 'My first file',
             },
             {
-              projectName: 'Project Mod 1 Project 2',
-              content: 'Project goes here',
+              projectName: 'Test file',
+              content: 'Some other file',
             },
             {
-              projectName: 'Project Mod 1 Project 3',
-              content: 'Project goes here',
+              projectName: 'Example file',
+              content: 'A file',
             },
           ],
         },
       },
       {
         mod: {
-          name: 'Project Module 2',
+          name: 'Other Do Files',
           options: [
             {
               projectName: 'Project Mod 2 Project 1',
@@ -115,25 +123,6 @@ const data = {
             },
             {
               projectName: 'Project Mod 2 Project 3',
-              content: 'Project goes here',
-            },
-          ],
-        },
-      },
-      {
-        mod: {
-          name: 'Project Module 3',
-          options: [
-            {
-              projectName: 'Project Mod 3 Project 1',
-              content: 'Project goes here',
-            },
-            {
-              projectName: 'Project Mod 3 Project 2',
-              content: 'Project goes here',
-            },
-            {
-              projectName: 'Project Mod 3 Project 3',
               content: 'Project goes here',
             },
           ],
@@ -180,7 +169,9 @@ function a11yProps(index) {
 function populateTutorialOptions(moduleName) {
   let target = '';
   if (moduleName === undefined) {
-    target = data.content.tutorials.find((el) => el.mod.name === 'Tutorial Module 1');
+    target = data.content.tutorials.find(
+      (el) => el.mod.name === 'Tutorial Module 1'
+    );
     console.log('name was undefined!');
   } else {
     target = data.content.tutorials.find((el) => el.mod.name === moduleName);
@@ -193,7 +184,8 @@ function populateTutorialOptions(moduleName) {
     <div className="lessons-container">
       {target.mod.options.map((key) => (
         <div className="full-name-edit-btn">
-          <Fab component={NavLink}
+          <Fab
+            component={NavLink}
             to="/editor"
             variant="extended"
             color="primary"
@@ -211,7 +203,7 @@ function populateTutorialOptions(moduleName) {
 function populateProjectOptions(moduleName) {
   let target = '';
   if (moduleName === undefined) {
-    target = data.content.projects.find((el) => el.mod.name === 'Project Module 1');
+    target = data.content.projects.find((el) => el.mod.name === 'My Do Files');
     console.log('name was undefined!');
   } else {
     target = data.content.projects.find((el) => el.mod.name === moduleName);
@@ -223,7 +215,8 @@ function populateProjectOptions(moduleName) {
     <div className="lessons-container">
       {target.mod.options.map((key) => (
         <div className="full-name-edit-btn">
-          <Fab component={NavLink}
+          <Fab
+            component={NavLink}
             to="/editor"
             variant="extended"
             color="primary"
@@ -272,13 +265,31 @@ function HomePage(props) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [isTutorial, setIsTutorial] = useState(null);
-
-  console.log('token', localStorage.getItem('token'));
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    console.log('asdf');
-    props.getDoFiles();
+    props.getDoFiles(setInitialized);
   }, []);
+
+  let doFilesList;
+  if (props.dofiles && initialized) {
+    doFilesList = Object.entries(props.dofiles).map(([id, file]) => {
+      return (
+        <div className="full-name-edit-btn">
+          <Fab
+            component={NavLink}
+            to={`/editor/${file.id}`}
+            variant="extended"
+            color="primary"
+            aria-label="add"
+            className="edit-btn"
+          >
+            {file.fileName}
+          </Fab>
+        </div>
+      );
+    });
+  }
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -297,19 +308,29 @@ function HomePage(props) {
     backgroundColor: 'white',
   };
 
+  const handleCreate = () => {
+    const file = {
+      fileName: `file${Math.random()}`,
+      content: 'solve something important',
+    };
+
+    props.createDoFile(file);
+  };
+
   if (!isTutorial) {
     return (
       <div>
         <NavBar className={classes.appBar} page="home" />
         <div className="homepage-container">
           <div className="sidebar">
-            <Drawer
-              variant="permanent"
-              anchor="left"
-            >
-              <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+            <Drawer variant="permanent" anchor="left">
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="simple tabs example"
+              >
                 <Tab style={tabStyle} label="Tutorials" {...a11yProps(0)} />
-                <Tab style={tabStyle} label="Projects" {...a11yProps(1)} />
+                <Tab style={tabStyle} label="Do Files" {...a11yProps(1)} />
               </Tabs>
               <TabPanel value={value} index={0}>
                 {populateTutorialModules()}
@@ -331,13 +352,14 @@ function HomePage(props) {
         <NavBar className={classes.appBar} page="home" />
         <div className="homepage-container">
           <div className="sidebar">
-            <Drawer
-              variant="permanent"
-              anchor="left"
-            >
-              <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+            <Drawer variant="permanent" anchor="left">
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="simple tabs example"
+              >
                 <Tab style={tabStyle} label="Tutorials" {...a11yProps(0)} />
-                <Tab style={tabStyle} label="Projects" {...a11yProps(1)} />
+                <Tab style={tabStyle} label="Do Files" {...a11yProps(1)} />
               </Tabs>
               <TabPanel value={value} index={1}>
                 {populateProjectModules()}
@@ -346,9 +368,15 @@ function HomePage(props) {
           </div>
           <div className="main-page">
             <div className="main-page-title">
-              <h1>Projects:</h1>
+              <Grid container direction="row" justify="space-between">
+                <h1>Do Files:</h1>
+                <IconButton onClick={() => handleCreate()}>
+                  <Typography>Create new file</Typography>
+                  <Add />
+                </IconButton>
+              </Grid>
             </div>
-            {populateProjectOptions()}
+            {doFilesList}
           </div>
         </div>
       </div>
@@ -356,4 +384,4 @@ function HomePage(props) {
   }
 }
 
-export default connect(null, { getDoFiles })(HomePage);
+export default connect(mapStateToProps, { getDoFiles, createDoFile })(HomePage);
