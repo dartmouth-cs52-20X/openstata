@@ -52,8 +52,8 @@ div.editorContainer {
   overflow: auto;
   position: relative;
   width: 55%;
-  padding-bottom: 50px;
-  padding-top: 50px;
+  padding-bottom: 48px;
+  padding-top: 48px;
 }
 
 p.compText {
@@ -74,7 +74,7 @@ div.editorView {
 
 div.divider {
   background-color: black;
-  width: 10px;
+  width: 2px;
 }
 
 .homepage-container {
@@ -105,7 +105,7 @@ div.divider {
   justify-content: flex-start;
   flex-direction: column;
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   background-color: lightgrey;
 }
 
@@ -131,4 +131,3 @@ div.divider {
 .listItem {
   width: 100%;
 }
-

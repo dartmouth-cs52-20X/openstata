@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  BrowserRouter as Router, Route, Switch,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './style.scss';
 
 import Dialog from '@material-ui/core/Dialog';
@@ -50,6 +48,7 @@ const App = () => {
           <Route path="/signup" component={Welcome} />
           <Route path="/signin" component={Welcome} />
           <PrivateRoute path="/home" component={Home} />
+          <PrivateRoute path="/editor/:fileid" component={CodeEditor} />
           <PrivateRoute path="/editor" component={CodeEditor} />
           <Route component={FallBack} />
         </Switch>
