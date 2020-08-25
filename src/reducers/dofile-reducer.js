@@ -2,12 +2,16 @@ import { ActionTypes } from '../actions';
 
 const initialState = {
   all: [],
+  current: {},
 };
 
 const DoFileReducer = (state = initialState, action) => {
+  console.log('Action', action.type);
   switch (action.type) {
     case ActionTypes.GET_DOFILES:
-      return { all: action.payload };
+      return { all: action.payload, current: state.current };
+    case ActionTypes.GET_SINGLE_DOFILE:
+      return { all: state.all, current: action.payload };
     default:
       return state;
   }
