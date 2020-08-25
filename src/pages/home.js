@@ -200,7 +200,7 @@ function populateTutorialOptions(moduleName) {
   let target = '';
   if (moduleName === undefined) {
     target = data.content.tutorials.find((el) => el.mod.name === 'Tutorial Module 1');
-    console.log('no module selected. module name was undefined!');
+    console.log('no module selected. name was undefined!');
   } else {
     target = data.content.tutorials.find((el) => el.mod.name === moduleName);
     console.log('module was pressed. new target:');
