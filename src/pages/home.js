@@ -1,11 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
-<<<<<<< HEAD
-import React, { useState } from 'react';
-=======
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
->>>>>>> origin/master
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
@@ -18,8 +14,9 @@ import FolderIcon from '@material-ui/icons/Folder';
 import Fab from '@material-ui/core/Fab';
 import { NavLink } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
-import { makeStyles } from '@material-ui/core/styles';
 import NavBar from '../components/navbar';
+
+import { getDoFiles } from '../actions';
 
 // temporary until we set up the database...
 const data = {
@@ -147,33 +144,10 @@ const data = {
 };
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
   },
-  drawer: {
-    width: 240,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: 240,
-    backgroundColor: 'grey',
-  },
-  drawerContainer: {
-    overflow: 'auto',
-  },
-  content: {
-    flexGrow: 1,
-    backgroundColor: 'grey',
-    display: 'flex',
-    flexDirection: 'row',
-    height: '100vh',
-  },
 }));
-
-import { getDoFiles } from '../actions';
 
 function TabPanel(props) {
   // eslint-disable-next-line object-curly-newline
@@ -234,7 +208,6 @@ function populateTutorialOptions(moduleName) {
   );
 }
 
-<<<<<<< HEAD
 function populateProjectOptions(moduleName) {
   let target = '';
   if (moduleName === undefined) {
@@ -295,10 +268,7 @@ function populateProjectModules() {
   );
 }
 
-export default function HomePage() {
-=======
-function SimpleTabs(props) {
->>>>>>> origin/master
+function HomePage(props) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [isTutorial, setIsTutorial] = useState(null);
@@ -329,7 +299,6 @@ function SimpleTabs(props) {
 
   if (!isTutorial) {
     return (
-<<<<<<< HEAD
       <div>
         <NavBar className={classes.appBar} page="home" />
         <div className="homepage-container">
@@ -350,108 +319,14 @@ function SimpleTabs(props) {
           <div className="main-page">
             <div className="main-page-title">
               <h1>Tutorials:</h1>
-=======
-      <div className="homepage-container">
-        <div className="sidebar">
-          <div className={classes.root}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="simple tabs example"
-            >
-              <Tab style={tabStyle} label="Tutorials" {...a11yProps(0)} />
-              <Tab style={tabStyle} label="Projects" {...a11yProps(1)} />
-            </Tabs>
-            <TabPanel value={value} index={0}>
-              <List
-                className={classes.ListItem}
-                component="nav"
-                aria-label="tutorials"
-              >
-                <ListItem
-                  button
-                  onClick={() => {
-                    console.log('onClick');
-                  }}
-                >
-                  <ListItemIcon>
-                    <FolderIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Tutorial Module 1" />
-                </ListItem>
-                <ListItem button>
-                  <ListItemIcon>
-                    <FolderIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Tutorial Module 2" />
-                </ListItem>
-                <ListItem button>
-                  <ListItemIcon>
-                    <FolderIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Tutorial Module 3" />
-                </ListItem>
-              </List>
-            </TabPanel>
-          </div>
-        </div>
-        <div className="main-page">
-          <div className="main-page-title">
-            <h1>Tutorials:</h1>
-          </div>
-          <div className="lessons-container">
-            <div className="full-name-edit-btn">
-              <Fab
-                component={NavLink}
-                to="/editor"
-                variant="extended"
-                color="primary"
-                aria-label="add"
-                className="edit-btn"
-              >
-                Lesson 1.1: Basic Commands
-              </Fab>
-            </div>
-            <div className="full-name-edit-btn">
-              <Fab
-                variant="extended"
-                color="primary"
-                aria-label="add"
-                className="edit-btn"
-              >
-                Lesson 1.2: Data Import/Export Commands
-              </Fab>
-            </div>
-            <div className="full-name-edit-btn">
-              <Fab
-                variant="extended"
-                color="primary"
-                aria-label="add"
-                className="edit-btn"
-              >
-                Lesson 1.3: Data Transformation
-              </Fab>
-            </div>
-            <div className="full-name-edit-btn">
-              <Fab
-                variant="extended"
-                color="primary"
-                aria-label="add"
-                className="edit-btn"
-              >
-                Lesson 1.4: Data Analysis Commands
-              </Fab>
->>>>>>> origin/master
             </div>
             {populateTutorialOptions()}
           </div>
         </div>
       </div>
-
     );
   } else {
     return (
-<<<<<<< HEAD
       <div>
         <NavBar className={classes.appBar} page="home" />
         <div className="homepage-container">
@@ -472,113 +347,6 @@ function SimpleTabs(props) {
           <div className="main-page">
             <div className="main-page-title">
               <h1>Projects:</h1>
-=======
-      <div className="homepage-container">
-        <div className="sidebar">
-          <div className={classes.root}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="simple tabs example"
-            >
-              <Tab style={tabStyle} label="Tutorials" {...a11yProps(0)} />
-              <Tab style={tabStyle} label="Projects" {...a11yProps(1)} />
-            </Tabs>
-            <TabPanel value={value} index={0}>
-              <List
-                className={classes.ListItem}
-                component="nav"
-                aria-label="tutorials"
-              >
-                <ListItem button>
-                  <ListItemIcon>
-                    <FolderIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Tutorial Module 1" />
-                </ListItem>
-                <ListItem button>
-                  <ListItemIcon>
-                    <FolderIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Tutorial Module 2" />
-                </ListItem>
-                <ListItem button>
-                  <ListItemIcon>
-                    <FolderIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Tutorial Module 3" />
-                </ListItem>
-              </List>
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-              <List component="nav" aria-label="projects">
-                <ListItem button>
-                  <ListItemIcon>
-                    <FolderIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Project Module 1" />
-                </ListItem>
-                <ListItem button>
-                  <ListItemIcon>
-                    <FolderIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Project Module 2" />
-                </ListItem>
-                <ListItem button>
-                  <ListItemIcon>
-                    <FolderIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Project Module 3" />
-                </ListItem>
-              </List>
-            </TabPanel>
-          </div>
-        </div>
-        <div className="main-page">
-          <div className="main-page-title">
-            <h1>Projects:</h1>
-          </div>
-          <div className="lessons-container">
-            <div className="full-name-edit-btn">
-              <Fab
-                variant="extended"
-                color="primary"
-                aria-label="add"
-                className="edit-btn"
-              >
-                Test Project
-              </Fab>
-            </div>
-            <div className="full-name-edit-btn">
-              <Fab
-                variant="extended"
-                color="primary"
-                aria-label="add"
-                className="edit-btn"
-              >
-                Play with data
-              </Fab>
-            </div>
-            <div className="full-name-edit-btn">
-              <Fab
-                variant="extended"
-                color="primary"
-                aria-label="add"
-                className="edit-btn"
-              >
-                Group project
-              </Fab>
-            </div>
-            <div className="full-name-edit-btn">
-              <Fab
-                variant="extended"
-                color="primary"
-                aria-label="add"
-                className="edit-btn"
-              >
-                Other stuff
-              </Fab>
->>>>>>> origin/master
             </div>
             {populateProjectOptions()}
           </div>
@@ -588,4 +356,4 @@ function SimpleTabs(props) {
   }
 }
 
-export default connect(null, { getDoFiles })(SimpleTabs);
+export default connect(null, { getDoFiles })(HomePage);
