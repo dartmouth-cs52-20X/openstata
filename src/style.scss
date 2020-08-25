@@ -68,15 +68,21 @@ div.divider {
 }
 
 .homepage-container {
+  margin-top: 45px;
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
 }
 
 .sidebar {
+  margin-top: 45px;
   width: 220px;
   height: 100vh;
   background-color: white;
+}
+
+.MuiDrawer-paperAnchorLeft {
+  margin-top: 45px !important;
 }
 
 .MuiListItemIcon-root {

@@ -12,6 +12,8 @@ import FolderIcon from '@material-ui/icons/Folder';
 import Fab from '@material-ui/core/Fab';
 import { NavLink } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
+import { makeStyles } from '@material-ui/core/styles';
+import NavBar from '../components/navbar';
 
 // temporary until we set up the database...
 const data = {
@@ -138,6 +140,33 @@ const data = {
   },
 };
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+  },
+  drawer: {
+    width: 240,
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: 240,
+    backgroundColor: 'grey',
+  },
+  drawerContainer: {
+    overflow: 'auto',
+  },
+  content: {
+    flexGrow: 1,
+    backgroundColor: 'grey',
+    display: 'flex',
+    flexDirection: 'row',
+    height: '100vh',
+  },
+}));
+
 function TabPanel(props) {
   const {
     children, value, index, ...other
@@ -168,15 +197,21 @@ function a11yProps(index) {
 }
 
 function populateTutorialOptions(moduleName) {
-  const target = data.content.tutorials.find((el) => el.mod.name === moduleName);
-  console.log(target);
+  let target = '';
+  if (moduleName === undefined) {
+    target = data.content.tutorials.find((el) => el.mod.name === 'Tutorial Module 1');
+    console.log('no module selected. module name was undefined!');
+  } else {
+    target = data.content.tutorials.find((el) => el.mod.name === moduleName);
+    console.log('module was pressed. new target:');
+    console.log(target);
+  }
 
   // Not working
   return (
     <div className="lessons-container">
       {target.mod.options.map((key) => (
         <div className="full-name-edit-btn">
-
           <Fab component={NavLink}
             to="/editor"
             variant="extended"
@@ -186,49 +221,29 @@ function populateTutorialOptions(moduleName) {
           >
             {key.tutorialName}
           </Fab>
-
         </div>
       ))}
     </div>
   );
-  // Uncomment this to get screen to actually load and show that mod is being returned
-  // return (
-  //   <div className="lessons-container">
-  //     {data.content.tutorials.map((key) => (
-  //       <div className="full-name-edit-btn">
-  //         {key.mod.options.map((c, i) => (
-  //           <Fab component={NavLink}
-  //             to="/editor"
-  //             variant="extended"
-  //             color="primary"
-  //             aria-label="add"
-  //             className="edit-btn"
-  //           >
-  //             {c.tutorialName}
-  //           </Fab>
-  //         ))}
-  //       </div>
-  //     ))}
-  //   </div>
-  // );
 }
 
 function populateProjectOptions(moduleName) {
+  const target = data.content.projects.find((el) => el.mod.name === moduleName);
+  console.log(target);
+
   return (
     <div className="lessons-container">
-      {data.content.projects.map((key) => (
+      {target.mod.options.map((key) => (
         <div className="full-name-edit-btn">
-          {key.mod.options.map((c, i) => (
-            <Fab component={NavLink}
-              to="/editor"
-              variant="extended"
-              color="primary"
-              aria-label="add"
-              className="edit-btn"
-            >
-              {c.projectName}
-            </Fab>
-          ))}
+          <Fab component={NavLink}
+            to="/editor"
+            variant="extended"
+            color="primary"
+            aria-label="add"
+            className="edit-btn"
+          >
+            {key.projectName}
+          </Fab>
         </div>
       ))}
     </div>
@@ -266,6 +281,7 @@ function populateProjectModules() {
 }
 
 export default function HomePage() {
+  const classes = useStyles();
   const [value, setValue] = useState(0);
   const [isTutorial, setIsTutorial] = useState(null);
 
@@ -288,51 +304,58 @@ export default function HomePage() {
 
   if (!isTutorial) {
     return (
-      <div className="homepage-container">
-        <div className="sidebar">
-          <Drawer
-            variant="permanent"
-            anchor="left"
-          >
-            <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-              <Tab style={tabStyle} label="Tutorials" {...a11yProps(0)} />
-              <Tab style={tabStyle} label="Projects" {...a11yProps(1)} />
-            </Tabs>
-            <TabPanel value={value} index={0}>
-              {populateTutorialModules()}
-            </TabPanel>
-          </Drawer>
-        </div>
-        <div className="main-page">
-          <div className="main-page-title">
-            <h1>Tutorials:</h1>
+      <div>
+        <NavBar className={classes.appBar} page="home" />
+        <div className="homepage-container">
+          <div className="sidebar">
+            <Drawer
+              variant="permanent"
+              anchor="left"
+            >
+              <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+                <Tab style={tabStyle} label="Tutorials" {...a11yProps(0)} />
+                <Tab style={tabStyle} label="Projects" {...a11yProps(1)} />
+              </Tabs>
+              <TabPanel value={value} index={0}>
+                {populateTutorialModules()}
+              </TabPanel>
+            </Drawer>
           </div>
-          {populateTutorialOptions()}
+          <div className="main-page">
+            <div className="main-page-title">
+              <h1>Tutorials:</h1>
+            </div>
+            {populateTutorialOptions()}
+          </div>
         </div>
       </div>
+
     );
   } else {
     return (
-      <div className="homepage-container">
-        <div className="sidebar">
-          <Drawer
-            variant="permanent"
-            anchor="left"
-          >
-            <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-              <Tab style={tabStyle} label="Tutorials" {...a11yProps(0)} />
-              <Tab style={tabStyle} label="Projects" {...a11yProps(1)} />
-            </Tabs>
-            <TabPanel value={value} index={1}>
-              {populateProjectModules()}
-            </TabPanel>
-          </Drawer>
-        </div>
-        <div className="main-page">
-          <div className="main-page-title">
-            <h1>Projects:</h1>
+      <div>
+        <NavBar className={classes.appBar} page="home" />
+        <div className="homepage-container">
+          <div className="sidebar">
+            <Drawer
+              variant="permanent"
+              anchor="left"
+            >
+              <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+                <Tab style={tabStyle} label="Tutorials" {...a11yProps(0)} />
+                <Tab style={tabStyle} label="Projects" {...a11yProps(1)} />
+              </Tabs>
+              <TabPanel value={value} index={1}>
+                {populateProjectModules()}
+              </TabPanel>
+            </Drawer>
           </div>
-          {populateProjectOptions()}
+          <div className="main-page">
+            <div className="main-page-title">
+              <h1>Projects:</h1>
+            </div>
+            {populateProjectOptions('Project Module 1')}
+          </div>
         </div>
       </div>
     );
