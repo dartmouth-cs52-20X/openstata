@@ -32,18 +32,18 @@ const data = {
     tutorials: [
       {
         mod: {
-          name: 'Tutorial Module 1',
+          name: 'Introduction',
           options: [
             {
-              tutorialName: 'Tutorial Mod 1 Tutorial 1',
+              tutorialName: 'Lesson 1.1: Getting Started',
               content: 'tutorial goes here',
             },
             {
-              tutorialName: 'Tutorial Mod 1 Tutorial 2',
+              tutorialName: 'Lesson 1.2: Basic Commands',
               content: 'tutorial goes here',
             },
             {
-              tutorialName: 'Tutorial Mod 1 Tutorial 3',
+              tutorialName: 'Lesson 1.3: Data Import/Export',
               content: 'tutorial goes here',
             },
           ],
@@ -51,18 +51,18 @@ const data = {
       },
       {
         mod: {
-          name: 'Tutorial Module 2',
+          name: 'Intermediate',
           options: [
             {
-              tutorialName: 'Tutorial Mod 2 Tutorial 1',
+              tutorialName: 'Lesson 2.1: Data Transformation Commands',
               content: 'tutorial goes here',
             },
             {
-              tutorialName: 'Tutorial Mod 2 Tutorial 2',
+              tutorialName: 'Lesson 2.1: Data Analysis Commands',
               content: 'tutorial goes here',
             },
             {
-              tutorialName: 'Tutorial Mod 2 Tutorial 3',
+              tutorialName: 'Lesson 2.1: Graphing Commands',
               content: 'tutorial goes here',
             },
           ],
@@ -70,18 +70,18 @@ const data = {
       },
       {
         mod: {
-          name: 'Tutorial Module 3',
+          name: 'Bonus',
           options: [
             {
-              tutorialName: 'Tutorial Mod 3 Tutorial 1',
+              tutorialName: 'Lesson 3.1: Bonus 1',
               content: 'tutorial goes here',
             },
             {
-              tutorialName: 'Tutorial Mod 3 Tutorial 2',
+              tutorialName: 'Lesson 3.2: Bonus 2',
               content: 'tutorial goes here',
             },
             {
-              tutorialName: 'Tutorial Mod 3 Tutorial 3',
+              tutorialName: 'Lesson 3.3: Bonus 3',
               content: 'tutorial goes here',
             },
           ],
@@ -166,91 +166,42 @@ function a11yProps(index) {
   };
 }
 
-function populateTutorialOptions(moduleName) {
-  let target = '';
-  if (moduleName === undefined) {
-    target = data.content.tutorials.find(
-      (el) => el.mod.name === 'Tutorial Module 1'
-    );
-    console.log('name was undefined!');
-  } else {
-    target = data.content.tutorials.find((el) => el.mod.name === moduleName);
-    console.log('module was pressed. new target:');
-    console.log(target);
-  }
+// function populateProjectOptions(moduleName) {
+//   let target = '';
+//   if (moduleName === undefined) {
+//     target = data.content.projects.find((el) => el.mod.name === 'My Do Files');
+//     console.log('name was undefined!');
+//   } else {
+//     target = data.content.projects.find((el) => el.mod.name === moduleName);
+//     console.log('module was pressed. new target:');
+//     console.log(target);
+//   }
 
-  // Not working
-  return (
-    <div className="lessons-container">
-      {target.mod.options.map((key) => (
-        <div className="full-name-edit-btn">
-          <Fab
-            component={NavLink}
-            to="/editor"
-            variant="extended"
-            color="primary"
-            aria-label="add"
-            className="edit-btn"
-          >
-            {key.tutorialName}
-          </Fab>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function populateProjectOptions(moduleName) {
-  let target = '';
-  if (moduleName === undefined) {
-    target = data.content.projects.find((el) => el.mod.name === 'My Do Files');
-    console.log('name was undefined!');
-  } else {
-    target = data.content.projects.find((el) => el.mod.name === moduleName);
-    console.log('module was pressed. new target:');
-    console.log(target);
-  }
-
-  return (
-    <div className="lessons-container">
-      {target.mod.options.map((key) => (
-        <div className="full-name-edit-btn">
-          <Fab
-            component={NavLink}
-            to="/editor"
-            variant="extended"
-            color="primary"
-            aria-label="add"
-            className="edit-btn"
-          >
-            {key.projectName}
-          </Fab>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function populateTutorialModules() {
-  return (
-    <List className="listItem" component="nav" aria-label="tutorials">
-      {data.content.tutorials.map((key) => (
-        <ListItem button onClick={() => populateTutorialOptions(key.mod.name)}>
-          <ListItemIcon>
-            <FolderIcon />
-          </ListItemIcon>
-          <ListItemText primary={key.mod.name} />
-        </ListItem>
-      ))}
-    </List>
-  );
-}
+//   return (
+//     <div className="lessons-container">
+//       {target.mod.options.map((key) => (
+//         <div className="full-name-edit-btn">
+//           <Fab
+//             component={NavLink}
+//             to="/editor"
+//             variant="extended"
+//             color="primary"
+//             aria-label="add"
+//             className="edit-btn"
+//           >
+//             {key.projectName}
+//           </Fab>
+//         </div>
+//       ))}
+//     </div>
+//   );
+// }
 
 function populateProjectModules() {
   return (
     <List className="listItem" component="nav" aria-label="projects">
       {data.content.projects.map((key) => (
-        <ListItem button onClick={() => populateProjectOptions(key.mod.name)}>
+        <ListItem button onClick={() => console.log('hello')}>
           <ListItemIcon>
             <FolderIcon />
           </ListItemIcon>
@@ -265,6 +216,9 @@ function HomePage(props) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [isTutorial, setIsTutorial] = useState(null);
+  const [displayModule, setDisplayModule] = useState('');
+
+  console.log('token', localStorage.getItem('token'));
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
@@ -301,6 +255,49 @@ function HomePage(props) {
     }
   };
 
+  const populateTutorialOptions = () => {
+    let target = '';
+    if (displayModule) {
+      target = data.content.tutorials.find((el) => el.mod.name === displayModule);
+      return (
+        <div className="lessons-container">
+          {target.mod.options.map((key) => (
+            <div className="full-name-edit-btn">
+              <Fab component={NavLink}
+                to="/editor"
+                variant="extended"
+                color="primary"
+                aria-label="add"
+                className="edit-btn"
+              >
+                {key.tutorialName}
+              </Fab>
+            </div>
+          ))}
+        </div>
+      );
+    } else {
+      target = data.content.tutorials.find((el) => el.mod.name === 'Introduction');
+      return (
+        <div className="lessons-container">
+          {target.mod.options.map((key) => (
+            <div className="full-name-edit-btn">
+              <Fab component={NavLink}
+                to="/editor"
+                variant="extended"
+                color="primary"
+                aria-label="add"
+                className="edit-btn"
+              >
+                {key.tutorialName}
+              </Fab>
+            </div>
+          ))}
+        </div>
+      );
+    }
+  };
+
   const tabStyle = {
     minWidth: 110,
     paddingLeft: 10,
@@ -333,13 +330,25 @@ function HomePage(props) {
                 <Tab style={tabStyle} label="Do Files" {...a11yProps(1)} />
               </Tabs>
               <TabPanel value={value} index={0}>
-                {populateTutorialModules()}
+                <List className="listItem" component="nav" aria-label="tutorials">
+                  {data.content.tutorials.map((key) => (
+                    <ListItem button onClick={() => setDisplayModule(key.mod.name)}>
+                      <ListItemIcon>
+                        <FolderIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={key.mod.name} />
+                    </ListItem>
+                  ))}
+                </List>
               </TabPanel>
             </Drawer>
           </div>
           <div className="main-page">
             <div className="main-page-title">
-              <h1>Tutorials:</h1>
+              {displayModule
+                ? <h1>{displayModule}</h1>
+                : <h1>Introduction</h1>}
+
             </div>
             {populateTutorialOptions()}
           </div>
