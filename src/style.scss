@@ -117,6 +117,18 @@ div.divider {
   width: 85%;
 }
 
+.do-files-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  width: 85%;
+
+  .full-name-edit-btn {
+    margin: 20px;
+  }
+}
+
 .MuiFab-label {
   justify-content: flex-start !important;
 }

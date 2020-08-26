@@ -376,7 +376,9 @@ function HomePage(props) {
                 </IconButton>
               </Grid>
             </div>
-            {doFilesList}
+            <div className="do-files-container">
+              {doFilesList}
+            </div>
           </div>
         </div>
       </div>
