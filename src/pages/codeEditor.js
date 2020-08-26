@@ -52,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: 'grey',
     display: 'flex',
+    height: '100vh',
   },
   codeBar: {
     top: 'auto',
@@ -62,9 +63,7 @@ const useStyles = makeStyles((theme) => ({
 function CodeEditor(props) {
   const classes = useStyles();
   const [code, setCode] = useState('');
-  const [compilation, setCompilation] = useState(
-    'f\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\n'
-  );
+  const [compilation, setCompilation] = useState('');
   const [initialized, setInitialized] = useState(false);
 
   const doFiles = ['Inbox', 'Starred', 'Send email', 'Drafts'];
@@ -83,8 +82,7 @@ function CodeEditor(props) {
     axios
       .post('https://open-stata.herokuapp.com/api/parse', { dofile: code })
       .then((res) => {
-        console.log('compiled', res.data);
-        // setCompilation(res.data);
+        setCompilation(res.data.output.join('\n\n'));
       })
       .catch((err) => {
         setCompilation(err);
@@ -137,9 +135,16 @@ function CodeEditor(props) {
       </Drawer>
       <div className={classes.content}>
         <div className="compContainer">
-          <div className="comp">
-            <p className="compText">{compilation}</p>
-          </div>
+          <AceEditor
+            mode="jsx"
+            value={compilation}
+            height="100%"
+            width="100%"
+            showGutter={false}
+            // eslint-disable-next-line react/jsx-boolean-value
+            readOnly={true}
+            highlightActiveLine={false}
+          />
         </div>
         <div className="divider" />
         <div className="editorContainer">

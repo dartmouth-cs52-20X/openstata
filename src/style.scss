@@ -34,11 +34,11 @@ div.logo {
 }
 
 div.compContainer {
+  overflow: auto;
   position: relative;
   width: 45%;
-  height: 100vh;
-  overflow: scroll;
-  background-color: white;
+  padding-bottom: 48px;
+  padding-top: 48px;
 }
 
 div.comp {
