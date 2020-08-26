@@ -49,6 +49,7 @@ const App = () => {
           <Route path="/signin" component={Welcome} />
           <PrivateRoute path="/home" component={Home} />
           <PrivateRoute path="/editor/:fileid" component={CodeEditor} />
+          <PrivateRoute path="/editor" component={CodeEditor} />
           <Route component={FallBack} />
         </Switch>
         <Route path="/signup" component={SignupModal} />
