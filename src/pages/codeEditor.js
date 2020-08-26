@@ -1,5 +1,5 @@
 /* eslint-disable comma-dangle */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import List from '@material-ui/core/List';
@@ -14,9 +14,9 @@ import PlayArrow from '@material-ui/icons/PlayArrow';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import Save from '@material-ui/icons/Save';
+import Clear from '@material-ui/icons/Clear';
+import Description from '@material-ui/icons/Description';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-jsx';
 import 'ace-builds/src-noconflict/theme-github';
@@ -52,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: 'grey',
     display: 'flex',
+    height: '100vh',
   },
   codeBar: {
     top: 'auto',
@@ -60,34 +61,53 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function CodeEditor(props) {
+  const compEndRef = useRef(null);
+  const headerText = `
+  ___  ____  ____         ___ ____  ____  ____  ____ 
+ /  / /___/ /___  /\\  / /__    /   ____/   /   ____/
+/__/ /     /___  /  \\/  ___/  /   /___/   /   /___/   1.0
+
+Statistics/Data Analysis`;
+
   const classes = useStyles();
   const [code, setCode] = useState('');
-  const [compilation, setCompilation] = useState(
-    'f\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\nf\n'
-  );
-  const [initialized, setInitialized] = useState(false);
+  const [compilation, setCompilation] = useState(headerText);
+  // const [codeInitialized, setCodeInitialized] = useState(false);
+  const [sideBarInitialized, setSideBarInitialized] = useState(false);
 
-  const doFiles = ['Inbox', 'Starred', 'Send email', 'Drafts'];
-  const otherData = ['All mail', 'Trash', 'Spam'];
+  let doFiles = [];
 
   useEffect(() => {
-    props.getSingleDoFile(props.match.params.fileid, setInitialized);
+    props.getSingleDoFile(props.match.params.fileid, null);
+    props.getDoFiles(setSideBarInitialized);
   }, []);
 
-  if (props.dofiles && initialized) {
+  useEffect(() => {
     setCode(props.dofiles.current.content);
-    setInitialized(false);
+  }, [props.dofiles]);
+
+  // if (props.dofiles && codeInitialized) {
+  //   setCode(props.dofiles.current.content);
+  //   setCodeInitialized(false);
+  // }
+
+  if (props.dofiles && sideBarInitialized) {
+    doFiles = props.dofiles.all;
   }
 
   const runCode = () => {
     axios
       .post('https://open-stata.herokuapp.com/api/parse', { dofile: code })
       .then((res) => {
-        console.log('compiled', res.data);
-        // setCompilation(res.data);
+        setCompilation(
+          `${compilation}\n\n-----------------------------\n\n${res.data.output.join(
+            '\n\n'
+          )}`
+        );
+        compEndRef.current.scrollIntoView({ behavior: 'smooth' });
       })
       .catch((err) => {
-        setCompilation(err);
+        console.error(err);
       });
   };
 
@@ -98,6 +118,12 @@ function CodeEditor(props) {
     };
 
     props.saveDoFile(post, props.dofiles.current.id);
+  };
+
+  const handleNav = (file) => {
+    console.log('new file', file.content);
+    props.history.push(`/editor/${file.id}`);
+    props.getSingleDoFile(props.match.params.fileid, null);
   };
 
   return (
@@ -113,33 +139,32 @@ function CodeEditor(props) {
       >
         <div className={classes.drawerContainer}>
           <List>
-            {doFiles.map((text, index) => (
-              <ListItem button key={text}>
+            {doFiles.map((file) => (
+              <ListItem button key={file.id} onClick={() => handleNav(file)}>
                 <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  <Description />
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={file.fileName} />
               </ListItem>
             ))}
           </List>
           <Divider />
-          <List>
-            {otherData.map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
         </div>
       </Drawer>
       <div className={classes.content}>
         <div className="compContainer">
-          <div className="comp">
-            <p className="compText">{compilation}</p>
-          </div>
+          <AceEditor
+            mode="jsx"
+            value={compilation}
+            height="100%"
+            width="100%"
+            showGutter={false}
+            // eslint-disable-next-line react/jsx-boolean-value
+            readOnly={true}
+            highlightActiveLine={false}
+            showPrintMargin={false}
+          />
+          <div ref={compEndRef} />
         </div>
         <div className="divider" />
         <div className="editorContainer">
@@ -163,6 +188,10 @@ function CodeEditor(props) {
           />
           <AppBar position="fixed" className={classes.codeBar}>
             <Grid container direction="row" justify="flex-end">
+              <IconButton onClick={() => setCompilation(headerText)}>
+                <Typography variant="body1">Clear Compilation</Typography>
+                <Clear />
+              </IconButton>
               <IconButton onClick={() => handleSave()}>
                 <Typography variant="body1">Save Code</Typography>
                 <Save />
