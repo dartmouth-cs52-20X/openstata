@@ -258,12 +258,15 @@ function HomePage(props) {
   const populateTutorialOptions = () => {
     let target = '';
     if (displayModule) {
-      target = data.content.tutorials.find((el) => el.mod.name === displayModule);
+      target = data.content.tutorials.find(
+        (el) => el.mod.name === displayModule
+      );
       return (
         <div className="lessons-container">
           {target.mod.options.map((key) => (
             <div className="full-name-edit-btn">
-              <Fab component={NavLink}
+              <Fab
+                component={NavLink}
                 to="/editor"
                 variant="extended"
                 color="primary"
@@ -277,12 +280,15 @@ function HomePage(props) {
         </div>
       );
     } else {
-      target = data.content.tutorials.find((el) => el.mod.name === 'Introduction');
+      target = data.content.tutorials.find(
+        (el) => el.mod.name === 'Introduction'
+      );
       return (
         <div className="lessons-container">
           {target.mod.options.map((key) => (
             <div className="full-name-edit-btn">
-              <Fab component={NavLink}
+              <Fab
+                component={NavLink}
                 to="/editor"
                 variant="extended"
                 color="primary"
@@ -308,10 +314,11 @@ function HomePage(props) {
   const handleCreate = () => {
     const file = {
       fileName: `file${Math.random()}`,
-      content: 'solve something important',
+      content:
+        'clear\nuse test-data-2\nsumm\nmean age\ngen age2 = age^2\nmean age age2\nreg wage_hr hhid age age2\nrename age2 age_squared\nmean age_squared',
     };
 
-    props.createDoFile(file);
+    props.createDoFile(file, props.history);
   };
 
   if (!isTutorial) {
@@ -330,9 +337,16 @@ function HomePage(props) {
                 <Tab style={tabStyle} label="Do Files" {...a11yProps(1)} />
               </Tabs>
               <TabPanel value={value} index={0}>
-                <List className="listItem" component="nav" aria-label="tutorials">
+                <List
+                  className="listItem"
+                  component="nav"
+                  aria-label="tutorials"
+                >
                   {data.content.tutorials.map((key) => (
-                    <ListItem button onClick={() => setDisplayModule(key.mod.name)}>
+                    <ListItem
+                      button
+                      onClick={() => setDisplayModule(key.mod.name)}
+                    >
                       <ListItemIcon>
                         <FolderIcon />
                       </ListItemIcon>
@@ -345,10 +359,7 @@ function HomePage(props) {
           </div>
           <div className="main-page">
             <div className="main-page-title">
-              {displayModule
-                ? <h1>{displayModule}</h1>
-                : <h1>Introduction</h1>}
-
+              {displayModule ? <h1>{displayModule}</h1> : <h1>Introduction</h1>}
             </div>
             {populateTutorialOptions()}
           </div>
@@ -385,9 +396,7 @@ function HomePage(props) {
                 </IconButton>
               </Grid>
             </div>
-            <div className="do-files-container">
-              {doFilesList}
-            </div>
+            <div className="do-files-container">{doFilesList}</div>
           </div>
         </div>
       </div>
