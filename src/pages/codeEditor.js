@@ -63,7 +63,12 @@ const useStyles = makeStyles((theme) => ({
 function CodeEditor(props) {
   const classes = useStyles();
   const [code, setCode] = useState('');
-  const [compilation, setCompilation] = useState('');
+  const [compilation, setCompilation] = useState(`
+  ___  ____  ____         ___ ____  ____  ____  ____ 
+ /  / /___/ /___  /\\  / /__    /   ____/   /   ____/
+/__/ /     /___  /  \\/  ___/  /   /___/   /   /___/   1.0
+
+Statistics/Data Analysis`);
   const [initialized, setInitialized] = useState(false);
 
   const doFiles = ['Inbox', 'Starred', 'Send email', 'Drafts'];
@@ -82,7 +87,11 @@ function CodeEditor(props) {
     axios
       .post('https://open-stata.herokuapp.com/api/parse', { dofile: code })
       .then((res) => {
-        setCompilation(res.data.output.join('\n\n'));
+        setCompilation(
+          `${compilation}\n\n-----------------------------\n\n${res.data.output.join(
+            '\n\n'
+          )}`
+        );
       })
       .catch((err) => {
         setCompilation(err);
@@ -144,6 +153,7 @@ function CodeEditor(props) {
             // eslint-disable-next-line react/jsx-boolean-value
             readOnly={true}
             highlightActiveLine={false}
+            showPrintMargin={false}
           />
         </div>
         <div className="divider" />
