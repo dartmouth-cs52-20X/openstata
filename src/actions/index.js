@@ -77,14 +77,15 @@ export const getDoFiles = (setInitialized) => (dispatch) => {
     });
 };
 
-export const createDoFile = (file) => (dispatch) => {
+export const createDoFile = (file, history) => (dispatch) => {
   axios
     .post(`${ROOT_URL}/dofiles`, file, {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
-      console.log('response', res);
+      console.log('response', res.data);
       dispatch({ type: ActionTypes.CREATE_DOFILE });
+      history.push(`/editor/${res.data}`);
     })
     .catch((err) => {
       console.error(err);
