@@ -72,7 +72,6 @@ Statistics/Data Analysis`;
   const classes = useStyles();
   const [code, setCode] = useState('');
   const [compilation, setCompilation] = useState(headerText);
-  // const [codeInitialized, setCodeInitialized] = useState(false);
   const [sideBarInitialized, setSideBarInitialized] = useState(false);
 
   let doFiles = [];
@@ -85,11 +84,6 @@ Statistics/Data Analysis`;
   useEffect(() => {
     setCode(props.dofiles.current.content);
   }, [props.dofiles]);
-
-  // if (props.dofiles && codeInitialized) {
-  //   setCode(props.dofiles.current.content);
-  //   setCodeInitialized(false);
-  // }
 
   if (props.dofiles && sideBarInitialized) {
     doFiles = props.dofiles.all;
@@ -123,13 +117,17 @@ Statistics/Data Analysis`;
   const handleNav = (file) => {
     console.log('new file', file.content);
     props.history.push(`/editor/${file.id}`);
-    props.getSingleDoFile(props.match.params.fileid, null);
+    props.getSingleDoFile(file.id, null);
   };
 
   return (
     <div className={classes.root}>
       {/* <CssBaseline /> */}
-      <NavBar className={classes.appBar} page="editor" />
+      <NavBar
+        className={classes.appBar}
+        page="editor"
+        fileName={props.dofiles.current.fileName}
+      />
       <Drawer
         className={classes.drawer}
         variant="permanent"

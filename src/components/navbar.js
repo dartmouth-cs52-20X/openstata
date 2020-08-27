@@ -1,18 +1,21 @@
-import React from 'react';
+/* eslint-disable no-nested-ternary */
+import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-
 import AppBar from '@material-ui/core/AppBar';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import LockOpen from '@material-ui/icons/LockOpen';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import Home from '@material-ui/icons/Home';
+import Edit from '@material-ui/icons/Edit';
+import Save from '@material-ui/icons/Save';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { signoutUser } from '../actions';
+import logo from '../assets/openstata_logo.png';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -22,19 +25,40 @@ const useStyles = makeStyles((theme) => ({
 
 const NavBar = (props) => {
   const classes = useStyles();
+  const [editFilename, setEditFilename] = useState(false);
 
   const handleSignout = () => {
     props.signoutUser(props.history);
+  };
+
+  const handleExit = () => {
+    props.history.push('/home');
   };
 
   return (
     <AppBar position="fixed" className={classes.appBar}>
       <Grid container direction="row" justify="space-between">
         <Grid item className="logo">
-          <LockOpen />
-          <Typography variant="body1">Open Stata</Typography>
+          <img src={logo} alt="logo" className="logoImg" />
         </Grid>
-        { !props.authenticated ? (
+        {props.page === 'editor' ? (
+          editFilename ? (
+            <Grid className="filename">
+              <Typography variant="h6">{props.fileName}</Typography>
+              <IconButton onClick={() => setEditFilename(false)}>
+                <Save />
+              </IconButton>
+            </Grid>
+          ) : (
+            <Grid className="filename">
+              <Typography variant="h6">{props.fileName}</Typography>
+              <IconButton onClick={() => setEditFilename(true)}>
+                <Edit />
+              </IconButton>
+            </Grid>
+          )
+        ) : undefined}
+        {!props.authenticated ? (
           <Grid item>
             <IconButton>
               <Typography variant="body1">Sign Up</Typography>
@@ -45,6 +69,12 @@ const NavBar = (props) => {
           </Grid>
         ) : (
           <Grid item>
+            {props.page === 'editor' ? (
+              <IconButton onClick={handleExit}>
+                <Home />
+                <Typography variant="body1">Return Home</Typography>
+              </IconButton>
+            ) : undefined}
             <IconButton onClick={handleSignout}>
               <ExitToApp />
               <Typography variant="body1">Log Out</Typography>
