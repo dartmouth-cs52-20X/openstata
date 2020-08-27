@@ -135,8 +135,8 @@ const SignUp = (props) => {
                   error={passwordError}
                   helperText={
                     passwordError
-                      ? 'You need at least one uppercase letter, one lowercase letter, and one number'
-                      : 'One uppercase letter, one lowercase letter, and one number is required.'
+                      ? 'You need at least 8 characters with one uppercase letter, one lowercase letter, and one number'
+                      : 'Password must at least 8 characters long with 1 uppercase letter, 1 lowercase letter, and 1 number.'
                   }
                 />
               </Grid>

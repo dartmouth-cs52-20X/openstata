@@ -10,6 +10,10 @@ html {
   color: pink;
 }
 
+img.logoImg {
+  max-height: 30px;
+}
+
 #welcome-box {
   display: flex;
   flex-direction: column;
@@ -54,6 +58,11 @@ div.editorContainer {
   width: 55%;
   padding-bottom: 48px;
   padding-top: 48px;
+}
+
+div.filename {
+  display: flex;
+  align-items: center;
 }
 
 p.compText {
