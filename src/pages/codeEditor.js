@@ -1,4 +1,5 @@
 /* eslint-disable comma-dangle */
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
@@ -20,6 +21,12 @@ import Description from '@material-ui/icons/Description';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-jsx';
 import 'ace-builds/src-noconflict/theme-github';
+import { TextField } from '@material-ui/core';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Box from '@material-ui/core/Box';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import Button from '@material-ui/core/Button';
 
 import NavBar from '../components/navbar';
 import { getDoFiles, getSingleDoFile, saveDoFile } from '../actions';
@@ -28,7 +35,7 @@ const mapStateToProps = (reduxState) => ({
   dofiles: reduxState.dofiles,
 });
 
-const drawerWidth = 160;
+const drawerWidth = 248;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,7 +65,46 @@ const useStyles = makeStyles((theme) => ({
     top: 'auto',
     bottom: 0,
   },
+  fileWidgetButtons: {
+    marginTop: 25,
+    marginBottom: 20,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  urlWidgetButtons: {
+    marginBottom: 20,
+    marginLeft: 10,
+    marginRight: 10,
+  }
 }));
+
+function TabPanel(props) {
+  // eslint-disable-next-line object-curly-newline
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={0}>
+          <Typography component="span">{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
 
 function CodeEditor(props) {
   const compEndRef = useRef(null);
@@ -73,6 +119,27 @@ Statistics/Data Analysis`;
   const [code, setCode] = useState('');
   const [compilation, setCompilation] = useState(headerText);
   const [sideBarInitialized, setSideBarInitialized] = useState(false);
+
+  const [value, setValue] = useState(0);
+  const [isFile, setIsFile] = useState(null);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+
+    if (newValue === 1) {
+      setIsFile(true);
+    } else {
+      setIsFile(false);
+    }
+  };
+
+  const tabStyle = {
+    minWidth: 124,
+    paddingLeft: 10,
+    paddingRight: 10,
+    backgroundColor: 'white',
+    color: 'black',
+  };
 
   let doFiles = [];
 
@@ -120,90 +187,230 @@ Statistics/Data Analysis`;
     props.getSingleDoFile(file.id, null);
   };
 
-  return (
-    <div className={classes.root}>
-      {/* <CssBaseline /> */}
-      <NavBar
-        className={classes.appBar}
-        page="editor"
-        fileName={props.dofiles.current.fileName}
-      />
-      <Drawer
-        className={classes.drawer}
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <div className={classes.drawerContainer}>
-          <List>
-            {doFiles.map((file) => (
-              <ListItem button key={file.id} onClick={() => handleNav(file)}>
-                <ListItemIcon>
-                  <Description />
-                </ListItemIcon>
-                <ListItemText primary={file.fileName} />
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-        </div>
-      </Drawer>
-      <div className={classes.content}>
-        <div className="compContainer">
-          <AceEditor
-            mode="jsx"
-            value={compilation}
-            height="100%"
-            width="100%"
-            showGutter={false}
-            // eslint-disable-next-line react/jsx-boolean-value
-            readOnly={true}
-            highlightActiveLine={false}
-            showPrintMargin={false}
-          />
-          <div ref={compEndRef} />
-        </div>
-        <div className="divider" />
-        <div className="editorContainer">
-          <AceEditor
-            placeholder="Enter code here"
-            mode="jsx"
-            theme="github"
-            onChange={(newCode) => setCode(newCode)}
-            fontSize={14}
-            value={code}
-            highlightActiveLine={false}
-            setOptions={{
-              enableBasicAutocompletion: false,
-              enableLiveAutocompletion: false,
-              enableSnippets: false,
-              showLineNumbers: true,
-              tabSize: 2,
-            }}
-            height="100%"
-            width="100%"
-          />
-          <AppBar position="fixed" className={classes.codeBar}>
-            <Grid container direction="row" justify="flex-end">
-              <IconButton onClick={() => setCompilation(headerText)}>
-                <Typography variant="body1">Clear Compilation</Typography>
-                <Clear />
-              </IconButton>
-              <IconButton onClick={() => handleSave()}>
-                <Typography variant="body1">Save Code</Typography>
-                <Save />
-              </IconButton>
-              <IconButton onClick={() => runCode()}>
-                <Typography variant="body1">Run Code</Typography>
-                <PlayArrow />
-              </IconButton>
-            </Grid>
-          </AppBar>
+  if (!isFile) {
+    return (
+      <div className={classes.root}>
+        {/* <CssBaseline /> */}
+        <NavBar
+          className={classes.appBar}
+          page="editor"
+          fileName={props.dofiles.current.fileName}
+        />
+        <Drawer
+          className={classes.drawer}
+          variant="permanent"
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
+          <div className={classes.drawerContainer}>
+            <List>
+              {doFiles.map((file) => (
+                <ListItem button key={file.id} onClick={() => handleNav(file)}>
+                  <ListItemIcon>
+                    <Description />
+                  </ListItemIcon>
+                  <ListItemText primary={file.fileName} />
+                </ListItem>
+              ))}
+            </List>
+            <Divider />
+          </div>
+          <div className="file-widget">
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="simple tabs example"
+              indicatorColor="primary"
+            >
+              <Tab style={tabStyle} label="Upload File" {...a11yProps(0)} />
+              <Tab style={tabStyle} label="Upload URL" {...a11yProps(1)} />
+            </Tabs>
+            <TabPanel value={value} index={0}>
+
+              <form className={classes.fileWidgetButtons} noValidate autoComplete="off">
+                <input type="file" name="uploadFile" />
+              </form>
+              <Button
+                variant="contained"
+                color="default"
+                size="small"
+                className={classes.button}
+                startIcon={<CloudUploadIcon />}
+              >
+                Upload
+              </Button>
+            </TabPanel>
+          </div>
+        </Drawer>
+        <div className={classes.content}>
+          <div className="compContainer">
+            <AceEditor
+              mode="jsx"
+              value={compilation}
+              height="100%"
+              width="100%"
+              showGutter={false}
+              // eslint-disable-next-line react/jsx-boolean-value
+              readOnly={true}
+              highlightActiveLine={false}
+              showPrintMargin={false}
+            />
+            <div ref={compEndRef} />
+          </div>
+          <div className="divider" />
+          <div className="editorContainer">
+            <AceEditor
+              placeholder="Enter code here"
+              mode="jsx"
+              theme="github"
+              onChange={(newCode) => setCode(newCode)}
+              fontSize={14}
+              value={code}
+              highlightActiveLine={false}
+              setOptions={{
+                enableBasicAutocompletion: false,
+                enableLiveAutocompletion: false,
+                enableSnippets: false,
+                showLineNumbers: true,
+                tabSize: 2,
+              }}
+              height="100%"
+              width="100%"
+            />
+            <AppBar position="fixed" className={classes.codeBar}>
+              <Grid container direction="row" justify="flex-end">
+                <IconButton onClick={() => setCompilation(headerText)}>
+                  <Typography variant="body1">Clear Compilation</Typography>
+                  <Clear />
+                </IconButton>
+                <IconButton onClick={() => handleSave()}>
+                  <Typography variant="body1">Save Code</Typography>
+                  <Save />
+                </IconButton>
+                <IconButton onClick={() => runCode()}>
+                  <Typography variant="body1">Run Code</Typography>
+                  <PlayArrow />
+                </IconButton>
+              </Grid>
+            </AppBar>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div className={classes.root}>
+        {/* <CssBaseline /> */}
+        <NavBar
+          className={classes.appBar}
+          page="editor"
+          fileName={props.dofiles.current.fileName}
+        />
+        <Drawer
+          className={classes.drawer}
+          variant="permanent"
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
+          <div className={classes.drawerContainer}>
+            <List>
+              {doFiles.map((file) => (
+                <ListItem button key={file.id} onClick={() => handleNav(file)}>
+                  <ListItemIcon>
+                    <Description />
+                  </ListItemIcon>
+                  <ListItemText primary={file.fileName} />
+                </ListItem>
+              ))}
+            </List>
+            <Divider />
+          </div>
+          <div className="file-widget">
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="simple tabs example"
+              indicatorColor="primary"
+            >
+              <Tab style={tabStyle} label="Upload File" {...a11yProps(0)} />
+              <Tab style={tabStyle} label="Upload URL" {...a11yProps(1)} />
+            </Tabs>
+            <TabPanel value={value} index={1}>
+
+              <form className={classes.urlWidgetButtons} noValidate autoComplete="off">
+                <TextField id="standard-basic" label="URL Here" />
+              </form>
+              <Button
+                variant="contained"
+                color="default"
+                size="small"
+                className={classes.button}
+                startIcon={<CloudUploadIcon />}
+              >
+                Upload
+              </Button>
+
+            </TabPanel>
+          </div>
+        </Drawer>
+        <div className={classes.content}>
+          <div className="compContainer">
+            <AceEditor
+              mode="jsx"
+              value={compilation}
+              height="100%"
+              width="100%"
+              showGutter={false}
+              // eslint-disable-next-line react/jsx-boolean-value
+              readOnly={true}
+              highlightActiveLine={false}
+              showPrintMargin={false}
+            />
+            <div ref={compEndRef} />
+          </div>
+          <div className="divider" />
+          <div className="editorContainer">
+            <AceEditor
+              placeholder="Enter code here"
+              mode="jsx"
+              theme="github"
+              onChange={(newCode) => setCode(newCode)}
+              fontSize={14}
+              value={code}
+              highlightActiveLine={false}
+              setOptions={{
+                enableBasicAutocompletion: false,
+                enableLiveAutocompletion: false,
+                enableSnippets: false,
+                showLineNumbers: true,
+                tabSize: 2,
+              }}
+              height="100%"
+              width="100%"
+            />
+            <AppBar position="fixed" className={classes.codeBar}>
+              <Grid container direction="row" justify="flex-end">
+                <IconButton onClick={() => setCompilation(headerText)}>
+                  <Typography variant="body1">Clear Compilation</Typography>
+                  <Clear />
+                </IconButton>
+                <IconButton onClick={() => handleSave()}>
+                  <Typography variant="body1">Save Code</Typography>
+                  <Save />
+                </IconButton>
+                <IconButton onClick={() => runCode()}>
+                  <Typography variant="body1">Run Code</Typography>
+                  <PlayArrow />
+                </IconButton>
+              </Grid>
+            </AppBar>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default connect(mapStateToProps, {
