@@ -27,6 +27,7 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Button from '@material-ui/core/Button';
+import uploadFile from '../actions/s3';
 
 import NavBar from '../components/navbar';
 import { getDoFiles, getSingleDoFile, saveDoFile } from '../actions';
@@ -66,13 +67,13 @@ const useStyles = makeStyles((theme) => ({
     bottom: 0,
   },
   fileWidgetButtons: {
-    marginTop: 25,
-    marginBottom: 20,
+    marginTop: 20,
+    marginBottom: 15,
     marginLeft: 10,
     marginRight: 10,
   },
   urlWidgetButtons: {
-    marginBottom: 20,
+    marginBottom: 15,
     marginLeft: 10,
     marginRight: 10,
   }
@@ -123,6 +124,8 @@ Statistics/Data Analysis`;
   const [value, setValue] = useState(0);
   const [isFile, setIsFile] = useState(null);
 
+  const [fileToUpload, setFileToUpload] = useState('');
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
 
@@ -132,6 +135,40 @@ Statistics/Data Analysis`;
       setIsFile(false);
     }
   };
+
+  const onFileChosen = (event) => {
+    const chosenFile = event.target.files[0];
+    console.log('file chosen:', chosenFile);
+    // Handle null file
+    // Get url of the file and set it to the src of preview
+    if (chosenFile) {
+      setFileToUpload(chosenFile);
+    }
+  };
+
+  const handleFileUpload = () => {
+    if (fileToUpload) {
+      console.log('upload pressed and file exists');
+      uploadFile(fileToUpload).then((url) => {
+        // use url for content_url and
+        // either run your createPost actionCreator
+        // or your updatePost actionCreator
+        // console.log(url);
+        // this.setState({ imageURL: url });
+
+        /// /// GIVE URL AND ALIAS BACK TO "save data file endpoint" that Jeff is setting up /////
+        // this.props.createPost({ ...this.state, authorName: this.props.username }, this.props.history);
+      }).catch((error) => {
+        // handle error
+        console.log(error);
+      });
+    }
+  };
+
+  // const handleURLUpload = () => {
+  //   // directly save the non-s3 url and alias to endpoint Jeff is creating
+
+  // };
 
   const tabStyle = {
     minWidth: 124,
@@ -228,8 +265,9 @@ Statistics/Data Analysis`;
             </Tabs>
             <TabPanel value={value} index={0}>
 
-              <form className={classes.fileWidgetButtons} noValidate autoComplete="off">
+              <form className={classes.fileWidgetButtons} noValidate autoComplete="off" onChange={onFileChosen}>
                 <input type="file" name="uploadFile" />
+                <TextField id="standard-basic" label="Alias" />
               </form>
               <Button
                 variant="contained"
@@ -237,6 +275,7 @@ Statistics/Data Analysis`;
                 size="small"
                 className={classes.button}
                 startIcon={<CloudUploadIcon />}
+                onClick={handleFileUpload}
               >
                 Upload
               </Button>
@@ -340,7 +379,8 @@ Statistics/Data Analysis`;
             <TabPanel value={value} index={1}>
 
               <form className={classes.urlWidgetButtons} noValidate autoComplete="off">
-                <TextField id="standard-basic" label="URL Here" />
+                <TextField id="standard-basic" label="URL" />
+                <TextField id="standard-basic" label="Alias" />
               </form>
               <Button
                 variant="contained"

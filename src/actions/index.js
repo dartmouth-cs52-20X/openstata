@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const ROOT_URL = 'https://open-stata.herokuapp.com/api';
+export const ROOT_URL = 'https://open-stata.herokuapp.com/api';
 
 export const ActionTypes = {
   AUTH_USER: 'AUTH_USER',
