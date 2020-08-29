@@ -30,7 +30,9 @@ import Button from '@material-ui/core/Button';
 import uploadFile from '../actions/s3';
 
 import NavBar from '../components/navbar';
-import { getDoFiles, getSingleDoFile, saveDoFile } from '../actions';
+import {
+  getDoFiles, getSingleDoFile, saveDoFile, saveURL
+} from '../actions';
 
 const mapStateToProps = (reduxState) => ({
   dofiles: reduxState.dofiles,
@@ -121,54 +123,12 @@ Statistics/Data Analysis`;
   const [compilation, setCompilation] = useState(headerText);
   const [sideBarInitialized, setSideBarInitialized] = useState(false);
 
+  // file/url widget state
   const [value, setValue] = useState(0);
   const [isFile, setIsFile] = useState(null);
-
   const [fileToUpload, setFileToUpload] = useState('');
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-
-    if (newValue === 1) {
-      setIsFile(true);
-    } else {
-      setIsFile(false);
-    }
-  };
-
-  const onFileChosen = (event) => {
-    const chosenFile = event.target.files[0];
-    console.log('file chosen:', chosenFile);
-    // Handle null file
-    // Get url of the file and set it to the src of preview
-    if (chosenFile) {
-      setFileToUpload(chosenFile);
-    }
-  };
-
-  const handleFileUpload = () => {
-    if (fileToUpload) {
-      console.log('upload pressed and file exists');
-      uploadFile(fileToUpload).then((url) => {
-        // use url for content_url and
-        // either run your createPost actionCreator
-        // or your updatePost actionCreator
-        // console.log(url);
-        // this.setState({ imageURL: url });
-
-        /// /// GIVE URL AND ALIAS BACK TO "save data file endpoint" that Jeff is setting up /////
-        // this.props.createPost({ ...this.state, authorName: this.props.username }, this.props.history);
-      }).catch((error) => {
-        // handle error
-        console.log(error);
-      });
-    }
-  };
-
-  // const handleURLUpload = () => {
-  //   // directly save the non-s3 url and alias to endpoint Jeff is creating
-
-  // };
+  const [urlToUpload, setURLToUpload] = useState('');
+  const [alias, setAlias] = useState('');
 
   const tabStyle = {
     minWidth: 124,
@@ -192,6 +152,63 @@ Statistics/Data Analysis`;
   if (props.dofiles && sideBarInitialized) {
     doFiles = props.dofiles.all;
   }
+
+  // handles widget tab change
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+
+    if (newValue === 1) {
+      setIsFile(true);
+    } else {
+      setIsFile(false);
+    }
+  };
+
+  // when a file is chosen in file/url widget
+  const onFileChosen = (event) => {
+    const chosenFile = event.target.files[0];
+    console.log('file chosen:', chosenFile);
+    if (chosenFile) {
+      setFileToUpload(chosenFile);
+    }
+  };
+
+  // handles the situation where we are downloading by file
+  const handleFileUpload = () => {
+    if (fileToUpload && alias) {
+      console.log('upload pressed and file exists');
+      console.log('alias:', alias);
+      uploadFile(fileToUpload).then((url) => {
+        const post = {
+          fileName: alias,
+          url,
+        };
+        console.log('post:', post);
+        props.saveURL(post);
+      }).catch((error) => {
+        console.log(error);
+      });
+    } else {
+      // eslint-disable-next-line no-alert
+      alert('error: Must choose file/url and alias');
+    }
+  };
+
+  // handles the situation where we are downloading by URL
+  const handleURLUpload = () => {
+    // directly save the non-s3 url and alias to endpoint Jeff is creating
+    if (urlToUpload && alias) {
+      const post = {
+        fileName: alias,
+        url: urlToUpload,
+      };
+      console.log('post:', post);
+      props.saveURL(post);
+    } else {
+      // eslint-disable-next-line no-alert
+      alert('error: Must choose file/url and alias');
+    }
+  };
 
   const runCode = () => {
     axios
@@ -224,6 +241,7 @@ Statistics/Data Analysis`;
     props.getSingleDoFile(file.id, null);
   };
 
+  // display different thing based on which tab is active in url/file widget
   if (!isFile) {
     return (
       <div className={classes.root}>
@@ -265,9 +283,9 @@ Statistics/Data Analysis`;
             </Tabs>
             <TabPanel value={value} index={0}>
 
-              <form className={classes.fileWidgetButtons} noValidate autoComplete="off" onChange={onFileChosen}>
-                <input type="file" name="uploadFile" />
-                <TextField id="standard-basic" label="Alias" />
+              <form className={classes.fileWidgetButtons} noValidate autoComplete="off">
+                <input type="file" name="uploadFile" onChange={onFileChosen} />
+                <TextField id="standard-basic" label="Alias" onChange={(e) => setAlias(e.target.value)} />
               </form>
               <Button
                 variant="contained"
@@ -379,8 +397,8 @@ Statistics/Data Analysis`;
             <TabPanel value={value} index={1}>
 
               <form className={classes.urlWidgetButtons} noValidate autoComplete="off">
-                <TextField id="standard-basic" label="URL" />
-                <TextField id="standard-basic" label="Alias" />
+                <TextField id="standard-basic" label="URL" onChange={(e) => setURLToUpload(e.target.value)} />
+                <TextField id="standard-basic" label="Alias" onChange={(e) => setAlias(e.target.value)} />
               </form>
               <Button
                 variant="contained"
@@ -388,10 +406,10 @@ Statistics/Data Analysis`;
                 size="small"
                 className={classes.button}
                 startIcon={<CloudUploadIcon />}
+                onClick={handleURLUpload}
               >
                 Upload
               </Button>
-
             </TabPanel>
           </div>
         </Drawer>
@@ -457,4 +475,5 @@ export default connect(mapStateToProps, {
   getDoFiles,
   getSingleDoFile,
   saveDoFile,
+  saveURL,
 })(CodeEditor);

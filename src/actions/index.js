@@ -139,3 +139,19 @@ export const deleteDoFile = (fileID) => (dispatch) => {
       console.error(err);
     });
 };
+
+// for saving URL and alias to server
+export function saveURL(post) {
+  return (dispatch) => {
+    axios
+      .post(`${ROOT_URL}/data`, post, {
+        headers: { authorization: localStorage.getItem('token') },
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        dispatch(`Upload Failed: ${error.response.data}`);
+      });
+  };
+}
