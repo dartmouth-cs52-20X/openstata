@@ -38,7 +38,6 @@ const NavBar = (props) => {
     if (props.file) setFilename(props.file.fileName);
   }, [props.file]);
 
-
   const handleSignout = () => {
     props.signoutUser(props.history);
   };
@@ -54,7 +53,6 @@ const NavBar = (props) => {
     };
     props.saveDoFile(post, props.file.id, updateSidebar);
     setEditFilename(false);
-
   };
 
   const handleExit = () => {
@@ -77,7 +75,6 @@ const NavBar = (props) => {
                 }}
               />
               <IconButton onClick={() => handleSave()}>
-
                 <Save />
               </IconButton>
             </Grid>
@@ -85,7 +82,6 @@ const NavBar = (props) => {
             <Grid className="filename">
               <Typography variant="h6">{filename}</Typography>
               <IconButton onClick={() => setEditFilename(true)}>
-
                 <Edit />
               </IconButton>
             </Grid>
@@ -132,4 +128,3 @@ export const FillerBar = () => {
 export default withRouter(
   connect(mapStateToProps, { signoutUser, saveDoFile, getDoFiles })(NavBar)
 );
-
