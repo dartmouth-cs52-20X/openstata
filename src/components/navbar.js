@@ -31,8 +31,8 @@ const mapStateToProps = (reduxState) => ({
 
 const NavBar = (props) => {
   const classes = useStyles();
-  const [editFilename, setEditFilename] = useState(false);
   const [filename, setFilename] = useState('');
+  const [editFilename, setEditFilename] = useState(false);
 
   useEffect(() => {
     if (props.file) setFilename(props.file.fileName);
