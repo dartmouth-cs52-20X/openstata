@@ -1,3 +1,4 @@
+/* eslint-disable object-curly-newline */
 /* eslint-disable comma-dangle */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect, useRef } from 'react';
@@ -25,13 +26,18 @@ import { TextField } from '@material-ui/core';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import DeleteIcon from '@material-ui/icons/Delete';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Button from '@material-ui/core/Button';
 import uploadFile from '../actions/s3';
 
 import NavBar from '../components/navbar';
 import {
-  getDoFiles, getSingleDoFile, saveDoFile, saveURL
+  getDoFiles,
+  getSingleDoFile,
+  saveDoFile,
+  saveURL,
+  deleteDoFile,
 } from '../actions';
 
 const mapStateToProps = (reduxState) => ({
@@ -78,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 15,
     marginLeft: 10,
     marginRight: 10,
-  }
+  },
 }));
 
 function TabPanel(props) {
@@ -147,7 +153,7 @@ Statistics/Data Analysis`;
 
   useEffect(() => {
     setCode(props.dofiles.current.content);
-  }, [props.dofiles]);
+  }, [props.dofiles.current]);
 
   if (props.dofiles && sideBarInitialized) {
     doFiles = props.dofiles.all;
@@ -178,18 +184,20 @@ Statistics/Data Analysis`;
     if (fileToUpload && alias) {
       console.log('upload pressed and file exists');
       console.log('alias:', alias);
-      uploadFile(fileToUpload).then((url) => {
-        const post = {
-          fileName: alias,
-          url,
-        };
-        console.log('post:', post);
-        props.saveURL(post);
-        // eslint-disable-next-line no-alert
-        alert(`Successfully downloaded ${url} as ${alias}!`);
-      }).catch((error) => {
-        console.log(error);
-      });
+      uploadFile(fileToUpload)
+        .then((url) => {
+          const post = {
+            fileName: alias,
+            url,
+          };
+          console.log('post:', post);
+          props.saveURL(post);
+          // eslint-disable-next-line no-alert
+          alert(`Successfully downloaded ${url} as ${alias}!`);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       // eslint-disable-next-line no-alert
       alert('error: Must choose file/url and alias');
@@ -245,6 +253,10 @@ Statistics/Data Analysis`;
     props.getSingleDoFile(file.id, null);
   };
 
+  const handleDelete = () => {
+    props.deleteDoFile(props.dofiles.current.id, props.history);
+  };
+
   // display different thing based on which tab is active in url/file widget
   if (!isFile) {
     return (
@@ -253,7 +265,7 @@ Statistics/Data Analysis`;
         <NavBar
           className={classes.appBar}
           page="editor"
-          fileName={props.dofiles.current.fileName}
+          file={props.dofiles.current}
         />
         <Drawer
           className={classes.drawer}
@@ -286,10 +298,17 @@ Statistics/Data Analysis`;
               <Tab style={tabStyle} label="Upload URL" {...a11yProps(1)} />
             </Tabs>
             <TabPanel value={value} index={0}>
-
-              <form className={classes.fileWidgetButtons} noValidate autoComplete="off">
+              <form
+                className={classes.fileWidgetButtons}
+                noValidate
+                autoComplete="off"
+              >
                 <input type="file" name="uploadFile" onChange={onFileChosen} />
-                <TextField id="standard-basic" label="Alias" onChange={(e) => setAlias(e.target.value)} />
+                <TextField
+                  id="standard-basic"
+                  label="Alias"
+                  onChange={(e) => setAlias(e.target.value)}
+                />
               </form>
               <Button
                 variant="contained"
@@ -341,6 +360,10 @@ Statistics/Data Analysis`;
             />
             <AppBar position="fixed" className={classes.codeBar}>
               <Grid container direction="row" justify="flex-end">
+                <IconButton onClick={() => handleDelete()}>
+                  <Typography variant="body1">Delete File</Typography>
+                  <DeleteIcon />
+                </IconButton>
                 <IconButton onClick={() => setCompilation(headerText)}>
                   <Typography variant="body1">Clear Compilation</Typography>
                   <Clear />
@@ -366,7 +389,7 @@ Statistics/Data Analysis`;
         <NavBar
           className={classes.appBar}
           page="editor"
-          fileName={props.dofiles.current.fileName}
+          fileName={props.dofiles.current}
         />
         <Drawer
           className={classes.drawer}
@@ -399,10 +422,21 @@ Statistics/Data Analysis`;
               <Tab style={tabStyle} label="Upload URL" {...a11yProps(1)} />
             </Tabs>
             <TabPanel value={value} index={1}>
-
-              <form className={classes.urlWidgetButtons} noValidate autoComplete="off">
-                <TextField id="standard-basic" label="URL" onChange={(e) => setURLToUpload(e.target.value)} />
-                <TextField id="standard-basic" label="Alias" onChange={(e) => setAlias(e.target.value)} />
+              <form
+                className={classes.urlWidgetButtons}
+                noValidate
+                autoComplete="off"
+              >
+                <TextField
+                  id="standard-basic"
+                  label="URL"
+                  onChange={(e) => setURLToUpload(e.target.value)}
+                />
+                <TextField
+                  id="standard-basic"
+                  label="Alias"
+                  onChange={(e) => setAlias(e.target.value)}
+                />
               </form>
               <Button
                 variant="contained"
@@ -454,6 +488,10 @@ Statistics/Data Analysis`;
             />
             <AppBar position="fixed" className={classes.codeBar}>
               <Grid container direction="row" justify="flex-end">
+                <IconButton onClick={() => handleDelete()}>
+                  <Typography variant="body1">Delete File</Typography>
+                  <DeleteIcon />
+                </IconButton>
                 <IconButton onClick={() => setCompilation(headerText)}>
                   <Typography variant="body1">Clear Compilation</Typography>
                   <Clear />
@@ -480,4 +518,5 @@ export default connect(mapStateToProps, {
   getSingleDoFile,
   saveDoFile,
   saveURL,
+  deleteDoFile,
 })(CodeEditor);

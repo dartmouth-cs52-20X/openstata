@@ -121,19 +121,35 @@ export const saveDoFile = (file, fileid) => (dispatch) => {
         type: ActionTypes.SAVE_DOFILE,
         payload: res.data,
       });
+      getDoFiles(null);
+      // axios
+      //   .get(`${ROOT_URL}/dofiles`, {
+      //     headers: { authorization: localStorage.getItem('token') },
+      //   })
+      //   .then((result) => {
+      //     console.log('response', result.data);
+      //     dispatch({
+      //       type: ActionTypes.GET_DOFILES,
+      //       payload: result.data,
+      //     });
+      //   })
+      //   .catch((err) => {
+      //     console.error(err);
+      //   });
     })
     .catch((err) => {
       console.error(err);
     });
 };
 
-export const deleteDoFile = (fileID) => (dispatch) => {
+export const deleteDoFile = (fileID, history) => (dispatch) => {
   axios
     .delete(`${ROOT_URL}/dofiles/${fileID}`, {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
       console.log('response', res.data);
+      history.push('/home');
     })
     .catch((err) => {
       console.error(err);

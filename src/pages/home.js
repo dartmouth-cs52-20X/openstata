@@ -282,7 +282,7 @@ function HomePage(props) {
 
   const handleCreate = () => {
     const file = {
-      fileName: `file${Math.random()}`,
+      fileName: `file${doFilesList.length}`,
       content:
         'clear\nuse test-data-2\nsumm\nmean age\ngen age2 = age^2\nmean age age2\nreg wage_hr hhid age age2\nrename age2 age_squared\nmean age_squared',
     };

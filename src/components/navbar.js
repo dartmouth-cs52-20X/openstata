@@ -1,11 +1,13 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable no-nested-ternary */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -14,7 +16,7 @@ import Edit from '@material-ui/icons/Edit';
 import Save from '@material-ui/icons/Save';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { signoutUser } from '../actions';
+import { signoutUser, saveDoFile, getDoFiles } from '../actions';
 import logo from '../assets/openstata_logo.png';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,6 +28,22 @@ const useStyles = makeStyles((theme) => ({
 const NavBar = (props) => {
   const classes = useStyles();
   const [editFilename, setEditFilename] = useState(false);
+  const [filename, setFilename] = useState('');
+
+  useEffect(() => {
+    if (props.file) setFilename(props.file.fileName);
+  }, [props.file]);
+
+  const saveFilename = () => {
+    if (filename !== props.file.fileName) {
+      const fields = {
+        fileName: filename,
+        content: props.file.content,
+      };
+      props.saveDoFile(fields, props.file.id);
+    }
+    setEditFilename(false);
+  };
 
   const handleSignout = () => {
     props.signoutUser(props.history);
@@ -44,14 +62,17 @@ const NavBar = (props) => {
         {props.page === 'editor' ? (
           editFilename ? (
             <Grid className="filename">
-              <Typography variant="h6">{props.fileName}</Typography>
-              <IconButton onClick={() => setEditFilename(false)}>
+              <TextField
+                value={filename}
+                onChange={(event) => setFilename(event.target.value)}
+              />
+              <IconButton onClick={saveFilename}>
                 <Save />
               </IconButton>
             </Grid>
           ) : (
             <Grid className="filename">
-              <Typography variant="h6">{props.fileName}</Typography>
+              <Typography variant="h6">{filename}</Typography>
               <IconButton onClick={() => setEditFilename(true)}>
                 <Edit />
               </IconButton>
@@ -104,4 +125,6 @@ const mapStateToProps = (reduxState) => ({
   authenticated: reduxState.auth.authenticated,
 });
 
-export default withRouter(connect(mapStateToProps, { signoutUser })(NavBar));
+export default withRouter(
+  connect(mapStateToProps, { signoutUser, saveDoFile, getDoFiles })(NavBar)
+);
