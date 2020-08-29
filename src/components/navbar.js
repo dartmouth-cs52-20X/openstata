@@ -2,8 +2,10 @@
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+
 import AppBar from '@material-ui/core/AppBar';
 import Grid from '@material-ui/core/Grid';
+import Input from '@material-ui/core/Input';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
@@ -14,7 +16,7 @@ import Edit from '@material-ui/icons/Edit';
 import Save from '@material-ui/icons/Save';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { signoutUser } from '../actions';
+import { signoutUser, saveDoFile } from '../actions';
 import logo from '../assets/openstata_logo.png';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,9 +28,18 @@ const useStyles = makeStyles((theme) => ({
 const NavBar = (props) => {
   const classes = useStyles();
   const [editFilename, setEditFilename] = useState(false);
+  const [newFilename, typeFilename] = useState(props.fileName);
 
   const handleSignout = () => {
     props.signoutUser(props.history);
+  };
+
+  const handleSave = () => {
+    const post = {
+      fileName: newFilename,
+      content: props.dofiles.current.content,
+    };
+    props.saveDoFile(post, props.dofiles.current.id);
   };
 
   const handleExit = () => {
@@ -44,15 +55,26 @@ const NavBar = (props) => {
         {props.page === 'editor' ? (
           editFilename ? (
             <Grid className="filename">
-              <Typography variant="h6">{props.fileName}</Typography>
-              <IconButton onClick={() => setEditFilename(false)}>
+              <Input onChange={(e) => {
+                typeFilename(e.target.value);
+              }}
+              />
+              <IconButton onClick={() => {
+                setEditFilename(false);
+                handleSave();
+              }}
+              >
                 <Save />
               </IconButton>
             </Grid>
           ) : (
             <Grid className="filename">
-              <Typography variant="h6">{props.fileName}</Typography>
-              <IconButton onClick={() => setEditFilename(true)}>
+              {newFilename ? (
+                <Typography variant="h6">{newFilename}</Typography>
+              ) : (
+                <Typography variant="h6">{props.fileName}</Typography>
+              )}
+              <IconButton onClick={() => { setEditFilename(true); }}>
                 <Edit />
               </IconButton>
             </Grid>
@@ -102,6 +124,7 @@ export const FillerBar = () => {
 
 const mapStateToProps = (reduxState) => ({
   authenticated: reduxState.auth.authenticated,
+  dofiles: reduxState.dofiles,
 });
 
-export default withRouter(connect(mapStateToProps, { signoutUser })(NavBar));
+export default withRouter(connect(mapStateToProps, { signoutUser, saveDoFile })(NavBar));
