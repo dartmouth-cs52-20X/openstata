@@ -1,5 +1,6 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable no-nested-ternary */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -10,13 +11,12 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ExitToApp from '@material-ui/icons/ExitToApp';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import Home from '@material-ui/icons/Home';
 import Edit from '@material-ui/icons/Edit';
 import Save from '@material-ui/icons/Save';
 import { makeStyles } from '@material-ui/core/styles';
+import { signoutUser, saveDoFile, getDoFiles } from '../actions';
 
-import { signoutUser, saveDoFile } from '../actions';
 import logo from '../assets/openstata_logo.png';
 
 const useStyles = makeStyles((theme) => ({
@@ -25,21 +25,34 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const mapStateToProps = (reduxState) => ({
+  authenticated: reduxState.auth.authenticated,
+});
+
 const NavBar = (props) => {
   const classes = useStyles();
+  const [filename, setFilename] = useState('');
   const [editFilename, setEditFilename] = useState(false);
-  const [newFilename, typeFilename] = useState(props.fileName);
+
+  useEffect(() => {
+    if (props.file) setFilename(props.file.fileName);
+  }, [props.file]);
 
   const handleSignout = () => {
     props.signoutUser(props.history);
   };
 
+  const updateSidebar = () => {
+    props.getDoFiles(null);
+  };
+
   const handleSave = () => {
     const post = {
-      fileName: newFilename,
-      content: props.dofiles.current.content,
+      fileName: filename,
+      content: props.file.content,
     };
-    props.saveDoFile(post, props.dofiles.current.id);
+    props.saveDoFile(post, props.file.id, updateSidebar);
+    setEditFilename(false);
   };
 
   const handleExit = () => {
@@ -55,26 +68,20 @@ const NavBar = (props) => {
         {props.page === 'editor' ? (
           editFilename ? (
             <Grid className="filename">
-              <Input onChange={(e) => {
-                typeFilename(e.target.value);
-              }}
+              <Input
+                value={filename}
+                onChange={(e) => {
+                  setFilename(e.target.value);
+                }}
               />
-              <IconButton onClick={() => {
-                setEditFilename(false);
-                handleSave();
-              }}
-              >
+              <IconButton onClick={() => handleSave()}>
                 <Save />
               </IconButton>
             </Grid>
           ) : (
             <Grid className="filename">
-              {newFilename ? (
-                <Typography variant="h6">{newFilename}</Typography>
-              ) : (
-                <Typography variant="h6">{props.fileName}</Typography>
-              )}
-              <IconButton onClick={() => { setEditFilename(true); }}>
+              <Typography variant="h6">{filename}</Typography>
+              <IconButton onClick={() => setEditFilename(true)}>
                 <Edit />
               </IconButton>
             </Grid>
@@ -101,10 +108,6 @@ const NavBar = (props) => {
               <ExitToApp />
               <Typography variant="body1">Log Out</Typography>
             </IconButton>
-            <IconButton>
-              <AccountCircle />
-              <Typography variant="body1">Profile</Typography>
-            </IconButton>
           </Grid>
         )}
       </Grid>
@@ -122,9 +125,6 @@ export const FillerBar = () => {
   );
 };
 
-const mapStateToProps = (reduxState) => ({
-  authenticated: reduxState.auth.authenticated,
-  dofiles: reduxState.dofiles,
-});
-
-export default withRouter(connect(mapStateToProps, { signoutUser, saveDoFile })(NavBar));
+export default withRouter(
+  connect(mapStateToProps, { signoutUser, saveDoFile, getDoFiles })(NavBar)
+);
