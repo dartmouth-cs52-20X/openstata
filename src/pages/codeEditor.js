@@ -224,7 +224,13 @@ Statistics/Data Analysis`;
 
   const runCode = () => {
     axios
-      .post('https://open-stata.herokuapp.com/api/parse', { dofile: code })
+      .post(
+        'https://open-stata.herokuapp.com/api/parse',
+        { dofile: code },
+        {
+          headers: { authorization: localStorage.getItem('token') },
+        }
+      )
       .then((res) => {
         setCompilation(
           `${compilation}\n\n-----------------------------\n\n${res.data.output.join(
@@ -234,7 +240,9 @@ Statistics/Data Analysis`;
         compEndRef.current.scrollIntoView({ behavior: 'smooth' });
       })
       .catch((err) => {
-        console.error(err);
+        setCompilation(
+          `${compilation}\n\n-----------------------------\n\nError: ${err.response.data.output}`
+        );
       });
   };
 
@@ -244,7 +252,7 @@ Statistics/Data Analysis`;
       content: code,
     };
 
-    props.saveDoFile(post, props.dofiles.current.id);
+    props.saveDoFile(post, props.dofiles.current.id, null);
   };
 
   const handleNav = (file) => {
@@ -389,7 +397,7 @@ Statistics/Data Analysis`;
         <NavBar
           className={classes.appBar}
           page="editor"
-          fileName={props.dofiles.current}
+          file={props.dofiles.current}
         />
         <Drawer
           className={classes.drawer}

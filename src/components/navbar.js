@@ -3,14 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+
 import AppBar from '@material-ui/core/AppBar';
 import Grid from '@material-ui/core/Grid';
+import Input from '@material-ui/core/Input';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ExitToApp from '@material-ui/icons/ExitToApp';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import Home from '@material-ui/icons/Home';
 import Edit from '@material-ui/icons/Edit';
 import Save from '@material-ui/icons/Save';
@@ -25,6 +25,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const mapStateToProps = (reduxState) => ({
+  authenticated: reduxState.auth.authenticated,
+});
+
 const NavBar = (props) => {
   const classes = useStyles();
   const [editFilename, setEditFilename] = useState(false);
@@ -34,19 +38,21 @@ const NavBar = (props) => {
     if (props.file) setFilename(props.file.fileName);
   }, [props.file]);
 
-  const saveFilename = () => {
-    if (filename !== props.file.fileName) {
-      const fields = {
-        fileName: filename,
-        content: props.file.content,
-      };
-      props.saveDoFile(fields, props.file.id);
-    }
-    setEditFilename(false);
-  };
-
   const handleSignout = () => {
     props.signoutUser(props.history);
+  };
+
+  const updateSidebar = () => {
+    props.getDoFiles(null);
+  };
+
+  const handleSave = () => {
+    const post = {
+      fileName: filename,
+      content: props.file.content,
+    };
+    props.saveDoFile(post, props.file.id, updateSidebar);
+    setEditFilename(false);
   };
 
   const handleExit = () => {
@@ -62,11 +68,13 @@ const NavBar = (props) => {
         {props.page === 'editor' ? (
           editFilename ? (
             <Grid className="filename">
-              <TextField
+              <Input
                 value={filename}
-                onChange={(event) => setFilename(event.target.value)}
+                onChange={(e) => {
+                  setFilename(e.target.value);
+                }}
               />
-              <IconButton onClick={saveFilename}>
+              <IconButton onClick={() => handleSave()}>
                 <Save />
               </IconButton>
             </Grid>
@@ -100,10 +108,6 @@ const NavBar = (props) => {
               <ExitToApp />
               <Typography variant="body1">Log Out</Typography>
             </IconButton>
-            <IconButton>
-              <AccountCircle />
-              <Typography variant="body1">Profile</Typography>
-            </IconButton>
           </Grid>
         )}
       </Grid>
@@ -120,10 +124,6 @@ export const FillerBar = () => {
     </AppBar>
   );
 };
-
-const mapStateToProps = (reduxState) => ({
-  authenticated: reduxState.auth.authenticated,
-});
 
 export default withRouter(
   connect(mapStateToProps, { signoutUser, saveDoFile, getDoFiles })(NavBar)
