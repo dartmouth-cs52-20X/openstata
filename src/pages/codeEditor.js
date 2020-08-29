@@ -185,6 +185,8 @@ Statistics/Data Analysis`;
         };
         console.log('post:', post);
         props.saveURL(post);
+        // eslint-disable-next-line no-alert
+        alert(`Successfully downloaded ${url} as ${alias}!`);
       }).catch((error) => {
         console.log(error);
       });
@@ -204,6 +206,8 @@ Statistics/Data Analysis`;
       };
       console.log('post:', post);
       props.saveURL(post);
+      // eslint-disable-next-line no-alert
+      alert(`Successfully downloaded ${urlToUpload} as ${alias}!`);
     } else {
       // eslint-disable-next-line no-alert
       alert('error: Must choose file/url and alias');
@@ -289,7 +293,7 @@ Statistics/Data Analysis`;
               </form>
               <Button
                 variant="contained"
-                color="default"
+                color="primary"
                 size="small"
                 className={classes.button}
                 startIcon={<CloudUploadIcon />}
@@ -402,7 +406,7 @@ Statistics/Data Analysis`;
               </form>
               <Button
                 variant="contained"
-                color="default"
+                color="primary"
                 size="small"
                 className={classes.button}
                 startIcon={<CloudUploadIcon />}
