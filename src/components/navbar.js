@@ -15,8 +15,8 @@ import Home from '@material-ui/icons/Home';
 import Edit from '@material-ui/icons/Edit';
 import Save from '@material-ui/icons/Save';
 import { makeStyles } from '@material-ui/core/styles';
-
 import { signoutUser, saveDoFile, getDoFiles } from '../actions';
+
 import logo from '../assets/openstata_logo.png';
 
 const useStyles = makeStyles((theme) => ({
@@ -38,6 +38,7 @@ const NavBar = (props) => {
     if (props.file) setFilename(props.file.fileName);
   }, [props.file]);
 
+
   const handleSignout = () => {
     props.signoutUser(props.history);
   };
@@ -53,6 +54,7 @@ const NavBar = (props) => {
     };
     props.saveDoFile(post, props.file.id, updateSidebar);
     setEditFilename(false);
+
   };
 
   const handleExit = () => {
@@ -75,6 +77,7 @@ const NavBar = (props) => {
                 }}
               />
               <IconButton onClick={() => handleSave()}>
+
                 <Save />
               </IconButton>
             </Grid>
@@ -82,6 +85,7 @@ const NavBar = (props) => {
             <Grid className="filename">
               <Typography variant="h6">{filename}</Typography>
               <IconButton onClick={() => setEditFilename(true)}>
+
                 <Edit />
               </IconButton>
             </Grid>
@@ -128,3 +132,4 @@ export const FillerBar = () => {
 export default withRouter(
   connect(mapStateToProps, { signoutUser, saveDoFile, getDoFiles })(NavBar)
 );
+
