@@ -95,7 +95,7 @@ div.divider {
 
 .sidebar {
   margin-top: 45px;
-  width: 220px;
+  width: 285px;
   height: 100vh;
   background-color: white;
 }
@@ -105,7 +105,7 @@ div.divider {
 }
 
 .MuiListItemIcon-root {
-  min-width: 40px !important;
+  min-width: 60px !important;
 }
 
 .main-page {
@@ -152,3 +152,24 @@ div.divider {
 .listItem {
   width: 100%;
 }
+
+
+.file-widget {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  position: fixed;
+  height: 200px;
+  width: 248px;
+  bottom: 0px;
+  text-align: center;
+  padding-bottom: 10px;
+  color: white;
+  border-top: 1px solid black;
+}
+
+input {
+  padding: 0.2em; 
+  box-sizing: border-box;
+  width: 100% 
+} 

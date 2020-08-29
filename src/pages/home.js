@@ -166,37 +166,6 @@ function a11yProps(index) {
   };
 }
 
-// function populateProjectOptions(moduleName) {
-//   let target = '';
-//   if (moduleName === undefined) {
-//     target = data.content.projects.find((el) => el.mod.name === 'My Do Files');
-//     console.log('name was undefined!');
-//   } else {
-//     target = data.content.projects.find((el) => el.mod.name === moduleName);
-//     console.log('module was pressed. new target:');
-//     console.log(target);
-//   }
-
-//   return (
-//     <div className="lessons-container">
-//       {target.mod.options.map((key) => (
-//         <div className="full-name-edit-btn">
-//           <Fab
-//             component={NavLink}
-//             to="/editor"
-//             variant="extended"
-//             color="primary"
-//             aria-label="add"
-//             className="edit-btn"
-//           >
-//             {key.projectName}
-//           </Fab>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
-
 function populateProjectModules() {
   return (
     <List className="listItem" component="nav" aria-label="projects">
@@ -305,7 +274,7 @@ function HomePage(props) {
   };
 
   const tabStyle = {
-    minWidth: 110,
+    minWidth: 124,
     paddingLeft: 10,
     paddingRight: 10,
     backgroundColor: 'white',
