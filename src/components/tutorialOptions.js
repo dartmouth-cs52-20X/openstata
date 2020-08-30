@@ -2,6 +2,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import Fab from '@material-ui/core/Fab';
+import Typography from '@material-ui/core/Typography';
 
 const TutorialOptions = (props) => {
   let target = '';
@@ -17,11 +18,10 @@ const TutorialOptions = (props) => {
               component={NavLink}
               to="/editor"
               variant="extended"
-              color="primary"
               aria-label="add"
               className="edit-btn"
             >
-              {key.tutorialName}
+              <Typography>{key.tutorialName}</Typography>
             </Fab>
           </div>
         ))}
@@ -39,11 +39,10 @@ const TutorialOptions = (props) => {
               component={NavLink}
               to="/editor"
               variant="extended"
-              color="primary"
               aria-label="add"
               className="edit-btn"
             >
-              {key.tutorialName}
+              <Typography>{key.tutorialName}</Typography>
             </Fab>
           </div>
         ))}
