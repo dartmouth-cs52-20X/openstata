@@ -2,7 +2,7 @@
 
 ## What is Open Stata?
 
-Open Stata is an in-browser open-source replication of the basic functionality of the proprietary statistical software Stata,
+Open Stata is an in-browser replication of the basic functionality of the proprietary statistical software Stata,
 combined with free tutorials and sample datasets to get anyone started with learning it.
 
 ## Architecture
@@ -23,7 +23,7 @@ combined with free tutorials and sample datasets to get anyone started with lear
 
 **Statistics Microservice**
 - Platform: Flask
-- Statistics: numpy, pandas, scipy, scikitlearn, etc.
+- Statistics: econtools, pandas.
 
 ## Setup
 
@@ -38,6 +38,7 @@ Backend: Heroku
 https://open-stata.herokuapp.com/
 
 Backend Microservice: Heroku
+https://open-stata-other-api.herokuapp.com/
 
 ## Authors
 
