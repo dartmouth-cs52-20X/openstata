@@ -40,7 +40,7 @@ div.logo {
 div.compContainer {
   overflow: auto;
   position: relative;
-  width: 45%;
+  width: 48%;
   padding-bottom: 48px;
   padding-top: 48px;
 }
@@ -55,7 +55,7 @@ div.comp {
 div.editorContainer {
   overflow: auto;
   position: relative;
-  width: 55%;
+  width: 52%;
   padding-bottom: 48px;
   padding-top: 48px;
 }
@@ -84,6 +84,10 @@ div.editorView {
 div.divider {
   background-color: black;
   width: 2px;
+}
+
+div.drawerContainer {
+  overflow: auto;
 }
 
 .homepage-container {
@@ -153,7 +157,6 @@ div.divider {
   width: 100%;
 }
 
-
 .file-widget {
   display: flex;
   justify-content: flex-start;
@@ -161,7 +164,7 @@ div.divider {
   position: fixed;
   height: 200px;
   width: 248px;
-  bottom: 0px;
+  bottom: 40px;
   text-align: center;
   padding-bottom: 10px;
   color: white;
@@ -169,7 +172,7 @@ div.divider {
 }
 
 input {
-  padding: 0.2em; 
+  padding: 0.2em;
   box-sizing: border-box;
-  width: 100% 
-} 
+  width: 100%;
+}

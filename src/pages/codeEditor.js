@@ -1,9 +1,11 @@
 /* eslint-disable no-alert */
+/* eslint-disable object-curly-newline */
 /* eslint-disable comma-dangle */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -11,32 +13,40 @@ import ListItemText from '@material-ui/core/ListItemText';
 import AppBar from '@material-ui/core/AppBar';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import PlayArrow from '@material-ui/icons/PlayArrow';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
 import Save from '@material-ui/icons/Save';
 import Clear from '@material-ui/icons/Clear';
 import Description from '@material-ui/icons/Description';
+import Collapse from '@material-ui/core/Collapse';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-jsx';
 import 'ace-builds/src-noconflict/theme-github';
 import { TextField } from '@material-ui/core';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import DeleteIcon from '@material-ui/icons/Delete';
 import uploadFile from '../actions/s3';
+import RunButton, { UploadButton } from '../components/custom-buttons';
+import TabPanel, { a11yProps } from '../components/tabs';
 
 import NavBar from '../components/navbar';
 import {
-  getDoFiles, getSingleDoFile, saveDoFile, saveURL
+  getDoFiles,
+  getSingleDoFile,
+  saveDoFile,
+  saveURL,
+  deleteDoFile,
+  getLogFiles,
+  getSingleLogFile,
 } from '../actions';
 
 const mapStateToProps = (reduxState) => ({
   dofiles: reduxState.dofiles,
+  logfiles: reduxState.logfiles,
 });
 
 const drawerWidth = 248;
@@ -55,6 +65,7 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: drawerWidth,
     backgroundColor: 'grey',
+    height: 'calc(100% - 295px)',
   },
   drawerContainer: {
     overflow: 'auto',
@@ -79,85 +90,8 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 15,
     marginLeft: 10,
     marginRight: 10,
-  }
+  },
 }));
-
-function TabPanel(props) {
-  // eslint-disable-next-line object-curly-newline
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={0}>
-          <Typography component="span">{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
-
-function UploadButton(props) {
-  const classes = useStyles();
-  const { onClick, loading } = props;
-  return (
-    <Button variant="contained"
-      onClick={onClick}
-      disabled={loading}
-      color="primary"
-      size="small"
-      className={classes.button}
-    >
-      {loading && <CircularProgress color="primary" size={24} disableShrink="true" />}
-      {!loading && 'Upload'}
-    </Button>
-  );
-}
-
-function RunButton(props) {
-  const classes = useStyles();
-  const { onClick, loading } = props;
-
-  if (loading) {
-    return (
-      <Button variant="contained"
-        onClick={onClick}
-        disabled={loading}
-        color="primary"
-        size="small"
-        className={classes.button}
-      >
-        <CircularProgress color="secondary" size={28} disableShrink="true" />
-      </Button>
-    );
-  } else {
-    return (
-      <Button variant="contained"
-        onClick={onClick}
-        disabled={loading}
-        color="primary"
-        size="small"
-        className={classes.button}
-      >
-        Run Code
-        <PlayArrow />
-      </Button>
-    );
-  }
-}
 
 function CodeEditor(props) {
   const compEndRef = useRef(null);
@@ -172,6 +106,8 @@ Statistics/Data Analysis`;
   const [code, setCode] = useState('');
   const [compilation, setCompilation] = useState(headerText);
   const [sideBarInitialized, setSideBarInitialized] = useState(false);
+  const [fileCollapse, setFileCollapse] = useState(true);
+  const [logCollapse, setLogCollapse] = useState(false);
 
   // file/url widget state
   const [value, setValue] = useState(0);
@@ -192,18 +128,25 @@ Statistics/Data Analysis`;
   };
 
   let doFiles = [];
+  let logFiles = [];
 
   useEffect(() => {
     props.getSingleDoFile(props.match.params.fileid, null);
     props.getDoFiles(setSideBarInitialized);
+    props.getLogFiles();
   }, []);
 
   useEffect(() => {
     setCode(props.dofiles.current.content);
-  }, [props.dofiles]);
+  }, [props.dofiles.current]);
+
+  useEffect(() => {
+    console.log('should update log');
+  }, [props.logfiles.current]);
 
   if (props.dofiles && sideBarInitialized) {
     doFiles = props.dofiles.all;
+    logFiles = props.logfiles.all;
   }
 
   // handles widget tab change
@@ -269,7 +212,13 @@ Statistics/Data Analysis`;
   const runCode = () => {
     setRunLoading(true);
     axios
-      .post('https://open-stata.herokuapp.com/api/parse', { dofile: code })
+      .post(
+        'https://open-stata.herokuapp.com/api/parse',
+        { dofile: code },
+        {
+          headers: { authorization: localStorage.getItem('token') },
+        }
+      )
       .then((res) => {
         setCompilation(
           `${compilation}\n\n-----------------------------\n\n${res.data.output.join(
@@ -280,7 +229,9 @@ Statistics/Data Analysis`;
         compEndRef.current.scrollIntoView({ behavior: 'smooth' });
       })
       .catch((err) => {
-        console.error(err);
+        setCompilation(
+          `${compilation}\n\n-----------------------------\n\nError: ${err.response.data.output}`
+        );
       });
   };
 
@@ -290,141 +241,54 @@ Statistics/Data Analysis`;
       content: code,
     };
 
-    props.saveDoFile(post, props.dofiles.current.id);
+    props.saveDoFile(post, props.dofiles.current.id, null);
   };
 
-  const handleNav = (file) => {
+  const handleFileNav = (file) => {
     console.log('new file', file.content);
     props.history.push(`/editor/${file.id}`);
     props.getSingleDoFile(file.id, null);
   };
 
-  // display different thing based on which tab is active in url/file widget
-  if (!isFile) {
-    return (
-      <div className={classes.root}>
-        {/* <CssBaseline /> */}
-        <NavBar
-          className={classes.appBar}
-          page="editor"
-          fileName={props.dofiles.current.fileName}
-        />
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          <div className={classes.drawerContainer}>
-            <List>
-              {doFiles.map((file) => (
-                <ListItem button key={file.id} onClick={() => handleNav(file)}>
-                  <ListItemIcon>
-                    <Description />
-                  </ListItemIcon>
-                  <ListItemText primary={file.fileName} />
-                </ListItem>
-              ))}
-            </List>
-            <Divider />
-          </div>
-          <div className="file-widget">
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="simple tabs example"
-              indicatorColor="primary"
-            >
-              <Tab style={tabStyle} label="Upload File" {...a11yProps(0)} />
-              <Tab style={tabStyle} label="Upload URL" {...a11yProps(1)} />
-            </Tabs>
-            <TabPanel value={value} index={0}>
+  const handleLogNav = (log) => {
+    console.log('add functionality jared');
+    // props.history.push(`/editor/${log.id}`);
+    // props.getSingleLogFile(log.id, null);
+  };
 
-              <form className={classes.fileWidgetButtons} noValidate autoComplete="off">
-                <input type="file" name="uploadFile" onChange={onFileChosen} />
-                <TextField id="standard-basic" label="Alias" onChange={(e) => setAlias(e.target.value)} />
-              </form>
-              <UploadButton onClick={handleFileUpload} loading={uploading} />
-            </TabPanel>
-          </div>
-        </Drawer>
-        <div className={classes.content}>
-          <div className="compContainer">
-            <AceEditor
-              mode="jsx"
-              value={compilation}
-              height="100%"
-              width="100%"
-              showGutter={false}
-              // eslint-disable-next-line react/jsx-boolean-value
-              readOnly={true}
-              highlightActiveLine={false}
-              showPrintMargin={false}
-            />
-            <div ref={compEndRef} />
-          </div>
-          <div className="divider" />
-          <div className="editorContainer">
-            <AceEditor
-              placeholder="Enter code here"
-              mode="jsx"
-              theme="github"
-              onChange={(newCode) => setCode(newCode)}
-              fontSize={14}
-              value={code}
-              highlightActiveLine={false}
-              setOptions={{
-                enableBasicAutocompletion: false,
-                enableLiveAutocompletion: false,
-                enableSnippets: false,
-                showLineNumbers: true,
-                tabSize: 2,
-              }}
-              height="100%"
-              width="100%"
-            />
-            <AppBar position="fixed" className={classes.codeBar}>
-              <Grid container direction="row" justify="flex-end">
-                <IconButton onClick={() => setCompilation(headerText)}>
-                  <Typography variant="body1">Clear Compilation</Typography>
-                  <Clear />
-                </IconButton>
-                <IconButton onClick={() => handleSave()}>
-                  <Typography variant="body1">Save Code</Typography>
-                  <Save />
-                </IconButton>
-                {/* <IconButton onClick={() => runCode()}>
-                  <Typography variant="body1">Run Code</Typography>
-                  <PlayArrow />
-                </IconButton> */}
-                <RunButton onClick={runCode} loading={runLoading} />
-              </Grid>
-            </AppBar>
-          </div>
-        </div>
-      </div>
-    );
-  } else {
-    return (
-      <div className={classes.root}>
-        {/* <CssBaseline /> */}
-        <NavBar
-          className={classes.appBar}
-          page="editor"
-          fileName={props.dofiles.current.fileName}
-        />
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          <div className={classes.drawerContainer}>
+  const handleDelete = () => {
+    props.deleteDoFile(props.dofiles.current.id, props.history);
+  };
+
+  // display different thing based on which tab is active in url/file widget
+  return (
+    <div className={classes.root}>
+      <NavBar
+        className={classes.appBar}
+        page="editor"
+        file={props.dofiles.current}
+      />
+      <Drawer
+        className={classes.drawer}
+        variant="permanent"
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+      >
+        <div className="drawerContainer">
+          <ListItem button onClick={() => setFileCollapse(!fileCollapse)}>
+            <ListItemText primary="Do Files" />
+            {fileCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </ListItem>
+          <Divider />
+          <Collapse in={fileCollapse} timeout="auto" unmountOnExit>
             <List>
               {doFiles.map((file) => (
-                <ListItem button key={file.id} onClick={() => handleNav(file)}>
+                <ListItem
+                  button
+                  key={file.id}
+                  onClick={() => handleFileNav(file)}
+                >
                   <ListItemIcon>
                     <Description />
                   </ListItemIcon>
@@ -432,84 +296,131 @@ Statistics/Data Analysis`;
                 </ListItem>
               ))}
             </List>
-            <Divider />
-          </div>
-          <div className="file-widget">
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="simple tabs example"
-              indicatorColor="primary"
-            >
-              <Tab style={tabStyle} label="Upload File" {...a11yProps(0)} />
-              <Tab style={tabStyle} label="Upload URL" {...a11yProps(1)} />
-            </Tabs>
+          </Collapse>
+          <Divider />
+          <ListItem button onClick={() => setLogCollapse(!logCollapse)}>
+            <ListItemText primary="Log Files" />
+            {logCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </ListItem>
+          <Divider />
+          <Collapse in={logCollapse} timeout="auto" unmountOnExit>
+            <List>
+              {logFiles.map((log) => (
+                <ListItem button key={log.id} onClick={() => handleLogNav(log)}>
+                  <ListItemIcon>
+                    <Description />
+                  </ListItemIcon>
+                  <ListItemText primary={log.fileName} />
+                </ListItem>
+              ))}
+            </List>
+          </Collapse>
+        </div>
+        <div className="file-widget">
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="simple tabs example"
+            indicatorColor="primary"
+          >
+            <Tab style={tabStyle} label="Upload File" {...a11yProps(0)} />
+            <Tab style={tabStyle} label="Upload URL" {...a11yProps(1)} />
+          </Tabs>
+          {isFile ? (
             <TabPanel value={value} index={1}>
-              <form className={classes.urlWidgetButtons} noValidate autoComplete="off">
-                <TextField id="standard-basic" label="URL" onChange={(e) => setURLToUpload(e.target.value)} />
-                <TextField id="standard-basic" label="Alias" onChange={(e) => setAlias(e.target.value)} />
+              <form
+                className={classes.urlWidgetButtons}
+                noValidate
+                autoComplete="off"
+              >
+                <TextField
+                  id="standard-basic"
+                  label="URL"
+                  onChange={(e) => setURLToUpload(e.target.value)}
+                />
+                <TextField
+                  id="standard-basic"
+                  label="Alias"
+                  onChange={(e) => setAlias(e.target.value)}
+                />
               </form>
               <UploadButton onClick={handleURLUpload} loading={uploading} />
             </TabPanel>
-          </div>
-        </Drawer>
-        <div className={classes.content}>
-          <div className="compContainer">
-            <AceEditor
-              mode="jsx"
-              value={compilation}
-              height="100%"
-              width="100%"
-              showGutter={false}
-              // eslint-disable-next-line react/jsx-boolean-value
-              readOnly={true}
-              highlightActiveLine={false}
-              showPrintMargin={false}
-            />
-            <div ref={compEndRef} />
-          </div>
-          <div className="divider" />
-          <div className="editorContainer">
-            <AceEditor
-              placeholder="Enter code here"
-              mode="jsx"
-              theme="github"
-              onChange={(newCode) => setCode(newCode)}
-              fontSize={14}
-              value={code}
-              highlightActiveLine={false}
-              setOptions={{
-                enableBasicAutocompletion: false,
-                enableLiveAutocompletion: false,
-                enableSnippets: false,
-                showLineNumbers: true,
-                tabSize: 2,
-              }}
-              height="100%"
-              width="100%"
-            />
-            <AppBar position="fixed" className={classes.codeBar}>
-              <Grid container direction="row" justify="flex-end">
-                <IconButton onClick={() => setCompilation(headerText)}>
-                  <Typography variant="body1">Clear Compilation</Typography>
-                  <Clear />
-                </IconButton>
-                <IconButton onClick={() => handleSave()}>
-                  <Typography variant="body1">Save Code</Typography>
-                  <Save />
-                </IconButton>
-                {/* <IconButton onClick={() => runCode()}>
-                  <Typography variant="body1">Run Code</Typography>
-                  <PlayArrow />
-                </IconButton> */}
-                <RunButton onClick={runCode} loading={runLoading} />
-              </Grid>
-            </AppBar>
-          </div>
+          ) : (
+            <TabPanel value={value} index={0}>
+              <form
+                className={classes.fileWidgetButtons}
+                noValidate
+                autoComplete="off"
+              >
+                <input type="file" name="uploadFile" onChange={onFileChosen} />
+                <TextField
+                  id="standard-basic"
+                  label="Alias"
+                  onChange={(e) => setAlias(e.target.value)}
+                />
+              </form>
+              <UploadButton onClick={handleFileUpload} loading={uploading} />
+            </TabPanel>
+          )}
+        </div>
+      </Drawer>
+      <div className={classes.content}>
+        <div className="compContainer">
+          <AceEditor
+            mode="jsx"
+            value={compilation}
+            height="100%"
+            width="100%"
+            showGutter={false}
+            // eslint-disable-next-line react/jsx-boolean-value
+            readOnly={true}
+            highlightActiveLine={false}
+            showPrintMargin={false}
+          />
+          <div ref={compEndRef} />
+        </div>
+        <div className="divider" />
+        <div className="editorContainer">
+          <AceEditor
+            placeholder="Enter code here"
+            mode="jsx"
+            theme="github"
+            onChange={(newCode) => setCode(newCode)}
+            fontSize={14}
+            value={code}
+            highlightActiveLine={false}
+            setOptions={{
+              enableBasicAutocompletion: false,
+              enableLiveAutocompletion: false,
+              enableSnippets: false,
+              showLineNumbers: true,
+              tabSize: 2,
+            }}
+            height="100%"
+            width="100%"
+          />
+          <AppBar position="fixed" className={classes.codeBar}>
+            <Grid container direction="row" justify="flex-end">
+              <IconButton onClick={() => handleDelete()}>
+                <Typography variant="body1">Delete File</Typography>
+                <DeleteIcon />
+              </IconButton>
+              <IconButton onClick={() => setCompilation(headerText)}>
+                <Typography variant="body1">Clear Compilation</Typography>
+                <Clear />
+              </IconButton>
+              <IconButton onClick={() => handleSave()}>
+                <Typography variant="body1">Save Code</Typography>
+                <Save />
+              </IconButton>
+              <RunButton onClick={runCode} loading={runLoading} />
+            </Grid>
+          </AppBar>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default connect(mapStateToProps, {
@@ -517,4 +428,7 @@ export default connect(mapStateToProps, {
   getSingleDoFile,
   saveDoFile,
   saveURL,
+  deleteDoFile,
+  getLogFiles,
+  getSingleLogFile,
 })(CodeEditor);

@@ -11,6 +11,8 @@ export const ActionTypes = {
   GET_SINGLE_DOFILE: 'GET_SINGLE_DOFILE',
   SAVE_DOFILE: 'SAVE_DOFILE',
   DELETE_DOFILE: 'DELETE_DOFILE',
+  GET_LOGFILES: 'GET_LOGFILES',
+  GET_SINGLE_LOGFILE: 'GET_SINGLE_LOGFILE',
 };
 
 export function signinUser(user, history) {
@@ -110,7 +112,7 @@ export const getSingleDoFile = (fileID, setInitialized) => (dispatch) => {
     });
 };
 
-export const saveDoFile = (file, fileid) => (dispatch) => {
+export const saveDoFile = (file, fileid, callback) => (dispatch) => {
   axios
     .put(`${ROOT_URL}/dofiles/${fileid}`, file, {
       headers: { authorization: localStorage.getItem('token') },
@@ -121,19 +123,21 @@ export const saveDoFile = (file, fileid) => (dispatch) => {
         type: ActionTypes.SAVE_DOFILE,
         payload: res.data,
       });
+      if (callback) callback();
     })
     .catch((err) => {
       console.error(err);
     });
 };
 
-export const deleteDoFile = (fileID) => (dispatch) => {
+export const deleteDoFile = (fileID, history) => (dispatch) => {
   axios
     .delete(`${ROOT_URL}/dofiles/${fileID}`, {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
       console.log('response', res.data);
+      history.push('/home');
     })
     .catch((err) => {
       console.error(err);
@@ -157,3 +161,34 @@ export function saveURL(post) {
       });
   };
 }
+
+export const getLogFiles = () => (dispatch) => {
+  axios
+    .get(`${ROOT_URL}/logfiles`, {
+      headers: { authorization: localStorage.getItem('token') },
+    })
+    .then((res) => {
+      console.log('result', res.data);
+      dispatch({
+        type: ActionTypes.GET_LOGFILES,
+        payload: res.data,
+      });
+    });
+};
+
+export const getSingleLogFile = (logID) => (dispatch) => {
+  axios
+    .get(`${ROOT_URL}/logfiles/${logID}`, {
+      headers: { authorization: localStorage.getItem('token') },
+    })
+    .then((res) => {
+      console.log('response', res.data);
+      dispatch({
+        type: ActionTypes.GET_SINGLE_LOGFILE,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
