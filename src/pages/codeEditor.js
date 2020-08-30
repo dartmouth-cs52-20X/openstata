@@ -242,7 +242,7 @@ Statistics/Data Analysis`;
     axios
       .post(
         'https://open-stata.herokuapp.com/api/parse',
-        { dofile: code },
+        { dofile: code, tutorialID: null },
         {
           headers: { authorization: localStorage.getItem('token') },
         }
@@ -253,7 +253,6 @@ Statistics/Data Analysis`;
             '\n\n'
           )}`
         );
-        compEndRef.current.scrollIntoView({ behavior: 'smooth' });
       })
       .catch((err) => {
         setCompilation(
