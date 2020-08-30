@@ -155,3 +155,13 @@ export function saveURL(post) {
       });
   };
 }
+
+export function changePassword(newPassword, onError) {
+  axios.post(`${ROOT_URL}/changepwd`, { newPassword }, {
+    headers: { authorization: localStorage.getItem('token') },
+  })
+    .catch((error) => {
+      console.error(error);
+      onError();
+    });
+}
