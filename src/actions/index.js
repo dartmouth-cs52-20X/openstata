@@ -12,6 +12,7 @@ export const ActionTypes = {
   SAVE_DOFILE: 'SAVE_DOFILE',
   DELETE_DOFILE: 'DELETE_DOFILE',
   GET_LOGFILES: 'GET_LOGFILES',
+  GET_SINGLE_LOGFILE: 'GET_SINGLE_LOGFILE',
 };
 
 export function signinUser(user, history) {
@@ -161,7 +162,7 @@ export function saveURL(post) {
 
 export const getLogFiles = () => (dispatch) => {
   axios
-    .get('https://open-stata.herokuapp.com/api/logfiles', {
+    .get(`${ROOT_URL}/logfiles`, {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
@@ -170,5 +171,22 @@ export const getLogFiles = () => (dispatch) => {
         type: ActionTypes.GET_LOGFILES,
         payload: res.data,
       });
+    });
+};
+
+export const getSingleLogFile = (logID) => (dispatch) => {
+  axios
+    .get(`${ROOT_URL}/logfiles/${logID}`, {
+      headers: { authorization: localStorage.getItem('token') },
+    })
+    .then((res) => {
+      console.log('response', res.data);
+      dispatch({
+        type: ActionTypes.GET_SINGLE_LOGFILE,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      console.error(err);
     });
 };
