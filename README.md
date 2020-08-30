@@ -19,6 +19,7 @@ combined with free tutorials and sample datasets to get anyone started with lear
 - Parser generator: Nearley.js
 - Microservice HTTP calls: Axios
 - Database: MongoDB and Mongoose
+- Persistent data file storage: S3
 - Authentication: Passport.js
 
 **Statistics Microservice**
