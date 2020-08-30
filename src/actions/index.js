@@ -14,6 +14,7 @@ export const ActionTypes = {
   GET_LOGFILES: 'GET_LOGFILES',
   GET_SINGLE_LOGFILE: 'GET_SINGLE_LOGFILE',
   CHANGE_PASSWORD: 'CHANGE_PASSWORD',
+  GET_DATA: 'GET_DATA',
 };
 
 export function signinUser(user, history) {
@@ -198,6 +199,23 @@ export const getSingleLogFile = (logID) => (dispatch) => {
       console.log('response', res.data);
       dispatch({
         type: ActionTypes.GET_SINGLE_LOGFILE,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+export const getData = () => (dispatch) => {
+  axios
+    .get(`${ROOT_URL}/data`, {
+      headers: { authorization: localStorage.getItem('token') },
+    })
+    .then((res) => {
+      console.log('response', res.data);
+      dispatch({
+        type: ActionTypes.GET_DATA,
         payload: res.data,
       });
     })

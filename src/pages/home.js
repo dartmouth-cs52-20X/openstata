@@ -15,9 +15,7 @@ import FolderIcon from '@material-ui/icons/Folder';
 import Fab from '@material-ui/core/Fab';
 import { NavLink } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import Add from '@material-ui/icons/Add';
+
 import NavBar from '../components/navbar';
 import TutorialOptions from '../components/tutorialOptions';
 
@@ -141,7 +139,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
-    backgroundColor: 'grey',
+    backgroundColor: '#d2d2d2',
   },
   files: {
     width: '100%',
@@ -205,6 +203,16 @@ function HomePage(props) {
   }, []);
 
   let doFilesList;
+
+  const handleCreate = () => {
+    const file = {
+      fileName: `file${doFilesList.length}`,
+      content: '// enter your commands here!',
+    };
+
+    props.createDoFile(file, props.history);
+  };
+
   if (props.dofiles && initialized) {
     doFilesList = Object.entries(props.dofiles).map(([id, file]) => {
       return (
@@ -214,7 +222,6 @@ function HomePage(props) {
             component={NavLink}
             to={`/editor/${file.id}`}
             variant="extended"
-            color="primary"
             aria-label="add"
           >
             {file.fileName}
@@ -222,6 +229,18 @@ function HomePage(props) {
         </div>
       );
     });
+    doFilesList.unshift(
+      <div className="full-name-edit-btn create-btn">
+        <Fab
+          onClick={() => handleCreate()}
+          className={classes.files}
+          variant="extended"
+          aria-label="add"
+        >
+          + Create new file
+        </Fab>
+      </div>
+    );
   }
 
   const handleChange = (event, newValue) => {
@@ -239,16 +258,6 @@ function HomePage(props) {
     paddingLeft: 10,
     paddingRight: 10,
     backgroundColor: 'white',
-  };
-
-  const handleCreate = () => {
-    const file = {
-      fileName: `file${doFilesList.length}`,
-      content:
-        'clear\nuse test-data-2\nsumm\nmean age\ngen age2 = age^2\nmean age age2\nreg wage_hr hhid age age2\nrename age2 age_squared\nmean age_squared',
-    };
-
-    props.createDoFile(file, props.history);
   };
 
   return (
@@ -308,13 +317,7 @@ function HomePage(props) {
         ) : (
           <div className="main-page">
             <div className="main-page-title">
-              <Grid container direction="row" justify="space-between">
-                <h1>Do Files:</h1>
-                <IconButton onClick={() => handleCreate()}>
-                  <Typography>Create new file</Typography>
-                  <Add />
-                </IconButton>
-              </Grid>
+              <h1>Do Files:</h1>
             </div>
             <div className="do-files-container">{doFilesList}</div>
           </div>

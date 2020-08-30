@@ -65,7 +65,7 @@ const NavBar = (props) => {
   };
 
   return (
-    <AppBar position="fixed" className={classes.appBar}>
+    <AppBar position="fixed" className={classes.appBar} color="secondary">
       <Grid container direction="row" justify="space-between">
         <Grid item className="logo">
           <img src={logo} alt="logo" className="logoImg" />
@@ -85,8 +85,10 @@ const NavBar = (props) => {
             </Grid>
           ) : (
             <Grid className="filename">
-              <Typography variant="h6">{filename}</Typography>
-              <IconButton onClick={() => setEditFilename(true)}>
+              <Typography variant="h6" color="primary">
+                {filename}
+              </Typography>
+              <IconButton onClick={() => setEditFilename(true)} color="primary">
                 <Edit />
               </IconButton>
             </Grid>
@@ -104,12 +106,12 @@ const NavBar = (props) => {
         ) : (
           <Grid item>
             {props.page === 'editor' ? (
-              <IconButton onClick={handleExit}>
+              <IconButton onClick={handleExit} color="primary">
                 <Home />
                 <Typography variant="body1">Return Home</Typography>
               </IconButton>
             ) : undefined}
-            <IconButton onClick={handleSignout}>
+            <IconButton onClick={handleSignout} color="primary">
               <ExitToApp />
               <Typography variant="body1">Log Out</Typography>
             </IconButton>

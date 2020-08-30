@@ -42,11 +42,13 @@ import {
   deleteDoFile,
   getLogFiles,
   getSingleLogFile,
+  getData,
 } from '../actions';
 
 const mapStateToProps = (reduxState) => ({
   dofiles: reduxState.dofiles,
   logfiles: reduxState.logfiles,
+  data: reduxState.data,
 });
 
 const drawerWidth = 248;
@@ -64,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
-    backgroundColor: 'grey',
+    backgroundColor: '#d2d2d2',
     height: 'calc(100% - 295px)',
   },
   drawerContainer: {
@@ -106,8 +108,10 @@ Statistics/Data Analysis`;
   const [code, setCode] = useState('');
   const [compilation, setCompilation] = useState(headerText);
   const [sideBarInitialized, setSideBarInitialized] = useState(false);
-  const [fileCollapse, setFileCollapse] = useState(true);
+  const [fileCollapse, setFileCollapse] = useState(false);
   const [logCollapse, setLogCollapse] = useState(false);
+  const [dataCollapse, setDataCollapse] = useState(false);
+  const [sampleCollapse, setSampleCollapse] = useState(false);
 
   // file/url widget state
   const [value, setValue] = useState(0);
@@ -129,11 +133,14 @@ Statistics/Data Analysis`;
 
   let doFiles = [];
   let logFiles = [];
+  const dataFiles = [];
+  const sampleFiles = [];
 
   useEffect(() => {
     props.getSingleDoFile(props.match.params.fileid, null);
     props.getDoFiles(setSideBarInitialized);
     props.getLogFiles();
+    props.getData();
   }, []);
 
   useEffect(() => {
@@ -147,6 +154,13 @@ Statistics/Data Analysis`;
   if (props.dofiles && sideBarInitialized) {
     doFiles = props.dofiles.all;
     logFiles = props.logfiles.all;
+    props.data.all.forEach((df) => {
+      if (df.user) {
+        dataFiles.push(df);
+      } else {
+        sampleFiles.push(df);
+      }
+    });
   }
 
   // handles widget tab change
@@ -219,11 +233,14 @@ Statistics/Data Analysis`;
   };
 
   const runCode = () => {
+    const tutorialID = props.dofiles.current.tutorialID
+      ? props.dofiles.current.tutorialID
+      : null;
     setRunLoading(true);
     axios
       .post(
         'https://open-stata.herokuapp.com/api/parse',
-        { dofile: code, tutorialID: null },
+        { dofile: code, tutorialID },
         {
           headers: { authorization: localStorage.getItem('token') },
         }
@@ -323,13 +340,49 @@ Statistics/Data Analysis`;
               ))}
             </List>
           </Collapse>
+          <Divider />
+          <ListItem button onClick={() => setSampleCollapse(!sampleCollapse)}>
+            <ListItemText primary="Sample Data" />
+            {sampleCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </ListItem>
+          <Divider />
+          <Collapse in={sampleCollapse} timeout="auto" unmountOnExit>
+            <List>
+              {sampleFiles.map((data) => (
+                <ListItem button key={data.id}>
+                  <ListItemIcon>
+                    <Description />
+                  </ListItemIcon>
+                  <ListItemText primary={data.fileName} />
+                </ListItem>
+              ))}
+            </List>
+          </Collapse>
+          <Divider />
+          <ListItem button onClick={() => setDataCollapse(!dataCollapse)}>
+            <ListItemText primary="Your Data" />
+            {dataCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </ListItem>
+          <Divider />
+          <Collapse in={dataCollapse} timeout="auto" unmountOnExit>
+            <List>
+              {dataFiles.map((data) => (
+                <ListItem button key={data.id}>
+                  <ListItemIcon>
+                    <Description />
+                  </ListItemIcon>
+                  <ListItemText primary={data.fileName} />
+                </ListItem>
+              ))}
+            </List>
+          </Collapse>
         </div>
         <div className="file-widget">
           <Tabs
             value={value}
             onChange={handleChange}
             aria-label="simple tabs example"
-            indicatorColor="primary"
+            indicatorColor="secondary"
           >
             <Tab style={tabStyle} label="Upload File" {...a11yProps(0)} />
             <Tab style={tabStyle} label="Upload URL" {...a11yProps(1)} />
@@ -345,6 +398,7 @@ Statistics/Data Analysis`;
                   id="standard-basic"
                   label="URL"
                   onChange={(e) => setURLToUpload(e.target.value)}
+                  color="secondary"
                 />
                 <TextField
                   id="standard-basic"
@@ -439,4 +493,5 @@ export default connect(mapStateToProps, {
   deleteDoFile,
   getLogFiles,
   getSingleLogFile,
+  getData,
 })(CodeEditor);
