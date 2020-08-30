@@ -149,6 +149,8 @@ export function saveURL(post) {
       })
       .then((response) => {
         console.log(response.data);
+        // eslint-disable-next-line no-alert
+        alert(`Successfully downloaded ${response.data.url} as ${response.data.fileName}!`);
       })
       .catch((error) => {
         dispatch(`Upload Failed: ${error.response.data}`);

@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 /* eslint-disable comma-dangle */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect, useRef } from 'react';
@@ -25,8 +26,8 @@ import { TextField } from '@material-ui/core';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import uploadFile from '../actions/s3';
 
 import NavBar from '../components/navbar';
@@ -109,6 +110,55 @@ function a11yProps(index) {
   };
 }
 
+function UploadButton(props) {
+  const classes = useStyles();
+  const { onClick, loading } = props;
+  return (
+    <Button variant="contained"
+      onClick={onClick}
+      disabled={loading}
+      color="primary"
+      size="small"
+      className={classes.button}
+    >
+      {loading && <CircularProgress color="primary" size={24} disableShrink="true" />}
+      {!loading && 'Upload'}
+    </Button>
+  );
+}
+
+function RunButton(props) {
+  const classes = useStyles();
+  const { onClick, loading } = props;
+
+  if (loading) {
+    return (
+      <Button variant="contained"
+        onClick={onClick}
+        disabled={loading}
+        color="primary"
+        size="small"
+        className={classes.button}
+      >
+        <CircularProgress color="secondary" size={28} disableShrink="true" />
+      </Button>
+    );
+  } else {
+    return (
+      <Button variant="contained"
+        onClick={onClick}
+        disabled={loading}
+        color="primary"
+        size="small"
+        className={classes.button}
+      >
+        Run Code
+        <PlayArrow />
+      </Button>
+    );
+  }
+}
+
 function CodeEditor(props) {
   const compEndRef = useRef(null);
   const headerText = `
@@ -129,6 +179,9 @@ Statistics/Data Analysis`;
   const [fileToUpload, setFileToUpload] = useState('');
   const [urlToUpload, setURLToUpload] = useState('');
   const [alias, setAlias] = useState('');
+
+  const [uploading, setUploading] = useState(false);
+  const [runLoading, setRunLoading] = useState(false);
 
   const tabStyle = {
     minWidth: 124,
@@ -175,7 +228,9 @@ Statistics/Data Analysis`;
 
   // handles the situation where we are downloading by file
   const handleFileUpload = () => {
+    console.log('load button pressed');
     if (fileToUpload && alias) {
+      setUploading(true);
       console.log('upload pressed and file exists');
       console.log('alias:', alias);
       uploadFile(fileToUpload).then((url) => {
@@ -184,15 +239,13 @@ Statistics/Data Analysis`;
           url,
         };
         console.log('post:', post);
+        setUploading(false);
         props.saveURL(post);
-        // eslint-disable-next-line no-alert
-        alert(`Successfully downloaded ${url} as ${alias}!`);
       }).catch((error) => {
         console.log(error);
       });
     } else {
-      // eslint-disable-next-line no-alert
-      alert('error: Must choose file/url and alias');
+      alert('error: Must choose a file and give it an alias');
     }
   };
 
@@ -200,21 +253,21 @@ Statistics/Data Analysis`;
   const handleURLUpload = () => {
     // directly save the non-s3 url and alias to endpoint Jeff is creating
     if (urlToUpload && alias) {
+      setUploading(true);
       const post = {
         fileName: alias,
         url: urlToUpload,
       };
       console.log('post:', post);
+      setUploading(false);
       props.saveURL(post);
-      // eslint-disable-next-line no-alert
-      alert(`Successfully downloaded ${urlToUpload} as ${alias}!`);
     } else {
-      // eslint-disable-next-line no-alert
-      alert('error: Must choose file/url and alias');
+      alert('error: Must input a valid url and and give it an alias');
     }
   };
 
   const runCode = () => {
+    setRunLoading(true);
     axios
       .post('https://open-stata.herokuapp.com/api/parse', { dofile: code })
       .then((res) => {
@@ -223,6 +276,7 @@ Statistics/Data Analysis`;
             '\n\n'
           )}`
         );
+        setRunLoading(false);
         compEndRef.current.scrollIntoView({ behavior: 'smooth' });
       })
       .catch((err) => {
@@ -291,16 +345,7 @@ Statistics/Data Analysis`;
                 <input type="file" name="uploadFile" onChange={onFileChosen} />
                 <TextField id="standard-basic" label="Alias" onChange={(e) => setAlias(e.target.value)} />
               </form>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                className={classes.button}
-                startIcon={<CloudUploadIcon />}
-                onClick={handleFileUpload}
-              >
-                Upload
-              </Button>
+              <UploadButton onClick={handleFileUpload} loading={uploading} />
             </TabPanel>
           </div>
         </Drawer>
@@ -349,10 +394,11 @@ Statistics/Data Analysis`;
                   <Typography variant="body1">Save Code</Typography>
                   <Save />
                 </IconButton>
-                <IconButton onClick={() => runCode()}>
+                {/* <IconButton onClick={() => runCode()}>
                   <Typography variant="body1">Run Code</Typography>
                   <PlayArrow />
-                </IconButton>
+                </IconButton> */}
+                <RunButton onClick={runCode} loading={runLoading} />
               </Grid>
             </AppBar>
           </div>
@@ -399,21 +445,11 @@ Statistics/Data Analysis`;
               <Tab style={tabStyle} label="Upload URL" {...a11yProps(1)} />
             </Tabs>
             <TabPanel value={value} index={1}>
-
               <form className={classes.urlWidgetButtons} noValidate autoComplete="off">
                 <TextField id="standard-basic" label="URL" onChange={(e) => setURLToUpload(e.target.value)} />
                 <TextField id="standard-basic" label="Alias" onChange={(e) => setAlias(e.target.value)} />
               </form>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                className={classes.button}
-                startIcon={<CloudUploadIcon />}
-                onClick={handleURLUpload}
-              >
-                Upload
-              </Button>
+              <UploadButton onClick={handleURLUpload} loading={uploading} />
             </TabPanel>
           </div>
         </Drawer>
@@ -462,10 +498,11 @@ Statistics/Data Analysis`;
                   <Typography variant="body1">Save Code</Typography>
                   <Save />
                 </IconButton>
-                <IconButton onClick={() => runCode()}>
+                {/* <IconButton onClick={() => runCode()}>
                   <Typography variant="body1">Run Code</Typography>
                   <PlayArrow />
-                </IconButton>
+                </IconButton> */}
+                <RunButton onClick={runCode} loading={runLoading} />
               </Grid>
             </AppBar>
           </div>
