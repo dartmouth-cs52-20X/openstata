@@ -29,6 +29,8 @@ import Tab from '@material-ui/core/Tab';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import uploadFile from '../actions/s3';
 import RunButton, { UploadButton } from '../components/custom-buttons';
 import TabPanel, { a11yProps } from '../components/tabs';
@@ -112,6 +114,7 @@ Statistics/Data Analysis`;
   const [logCollapse, setLogCollapse] = useState(false);
   const [dataCollapse, setDataCollapse] = useState(false);
   const [sampleCollapse, setSampleCollapse] = useState(false);
+  const [uploadAlert, setUploadAlert] = useState(false);
 
   // file/url widget state
   const [value, setValue] = useState(0);
@@ -138,17 +141,18 @@ Statistics/Data Analysis`;
 
   useEffect(() => {
     props.getSingleDoFile(props.match.params.fileid, null);
+    props.getSingleLogFile(props.match.params.fileid, null);
     props.getDoFiles(setSideBarInitialized);
     props.getLogFiles();
     props.getData();
   }, []);
 
   useEffect(() => {
-    setCode(props.dofiles.current.content);
+    if (props.dofiles.current) setCode(props.dofiles.current.content);
   }, [props.dofiles.current]);
 
   useEffect(() => {
-    console.log('should update log');
+    if (props.logfiles.current) setCode(props.logfiles.current.content);
   }, [props.logfiles.current]);
 
   if (props.dofiles && sideBarInitialized) {
@@ -192,6 +196,10 @@ Statistics/Data Analysis`;
     }
   };
 
+  const handleAlert = (message) => {
+    setUploadAlert(true);
+  };
+
   // handles the situation where we are downloading by file
   const handleFileUpload = () => {
     console.log('load button pressed');
@@ -199,17 +207,19 @@ Statistics/Data Analysis`;
       setUploading(true);
       console.log('upload pressed and file exists');
       console.log('alias:', alias);
-      uploadFile(fileToUpload).then((url) => {
-        const post = {
-          fileName: alias,
-          url,
-        };
-        console.log('post:', post);
-        setUploading(false);
-        props.saveURL(post);
-      }).catch((error) => {
-        console.log(error);
-      });
+      uploadFile(fileToUpload)
+        .then((url) => {
+          const post = {
+            fileName: alias,
+            url,
+          };
+          console.log('post:', post);
+          setUploading(false);
+          props.saveURL(post, handleAlert);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       alert('error: Must choose a file and give it an alias');
     }
@@ -270,15 +280,13 @@ Statistics/Data Analysis`;
   };
 
   const handleFileNav = (file) => {
-    console.log('new file', file.content);
     props.history.push(`/editor/${file.id}`);
     props.getSingleDoFile(file.id, null);
   };
 
   const handleLogNav = (log) => {
-    console.log('add functionality jared');
-    // props.history.push(`/editor/${log.id}`);
-    // props.getSingleLogFile(log.id, null);
+    props.history.push(`/editor/${log.id}`);
+    props.getSingleLogFile(log.id, null);
   };
 
   const handleDelete = () => {
@@ -425,6 +433,9 @@ Statistics/Data Analysis`;
               <UploadButton onClick={handleFileUpload} loading={uploading} />
             </TabPanel>
           )}
+          <Snackbar open={uploadAlert} autoHideDuration={6000}>
+            <MuiAlert severity="success">This is a success message!</MuiAlert>
+          </Snackbar>
         </div>
       </Drawer>
       <div className={classes.content}>

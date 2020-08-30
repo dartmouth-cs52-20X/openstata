@@ -1,33 +1,39 @@
 import React from 'react';
+import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import PlayArrow from '@material-ui/icons/PlayArrow';
+import Typography from '@material-ui/core/Typography';
 
 export default function RunButton(props) {
   const { onClick, loading } = props;
 
   if (loading) {
     return (
-      <Button variant="contained"
+      <IconButton
+        variant="contained"
         onClick={onClick}
         disabled={loading}
         color="primary"
         size="small"
+        className="run-btn"
       >
         <CircularProgress color="secondary" size={28} />
-      </Button>
+      </IconButton>
     );
   } else {
     return (
-      <Button variant="contained"
+      <IconButton
+        variant="contained"
         onClick={onClick}
         disabled={loading}
         color="primary"
         size="small"
+        className="run-btn"
       >
-        Run Code
+        <Typography varient="body1">Run Code</Typography>
         <PlayArrow />
-      </Button>
+      </IconButton>
     );
   }
 }
@@ -35,7 +41,8 @@ export default function RunButton(props) {
 export function UploadButton(props) {
   const { onClick, loading } = props;
   return (
-    <Button variant="contained"
+    <Button
+      variant="contained"
       onClick={onClick}
       disabled={loading}
       color="primary"

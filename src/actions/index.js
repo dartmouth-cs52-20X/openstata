@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 import axios from 'axios';
 
 export const ROOT_URL = 'https://open-stata.herokuapp.com/api';
@@ -146,7 +147,7 @@ export const deleteDoFile = (fileID, history) => (dispatch) => {
 };
 
 // for saving URL and alias to server
-export function saveURL(post) {
+export function saveURL(post, callback) {
   return (dispatch) => {
     axios
       .post(`${ROOT_URL}/data`, post, {
@@ -155,7 +156,9 @@ export function saveURL(post) {
       .then((response) => {
         console.log(response.data);
         // eslint-disable-next-line no-alert
-        alert(`Successfully downloaded ${response.data.fileName}! You can now use this data set by typing the command "use ${response.data.fileName}" into the code editor!`);
+        callback(
+          `Successfully downloaded ${response.data.fileName}! You can now use this data set by typing the command "use ${response.data.fileName}" into the code editor!`
+        );
       })
       .catch((error) => {
         dispatch(`Upload Failed: ${error.response.data}`);
