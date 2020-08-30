@@ -154,7 +154,7 @@ export function saveURL(post) {
       .then((response) => {
         console.log(response.data);
         // eslint-disable-next-line no-alert
-        alert(`Successfully downloaded ${response.data.url} as ${response.data.fileName}!`);
+        alert(`Successfully downloaded ${response.data.fileName}! You can now use this data set by typing the command "use ${response.data.fileName}" into the code editor!`);
       })
       .catch((error) => {
         dispatch(`Upload Failed: ${error.response.data}`);

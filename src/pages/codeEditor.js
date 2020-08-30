@@ -163,9 +163,18 @@ Statistics/Data Analysis`;
   // when a file is chosen in file/url widget
   const onFileChosen = (event) => {
     const chosenFile = event.target.files[0];
-    console.log('file chosen:', chosenFile);
-    if (chosenFile) {
-      setFileToUpload(chosenFile);
+    const fsize = chosenFile.size;
+
+    // The file must be smaller than 10 megabytes (1e7)
+    if (fsize > 10000000) {
+      alert(
+        'The file selected is too big, please select a file less than 10MB'
+      );
+    } else {
+      console.log('file chosen:', chosenFile);
+      if (chosenFile) {
+        setFileToUpload(chosenFile);
+      }
     }
   };
 
