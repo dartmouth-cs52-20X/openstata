@@ -11,7 +11,7 @@ import SignUp from './components/signup';
 import SignIn from './components/signin';
 import Home from './pages/home';
 import CodeEditor from './pages/codeEditor';
-// import Profile from './pages/profile';
+import Profile from './pages/profile';
 
 const FallBack = (props) => {
   return <div>URL Not Found</div>;
@@ -50,6 +50,7 @@ const App = () => {
           <PrivateRoute path="/home" component={Home} />
           <PrivateRoute path="/editor/:fileid" component={CodeEditor} />
           <PrivateRoute path="/editor" component={CodeEditor} />
+          <PrivateRoute path="/profile" component={Profile} />
           <Route component={FallBack} />
         </Switch>
         <Route path="/signup" component={SignupModal} />
