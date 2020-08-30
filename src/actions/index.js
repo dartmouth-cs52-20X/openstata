@@ -13,6 +13,7 @@ export const ActionTypes = {
   DELETE_DOFILE: 'DELETE_DOFILE',
   GET_LOGFILES: 'GET_LOGFILES',
   GET_SINGLE_LOGFILE: 'GET_SINGLE_LOGFILE',
+  CHANGE_PASSWORD: 'CHANGE_PASSWORD',
   GET_DATA: 'GET_DATA',
 };
 
@@ -22,11 +23,12 @@ export function signinUser(user, history) {
       .post(`${ROOT_URL}/signin`, user)
       .then((response) => {
         localStorage.setItem('token', response.data.token);
-        dispatch({ type: ActionTypes.AUTH_USER });
+        dispatch({ type: ActionTypes.AUTH_USER, payload: response.data });
         history.push('/home');
       })
       .catch((error) => {
-        dispatch(`Sign In Failed: ${error.response.data}`);
+        console.error(error);
+        // dispatch(`Sign In Failed: ${error.response.data}`);
       });
   };
 }
@@ -37,7 +39,7 @@ export function signupUser({ email, password, username }, history, onError) {
       .post(`${ROOT_URL}/signup`, { email, password, username })
       .then((response) => {
         localStorage.setItem('token', response.data.token);
-        dispatch({ type: ActionTypes.AUTH_USER });
+        dispatch({ type: ActionTypes.AUTH_USER, payload: response.data });
         history.push('/home');
       })
       .catch((error) => {
@@ -163,6 +165,17 @@ export function saveURL(post) {
   };
 }
 
+export function changePassword(newPassword, onError) {
+  return (dispatch) => {
+    axios.post(`${ROOT_URL}/changepwd`, newPassword, {
+      headers: { authorization: localStorage.getItem('token') },
+    })
+      .catch((error) => {
+        console.error(error);
+        onError();
+      });
+  };
+}
 export const getLogFiles = () => (dispatch) => {
   axios
     .get(`${ROOT_URL}/logfiles`, {

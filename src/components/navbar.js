@@ -14,6 +14,7 @@ import ExitToApp from '@material-ui/icons/ExitToApp';
 import Home from '@material-ui/icons/Home';
 import Edit from '@material-ui/icons/Edit';
 import Save from '@material-ui/icons/Save';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { makeStyles } from '@material-ui/core/styles';
 import { signoutUser, saveDoFile, getDoFiles } from '../actions';
 
@@ -57,6 +58,10 @@ const NavBar = (props) => {
 
   const handleExit = () => {
     props.history.push('/home');
+  };
+
+  const goToProfile = () => {
+    props.history.push('/profile');
   };
 
   return (
@@ -109,6 +114,10 @@ const NavBar = (props) => {
             <IconButton onClick={handleSignout} color="primary">
               <ExitToApp />
               <Typography variant="body1">Log Out</Typography>
+            </IconButton>
+            <IconButton onClick={goToProfile}>
+              <AccountCircleIcon />
+              <Typography variant="body1">Profile</Typography>
             </IconButton>
           </Grid>
         )}
