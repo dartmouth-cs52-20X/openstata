@@ -19,12 +19,15 @@ import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Add from '@material-ui/icons/Add';
 import NavBar from '../components/navbar';
+import TutorialOptions from '../components/tutorialOptions';
 
 import { getDoFiles, createDoFile } from '../actions';
 
 const mapStateToProps = (reduxState) => ({
   dofiles: reduxState.dofiles.all,
 });
+
+const drawerWidth = 248;
 
 // temporary until we set up the database...
 const data = {
@@ -136,6 +139,13 @@ const useStyles = makeStyles((theme) => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
   },
+  drawerPaper: {
+    width: drawerWidth,
+    backgroundColor: 'grey',
+  },
+  files: {
+    width: '100%',
+  },
 }));
 
 function TabPanel(props) {
@@ -200,12 +210,12 @@ function HomePage(props) {
       return (
         <div className="full-name-edit-btn">
           <Fab
+            className={classes.files}
             component={NavLink}
             to={`/editor/${file.id}`}
             variant="extended"
             color="primary"
             aria-label="add"
-            className="edit-btn"
           >
             {file.fileName}
           </Fab>
@@ -224,55 +234,6 @@ function HomePage(props) {
     }
   };
 
-  const populateTutorialOptions = () => {
-    let target = '';
-    if (displayModule) {
-      target = data.content.tutorials.find(
-        (el) => el.mod.name === displayModule
-      );
-      return (
-        <div className="lessons-container">
-          {target.mod.options.map((key) => (
-            <div className="full-name-edit-btn">
-              <Fab
-                component={NavLink}
-                to="/editor"
-                variant="extended"
-                color="primary"
-                aria-label="add"
-                className="edit-btn"
-              >
-                {key.tutorialName}
-              </Fab>
-            </div>
-          ))}
-        </div>
-      );
-    } else {
-      target = data.content.tutorials.find(
-        (el) => el.mod.name === 'Introduction'
-      );
-      return (
-        <div className="lessons-container">
-          {target.mod.options.map((key) => (
-            <div className="full-name-edit-btn">
-              <Fab
-                component={NavLink}
-                to="/editor"
-                variant="extended"
-                color="primary"
-                aria-label="add"
-                className="edit-btn"
-              >
-                {key.tutorialName}
-              </Fab>
-            </div>
-          ))}
-        </div>
-      );
-    }
-  };
-
   const tabStyle = {
     minWidth: 124,
     paddingLeft: 10,
@@ -282,7 +243,7 @@ function HomePage(props) {
 
   const handleCreate = () => {
     const file = {
-      fileName: `file${Math.random()}`,
+      fileName: `file${doFilesList.length}`,
       content:
         'clear\nuse test-data-2\nsumm\nmean age\ngen age2 = age^2\nmean age age2\nreg wage_hr hhid age age2\nrename age2 age_squared\nmean age_squared',
     };
@@ -290,21 +251,27 @@ function HomePage(props) {
     props.createDoFile(file, props.history);
   };
 
-  if (!isTutorial) {
-    return (
-      <div>
-        <NavBar className={classes.appBar} page="home" />
-        <div className="homepage-container">
-          <div className="sidebar">
-            <Drawer variant="permanent" anchor="left">
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                aria-label="simple tabs example"
-              >
-                <Tab style={tabStyle} label="Tutorials" {...a11yProps(0)} />
-                <Tab style={tabStyle} label="Do Files" {...a11yProps(1)} />
-              </Tabs>
+  return (
+    <div>
+      <NavBar className={classes.appBar} page="home" />
+      <div className="homepage-container">
+        <div className="sidebar">
+          <Drawer
+            variant="permanent"
+            anchor="left"
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="simple tabs example"
+            >
+              <Tab style={tabStyle} label="Tutorials" {...a11yProps(0)} />
+              <Tab style={tabStyle} label="Do Files" {...a11yProps(1)} />
+            </Tabs>
+            {!isTutorial ? (
               <TabPanel value={value} index={0}>
                 <List
                   className="listItem"
@@ -324,37 +291,21 @@ function HomePage(props) {
                   ))}
                 </List>
               </TabPanel>
-            </Drawer>
-          </div>
+            ) : (
+              <TabPanel value={value} index={1}>
+                {populateProjectModules()}
+              </TabPanel>
+            )}
+          </Drawer>
+        </div>
+        {!isTutorial ? (
           <div className="main-page">
             <div className="main-page-title">
               {displayModule ? <h1>{displayModule}</h1> : <h1>Introduction</h1>}
             </div>
-            {populateTutorialOptions()}
+            <TutorialOptions data={data} displayModule={displayModule} />
           </div>
-        </div>
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <NavBar className={classes.appBar} page="home" />
-        <div className="homepage-container">
-          <div className="sidebar">
-            <Drawer variant="permanent" anchor="left">
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                aria-label="simple tabs example"
-              >
-                <Tab style={tabStyle} label="Tutorials" {...a11yProps(0)} />
-                <Tab style={tabStyle} label="Do Files" {...a11yProps(1)} />
-              </Tabs>
-              <TabPanel value={value} index={1}>
-                {populateProjectModules()}
-              </TabPanel>
-            </Drawer>
-          </div>
+        ) : (
           <div className="main-page">
             <div className="main-page-title">
               <Grid container direction="row" justify="space-between">
@@ -367,10 +318,10 @@ function HomePage(props) {
             </div>
             <div className="do-files-container">{doFilesList}</div>
           </div>
-        </div>
+        )}
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default connect(mapStateToProps, { getDoFiles, createDoFile })(HomePage);
