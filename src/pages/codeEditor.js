@@ -19,6 +19,7 @@ import Divider from '@material-ui/core/Divider';
 import Save from '@material-ui/icons/Save';
 import Clear from '@material-ui/icons/Clear';
 import Description from '@material-ui/icons/Description';
+import Collapse from '@material-ui/core/Collapse';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-jsx';
 import 'ace-builds/src-noconflict/theme-github';
@@ -26,6 +27,8 @@ import { TextField } from '@material-ui/core';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Button from '@material-ui/core/Button';
@@ -38,10 +41,13 @@ import {
   saveDoFile,
   saveURL,
   deleteDoFile,
+  getLogFiles,
+  getSingleLogFile,
 } from '../actions';
 
 const mapStateToProps = (reduxState) => ({
   dofiles: reduxState.dofiles,
+  logfiles: reduxState.logfiles,
 });
 
 const drawerWidth = 248;
@@ -60,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: drawerWidth,
     backgroundColor: 'grey',
+    height: 'calc(100% - 295px)',
   },
   drawerContainer: {
     overflow: 'auto',
@@ -128,6 +135,8 @@ Statistics/Data Analysis`;
   const [code, setCode] = useState('');
   const [compilation, setCompilation] = useState(headerText);
   const [sideBarInitialized, setSideBarInitialized] = useState(false);
+  const [fileCollapse, setFileCollapse] = useState(true);
+  const [logCollapse, setLogCollapse] = useState(false);
 
   // file/url widget state
   const [value, setValue] = useState(0);
@@ -145,18 +154,25 @@ Statistics/Data Analysis`;
   };
 
   let doFiles = [];
+  let logFiles = [];
 
   useEffect(() => {
     props.getSingleDoFile(props.match.params.fileid, null);
     props.getDoFiles(setSideBarInitialized);
+    props.getLogFiles();
   }, []);
 
   useEffect(() => {
     setCode(props.dofiles.current.content);
   }, [props.dofiles.current]);
 
+  useEffect(() => {
+    console.log('should update log');
+  }, [props.logfiles.current]);
+
   if (props.dofiles && sideBarInitialized) {
     doFiles = props.dofiles.all;
+    logFiles = props.logfiles.all;
   }
 
   // handles widget tab change
@@ -255,10 +271,16 @@ Statistics/Data Analysis`;
     props.saveDoFile(post, props.dofiles.current.id, null);
   };
 
-  const handleNav = (file) => {
+  const handleFileNav = (file) => {
     console.log('new file', file.content);
     props.history.push(`/editor/${file.id}`);
     props.getSingleDoFile(file.id, null);
+  };
+
+  const handleLogNav = (log) => {
+    console.log('add functionality jared');
+    // props.history.push(`/editor/${log.id}`);
+    // props.getSingleLogFile(log.id, null);
   };
 
   const handleDelete = () => {
@@ -266,26 +288,34 @@ Statistics/Data Analysis`;
   };
 
   // display different thing based on which tab is active in url/file widget
-  if (!isFile) {
-    return (
-      <div className={classes.root}>
-        {/* <CssBaseline /> */}
-        <NavBar
-          className={classes.appBar}
-          page="editor"
-          file={props.dofiles.current}
-        />
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          <div className={classes.drawerContainer}>
+  return (
+    <div className={classes.root}>
+      <NavBar
+        className={classes.appBar}
+        page="editor"
+        file={props.dofiles.current}
+      />
+      <Drawer
+        className={classes.drawer}
+        variant="permanent"
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+      >
+        <div className="drawerContainer">
+          <ListItem button onClick={() => setFileCollapse(!fileCollapse)}>
+            <ListItemText primary="Do Files" />
+            {fileCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </ListItem>
+          <Divider />
+          <Collapse in={fileCollapse} timeout="auto" unmountOnExit>
             <List>
               {doFiles.map((file) => (
-                <ListItem button key={file.id} onClick={() => handleNav(file)}>
+                <ListItem
+                  button
+                  key={file.id}
+                  onClick={() => handleFileNav(file)}
+                >
                   <ListItemIcon>
                     <Description />
                   </ListItemIcon>
@@ -293,142 +323,37 @@ Statistics/Data Analysis`;
                 </ListItem>
               ))}
             </List>
-            <Divider />
-          </div>
-          <div className="file-widget">
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="simple tabs example"
-              indicatorColor="primary"
-            >
-              <Tab style={tabStyle} label="Upload File" {...a11yProps(0)} />
-              <Tab style={tabStyle} label="Upload URL" {...a11yProps(1)} />
-            </Tabs>
-            <TabPanel value={value} index={0}>
-              <form
-                className={classes.fileWidgetButtons}
-                noValidate
-                autoComplete="off"
-              >
-                <input type="file" name="uploadFile" onChange={onFileChosen} />
-                <TextField
-                  id="standard-basic"
-                  label="Alias"
-                  onChange={(e) => setAlias(e.target.value)}
-                />
-              </form>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                className={classes.button}
-                startIcon={<CloudUploadIcon />}
-                onClick={handleFileUpload}
-              >
-                Upload
-              </Button>
-            </TabPanel>
-          </div>
-        </Drawer>
-        <div className={classes.content}>
-          <div className="compContainer">
-            <AceEditor
-              mode="jsx"
-              value={compilation}
-              height="100%"
-              width="100%"
-              showGutter={false}
-              // eslint-disable-next-line react/jsx-boolean-value
-              readOnly={true}
-              highlightActiveLine={false}
-              showPrintMargin={false}
-            />
-            <div ref={compEndRef} />
-          </div>
-          <div className="divider" />
-          <div className="editorContainer">
-            <AceEditor
-              placeholder="Enter code here"
-              mode="jsx"
-              theme="github"
-              onChange={(newCode) => setCode(newCode)}
-              fontSize={14}
-              value={code}
-              highlightActiveLine={false}
-              setOptions={{
-                enableBasicAutocompletion: false,
-                enableLiveAutocompletion: false,
-                enableSnippets: false,
-                showLineNumbers: true,
-                tabSize: 2,
-              }}
-              height="100%"
-              width="100%"
-            />
-            <AppBar position="fixed" className={classes.codeBar}>
-              <Grid container direction="row" justify="flex-end">
-                <IconButton onClick={() => handleDelete()}>
-                  <Typography variant="body1">Delete File</Typography>
-                  <DeleteIcon />
-                </IconButton>
-                <IconButton onClick={() => setCompilation(headerText)}>
-                  <Typography variant="body1">Clear Compilation</Typography>
-                  <Clear />
-                </IconButton>
-                <IconButton onClick={() => handleSave()}>
-                  <Typography variant="body1">Save Code</Typography>
-                  <Save />
-                </IconButton>
-                <IconButton onClick={() => runCode()}>
-                  <Typography variant="body1">Run Code</Typography>
-                  <PlayArrow />
-                </IconButton>
-              </Grid>
-            </AppBar>
-          </div>
+          </Collapse>
+          <Divider />
+          <ListItem button onClick={() => setLogCollapse(!logCollapse)}>
+            <ListItemText primary="Log Files" />
+            {logCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </ListItem>
+          <Divider />
+          <Collapse in={logCollapse} timeout="auto" unmountOnExit>
+            <List>
+              {logFiles.map((log) => (
+                <ListItem button key={log.id} onClick={() => handleLogNav(log)}>
+                  <ListItemIcon>
+                    <Description />
+                  </ListItemIcon>
+                  <ListItemText primary={log.fileName} />
+                </ListItem>
+              ))}
+            </List>
+          </Collapse>
         </div>
-      </div>
-    );
-  } else {
-    return (
-      <div className={classes.root}>
-        {/* <CssBaseline /> */}
-        <NavBar
-          className={classes.appBar}
-          page="editor"
-          file={props.dofiles.current}
-        />
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          <div className={classes.drawerContainer}>
-            <List>
-              {doFiles.map((file) => (
-                <ListItem button key={file.id} onClick={() => handleNav(file)}>
-                  <ListItemIcon>
-                    <Description />
-                  </ListItemIcon>
-                  <ListItemText primary={file.fileName} />
-                </ListItem>
-              ))}
-            </List>
-            <Divider />
-          </div>
-          <div className="file-widget">
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="simple tabs example"
-              indicatorColor="primary"
-            >
-              <Tab style={tabStyle} label="Upload File" {...a11yProps(0)} />
-              <Tab style={tabStyle} label="Upload URL" {...a11yProps(1)} />
-            </Tabs>
+        <div className="file-widget">
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="simple tabs example"
+            indicatorColor="primary"
+          >
+            <Tab style={tabStyle} label="Upload File" {...a11yProps(0)} />
+            <Tab style={tabStyle} label="Upload URL" {...a11yProps(1)} />
+          </Tabs>
+          {isFile ? (
             <TabPanel value={value} index={1}>
               <form
                 className={classes.urlWidgetButtons}
@@ -457,68 +382,93 @@ Statistics/Data Analysis`;
                 Upload
               </Button>
             </TabPanel>
-          </div>
-        </Drawer>
-        <div className={classes.content}>
-          <div className="compContainer">
-            <AceEditor
-              mode="jsx"
-              value={compilation}
-              height="100%"
-              width="100%"
-              showGutter={false}
-              // eslint-disable-next-line react/jsx-boolean-value
-              readOnly={true}
-              highlightActiveLine={false}
-              showPrintMargin={false}
-            />
-            <div ref={compEndRef} />
-          </div>
-          <div className="divider" />
-          <div className="editorContainer">
-            <AceEditor
-              placeholder="Enter code here"
-              mode="jsx"
-              theme="github"
-              onChange={(newCode) => setCode(newCode)}
-              fontSize={14}
-              value={code}
-              highlightActiveLine={false}
-              setOptions={{
-                enableBasicAutocompletion: false,
-                enableLiveAutocompletion: false,
-                enableSnippets: false,
-                showLineNumbers: true,
-                tabSize: 2,
-              }}
-              height="100%"
-              width="100%"
-            />
-            <AppBar position="fixed" className={classes.codeBar}>
-              <Grid container direction="row" justify="flex-end">
-                <IconButton onClick={() => handleDelete()}>
-                  <Typography variant="body1">Delete File</Typography>
-                  <DeleteIcon />
-                </IconButton>
-                <IconButton onClick={() => setCompilation(headerText)}>
-                  <Typography variant="body1">Clear Compilation</Typography>
-                  <Clear />
-                </IconButton>
-                <IconButton onClick={() => handleSave()}>
-                  <Typography variant="body1">Save Code</Typography>
-                  <Save />
-                </IconButton>
-                <IconButton onClick={() => runCode()}>
-                  <Typography variant="body1">Run Code</Typography>
-                  <PlayArrow />
-                </IconButton>
-              </Grid>
-            </AppBar>
-          </div>
+          ) : (
+            <TabPanel value={value} index={0}>
+              <form
+                className={classes.fileWidgetButtons}
+                noValidate
+                autoComplete="off"
+              >
+                <input type="file" name="uploadFile" onChange={onFileChosen} />
+                <TextField
+                  id="standard-basic"
+                  label="Alias"
+                  onChange={(e) => setAlias(e.target.value)}
+                />
+              </form>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                className={classes.button}
+                startIcon={<CloudUploadIcon />}
+                onClick={handleFileUpload}
+              >
+                Upload
+              </Button>
+            </TabPanel>
+          )}
+        </div>
+      </Drawer>
+      <div className={classes.content}>
+        <div className="compContainer">
+          <AceEditor
+            mode="jsx"
+            value={compilation}
+            height="100%"
+            width="100%"
+            showGutter={false}
+            // eslint-disable-next-line react/jsx-boolean-value
+            readOnly={true}
+            highlightActiveLine={false}
+            showPrintMargin={false}
+          />
+          <div ref={compEndRef} />
+        </div>
+        <div className="divider" />
+        <div className="editorContainer">
+          <AceEditor
+            placeholder="Enter code here"
+            mode="jsx"
+            theme="github"
+            onChange={(newCode) => setCode(newCode)}
+            fontSize={14}
+            value={code}
+            highlightActiveLine={false}
+            setOptions={{
+              enableBasicAutocompletion: false,
+              enableLiveAutocompletion: false,
+              enableSnippets: false,
+              showLineNumbers: true,
+              tabSize: 2,
+            }}
+            height="100%"
+            width="100%"
+          />
+          <AppBar position="fixed" className={classes.codeBar}>
+            <Grid container direction="row" justify="flex-end">
+              <IconButton onClick={() => handleDelete()}>
+                <Typography variant="body1">Delete File</Typography>
+                <DeleteIcon />
+              </IconButton>
+              <IconButton onClick={() => setCompilation(headerText)}>
+                <Typography variant="body1">Clear Compilation</Typography>
+                <Clear />
+              </IconButton>
+              <IconButton onClick={() => handleSave()}>
+                <Typography variant="body1">Save Code</Typography>
+                <Save />
+              </IconButton>
+              <IconButton onClick={() => runCode()}>
+                <Typography variant="body1">Run Code</Typography>
+                <PlayArrow />
+              </IconButton>
+            </Grid>
+          </AppBar>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default connect(mapStateToProps, {
@@ -527,4 +477,6 @@ export default connect(mapStateToProps, {
   saveDoFile,
   saveURL,
   deleteDoFile,
+  getLogFiles,
+  getSingleLogFile,
 })(CodeEditor);
