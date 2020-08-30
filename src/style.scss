@@ -113,6 +113,7 @@ div.drawerContainer {
 }
 
 .main-page {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -131,14 +132,17 @@ div.drawerContainer {
 }
 
 .do-files-container {
+  position: relative;
   display: flex;
+  align-items: center;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
   width: 85%;
 
   .full-name-edit-btn {
-    margin: 20px;
+    margin: 10px;
+    width: 200px;
   }
 }
 
