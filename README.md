@@ -31,8 +31,8 @@ To get frontend running, yarn start.
 
 ## Deployment
 
-Frontend: Surge
-http://project-open-stata.surge.sh
+Frontend: Netlify
+https://open-stata.netlify.app/
 
 Backend: Heroku
 https://open-stata.herokuapp.com/
