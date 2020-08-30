@@ -1,9 +1,11 @@
+/* eslint-disable no-alert */
 /* eslint-disable object-curly-newline */
 /* eslint-disable comma-dangle */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -11,8 +13,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import AppBar from '@material-ui/core/AppBar';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import PlayArrow from '@material-ui/icons/PlayArrow';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
@@ -26,13 +26,12 @@ import 'ace-builds/src-noconflict/theme-github';
 import { TextField } from '@material-ui/core';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import DeleteIcon from '@material-ui/icons/Delete';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import Button from '@material-ui/core/Button';
 import uploadFile from '../actions/s3';
+import RunButton, { UploadButton } from '../components/custom-buttons';
+import TabPanel, { a11yProps } from '../components/tabs';
 
 import NavBar from '../components/navbar';
 import {
@@ -94,34 +93,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function TabPanel(props) {
-  // eslint-disable-next-line object-curly-newline
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={0}>
-          <Typography component="span">{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
-
 function CodeEditor(props) {
   const compEndRef = useRef(null);
   const headerText = `
@@ -144,6 +115,9 @@ Statistics/Data Analysis`;
   const [fileToUpload, setFileToUpload] = useState('');
   const [urlToUpload, setURLToUpload] = useState('');
   const [alias, setAlias] = useState('');
+
+  const [uploading, setUploading] = useState(false);
+  const [runLoading, setRunLoading] = useState(false);
 
   const tabStyle = {
     minWidth: 124,
@@ -189,34 +163,41 @@ Statistics/Data Analysis`;
   // when a file is chosen in file/url widget
   const onFileChosen = (event) => {
     const chosenFile = event.target.files[0];
-    console.log('file chosen:', chosenFile);
-    if (chosenFile) {
-      setFileToUpload(chosenFile);
+    const fsize = chosenFile.size;
+
+    // The file must be smaller than 10 megabytes (1e7)
+    if (fsize > 10000000) {
+      alert(
+        'The file selected is too big, please select a file less than 10MB'
+      );
+    } else {
+      console.log('file chosen:', chosenFile);
+      if (chosenFile) {
+        setFileToUpload(chosenFile);
+      }
     }
   };
 
   // handles the situation where we are downloading by file
   const handleFileUpload = () => {
+    console.log('load button pressed');
     if (fileToUpload && alias) {
+      setUploading(true);
       console.log('upload pressed and file exists');
       console.log('alias:', alias);
-      uploadFile(fileToUpload)
-        .then((url) => {
-          const post = {
-            fileName: alias,
-            url,
-          };
-          console.log('post:', post);
-          props.saveURL(post);
-          // eslint-disable-next-line no-alert
-          alert(`Successfully downloaded ${url} as ${alias}!`);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      uploadFile(fileToUpload).then((url) => {
+        const post = {
+          fileName: alias,
+          url,
+        };
+        console.log('post:', post);
+        setUploading(false);
+        props.saveURL(post);
+      }).catch((error) => {
+        console.log(error);
+      });
     } else {
-      // eslint-disable-next-line no-alert
-      alert('error: Must choose file/url and alias');
+      alert('error: Must choose a file and give it an alias');
     }
   };
 
@@ -224,21 +205,21 @@ Statistics/Data Analysis`;
   const handleURLUpload = () => {
     // directly save the non-s3 url and alias to endpoint Jeff is creating
     if (urlToUpload && alias) {
+      setUploading(true);
       const post = {
         fileName: alias,
         url: urlToUpload,
       };
       console.log('post:', post);
+      setUploading(false);
       props.saveURL(post);
-      // eslint-disable-next-line no-alert
-      alert(`Successfully downloaded ${urlToUpload} as ${alias}!`);
     } else {
-      // eslint-disable-next-line no-alert
-      alert('error: Must choose file/url and alias');
+      alert('error: Must input a valid url and and give it an alias');
     }
   };
 
   const runCode = () => {
+    setRunLoading(true);
     axios
       .post(
         'https://open-stata.herokuapp.com/api/parse',
@@ -253,6 +234,7 @@ Statistics/Data Analysis`;
             '\n\n'
           )}`
         );
+        setRunLoading(false);
         compEndRef.current.scrollIntoView({ behavior: 'smooth' });
       })
       .catch((err) => {
@@ -371,16 +353,7 @@ Statistics/Data Analysis`;
                   onChange={(e) => setAlias(e.target.value)}
                 />
               </form>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                className={classes.button}
-                startIcon={<CloudUploadIcon />}
-                onClick={handleURLUpload}
-              >
-                Upload
-              </Button>
+              <UploadButton onClick={handleURLUpload} loading={uploading} />
             </TabPanel>
           ) : (
             <TabPanel value={value} index={0}>
@@ -396,16 +369,7 @@ Statistics/Data Analysis`;
                   onChange={(e) => setAlias(e.target.value)}
                 />
               </form>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                className={classes.button}
-                startIcon={<CloudUploadIcon />}
-                onClick={handleFileUpload}
-              >
-                Upload
-              </Button>
+              <UploadButton onClick={handleFileUpload} loading={uploading} />
             </TabPanel>
           )}
         </div>
@@ -459,10 +423,7 @@ Statistics/Data Analysis`;
                 <Typography variant="body1">Save Code</Typography>
                 <Save />
               </IconButton>
-              <IconButton onClick={() => runCode()}>
-                <Typography variant="body1">Run Code</Typography>
-                <PlayArrow />
-              </IconButton>
+              <RunButton onClick={runCode} loading={runLoading} />
             </Grid>
           </AppBar>
         </div>
