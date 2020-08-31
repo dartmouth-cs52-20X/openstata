@@ -7,6 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import InputLabel from '@material-ui/core/InputLabel';
 
 import { changePassword } from '../actions';
 import NavBar from '../components/navbar';
@@ -59,18 +60,22 @@ function Profile(props) {
   return (
     <div>
       <NavBar />
-      <div className={classes.paper}>
-        <Container component="main" maxWidth="sm" className="profile-content">
-          <Typography component="h1" variant="h5">
+      <Container component="main" maxWidth="sm" className="profile-content">
+        <div className="classes.paper">
+          <Typography component="h1" variant="h5" align="center">
             Profile
           </Typography>
           <form className={classes.form} noValidate>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <Typography component="h2" variant="h6">Username: {props.username}</Typography>
+                <InputLabel className="username-fixed">
+                  Username: {props.username}
+                </InputLabel>
               </Grid>
               <Grid item xs={12}>
-                <Typography component="h2" variant="h6">Email: {props.email}</Typography>
+                <InputLabel className="email-fixed">
+                  Email: {props.email}
+                </InputLabel>
               </Grid>
             </Grid>
             {editPassword ? (
@@ -125,8 +130,8 @@ function Profile(props) {
               </Button>
             )}
           </form>
-        </Container>
-      </div>
+        </div>
+      </Container>
     </div>
   );
 }

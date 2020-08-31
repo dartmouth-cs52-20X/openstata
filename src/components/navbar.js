@@ -129,7 +129,7 @@ const NavBar = (props) => {
               <ExitToApp />
               <Typography variant="body1">Log Out</Typography>
             </IconButton>
-            <IconButton onClick={goToProfile}>
+            <IconButton onClick={goToProfile} color="primary">
               <AccountCircleIcon />
               <Typography variant="body1">Profile</Typography>
             </IconButton>
