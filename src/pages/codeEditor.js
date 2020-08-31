@@ -227,6 +227,11 @@ Statistics/Data Analysis`;
           };
           setUploading(false);
           props.saveURL(post, handleAlert);
+
+          // clears input
+          setFileToUpload('');
+          document.getElementById('fileInput').value = '';
+          setAlias('');
         })
         .catch((error) => {
           console.log(error);
@@ -246,7 +251,11 @@ Statistics/Data Analysis`;
         url: urlToUpload,
       };
       setUploading(false);
-      props.saveURL(post);
+      props.saveURL(post, handleAlert);
+
+      // clears input
+      setURLToUpload('');
+      setAlias('');
     } else {
       handleAlert(
         'error: Must input a valid url and and give it an alias',
@@ -410,12 +419,14 @@ Statistics/Data Analysis`;
                 autoComplete="off"
               >
                 <TextField
+                  value={urlToUpload}
                   id="standard-basic"
                   label="URL"
                   onChange={(e) => setURLToUpload(e.target.value)}
                   color="secondary"
                 />
                 <TextField
+                  value={alias}
                   id="standard-basic"
                   label="Alias"
                   onChange={(e) => setAlias(e.target.value)}
@@ -430,8 +441,9 @@ Statistics/Data Analysis`;
                 noValidate
                 autoComplete="off"
               >
-                <input type="file" name="uploadFile" onChange={onFileChosen} />
+                <input id="fileInput" type="file" name="uploadFile" onChange={onFileChosen} />
                 <TextField
+                  value={alias}
                   id="standard-basic"
                   label="Alias"
                   onChange={(e) => setAlias(e.target.value)}
