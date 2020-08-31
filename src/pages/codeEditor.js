@@ -114,7 +114,7 @@ Statistics/Data Analysis`;
   const [logCollapse, setLogCollapse] = useState(false);
   const [dataCollapse, setDataCollapse] = useState(false);
   const [sampleCollapse, setSampleCollapse] = useState(false);
-  const [uploadAlert, setUploadAlert] = useState(false);
+  const [logMode, setLogMode] = useState(false);
 
   // file/url widget state
   const [value, setValue] = useState(0);
@@ -122,6 +122,9 @@ Statistics/Data Analysis`;
   const [fileToUpload, setFileToUpload] = useState('');
   const [urlToUpload, setURLToUpload] = useState('');
   const [alias, setAlias] = useState('');
+  const [uploadAlert, setUploadAlert] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [alertSeverity, setAlertSeverity] = useState('error');
 
   const [uploading, setUploading] = useState(false);
   const [runLoading, setRunLoading] = useState(false);
@@ -148,11 +151,19 @@ Statistics/Data Analysis`;
   }, []);
 
   useEffect(() => {
-    if (props.dofiles.current) setCode(props.dofiles.current.content);
+    if (props.dofiles.current) {
+      console.log('code mode');
+      setCode(props.dofiles.current.content);
+      setLogMode(false);
+    }
   }, [props.dofiles.current]);
 
   useEffect(() => {
-    if (props.logfiles.current) setCode(props.logfiles.current.content);
+    if (props.logfiles.current) {
+      console.log('log mode');
+      setCode(props.logfiles.current.content);
+      setLogMode(true);
+    }
   }, [props.logfiles.current]);
 
   if (props.dofiles && sideBarInitialized) {
@@ -178,6 +189,12 @@ Statistics/Data Analysis`;
     }
   };
 
+  const handleAlert = (message, severity) => {
+    setSnackbarMessage(message);
+    setUploadAlert(true);
+    setAlertSeverity(severity);
+  };
+
   // when a file is chosen in file/url widget
   const onFileChosen = (event) => {
     const chosenFile = event.target.files[0];
@@ -185,8 +202,9 @@ Statistics/Data Analysis`;
 
     // The file must be smaller than 10 megabytes (1e7)
     if (fsize > 10000000) {
-      alert(
-        'The file selected is too big, please select a file less than 10MB'
+      handleAlert(
+        'The file selected is too big, please select a file less than 10MB',
+        'error'
       );
     } else {
       console.log('file chosen:', chosenFile);
@@ -196,24 +214,16 @@ Statistics/Data Analysis`;
     }
   };
 
-  const handleAlert = (message) => {
-    setUploadAlert(true);
-  };
-
   // handles the situation where we are downloading by file
   const handleFileUpload = () => {
-    console.log('load button pressed');
     if (fileToUpload && alias) {
       setUploading(true);
-      console.log('upload pressed and file exists');
-      console.log('alias:', alias);
       uploadFile(fileToUpload)
         .then((url) => {
           const post = {
             fileName: alias,
             url,
           };
-          console.log('post:', post);
           setUploading(false);
           props.saveURL(post, handleAlert);
         })
@@ -221,7 +231,7 @@ Statistics/Data Analysis`;
           console.log(error);
         });
     } else {
-      alert('error: Must choose a file and give it an alias');
+      handleAlert('error: Must choose a file and give it an alias', 'error');
     }
   };
 
@@ -234,12 +244,22 @@ Statistics/Data Analysis`;
         fileName: alias,
         url: urlToUpload,
       };
-      console.log('post:', post);
       setUploading(false);
       props.saveURL(post);
     } else {
-      alert('error: Must input a valid url and and give it an alias');
+      handleAlert(
+        'error: Must input a valid url and and give it an alias',
+        'error'
+      );
     }
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setUploadAlert(false);
   };
 
   const runCode = () => {
@@ -433,8 +453,14 @@ Statistics/Data Analysis`;
               <UploadButton onClick={handleFileUpload} loading={uploading} />
             </TabPanel>
           )}
-          <Snackbar open={uploadAlert} autoHideDuration={6000}>
-            <MuiAlert severity="success">This is a success message!</MuiAlert>
+          <Snackbar
+            open={uploadAlert}
+            autoHideDuration={6000}
+            onClose={handleClose}
+          >
+            <MuiAlert severity={alertSeverity} onClose={handleClose}>
+              {snackbarMessage}
+            </MuiAlert>
           </Snackbar>
         </div>
       </Drawer>
@@ -472,22 +498,30 @@ Statistics/Data Analysis`;
             }}
             height="100%"
             width="100%"
+            readOnly={logMode}
           />
           <AppBar position="fixed" className={classes.codeBar}>
             <Grid container direction="row" justify="flex-end">
-              <IconButton onClick={() => handleDelete()}>
+              <IconButton onClick={() => handleDelete()} disabled={logMode}>
                 <Typography variant="body1">Delete File</Typography>
                 <DeleteIcon />
               </IconButton>
-              <IconButton onClick={() => setCompilation(headerText)}>
+              <IconButton
+                onClick={() => setCompilation(headerText)}
+                disabled={logMode}
+              >
                 <Typography variant="body1">Clear Compilation</Typography>
                 <Clear />
               </IconButton>
-              <IconButton onClick={() => handleSave()}>
+              <IconButton onClick={() => handleSave()} disabled={logMode}>
                 <Typography variant="body1">Save Code</Typography>
                 <Save />
               </IconButton>
-              <RunButton onClick={runCode} loading={runLoading} />
+              <RunButton
+                onClick={runCode}
+                loading={runLoading}
+                logMode={logMode}
+              />
             </Grid>
           </AppBar>
         </div>

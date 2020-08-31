@@ -69,7 +69,6 @@ export const getDoFiles = (setInitialized) => (dispatch) => {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
-      console.log('response', res.data);
       dispatch({
         type: ActionTypes.GET_DOFILES,
         payload: res.data,
@@ -87,7 +86,6 @@ export const createDoFile = (file, history) => (dispatch) => {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
-      console.log('response', res.data);
       dispatch({ type: ActionTypes.CREATE_DOFILE });
       history.push(`/editor/${res.data}`);
     })
@@ -102,7 +100,6 @@ export const getSingleDoFile = (fileID, setInitialized) => (dispatch) => {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
-      console.log('response', res.data);
       dispatch({
         type: ActionTypes.GET_SINGLE_DOFILE,
         payload: res.data,
@@ -120,7 +117,6 @@ export const saveDoFile = (file, fileid, callback) => (dispatch) => {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
-      console.log('response', res.data);
       dispatch({
         type: ActionTypes.SAVE_DOFILE,
         payload: res.data,
@@ -138,7 +134,6 @@ export const deleteDoFile = (fileID, history) => (dispatch) => {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
-      console.log('response', res.data);
       history.push('/home');
     })
     .catch((err) => {
@@ -157,7 +152,8 @@ export function saveURL(post, callback) {
         console.log(response.data);
         // eslint-disable-next-line no-alert
         callback(
-          `Successfully downloaded ${response.data.fileName}! You can now use this data set by typing the command "use ${response.data.fileName}" into the code editor!`
+          `Successfully downloaded ${response.data.fileName}! You can now use this data set by typing the command "use ${response.data.fileName}" into the code editor!`,
+          'success'
         );
       })
       .catch((error) => {
@@ -172,7 +168,6 @@ export const getLogFiles = () => (dispatch) => {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
-      console.log('result', res.data);
       dispatch({
         type: ActionTypes.GET_LOGFILES,
         payload: res.data,
@@ -186,7 +181,6 @@ export const getSingleLogFile = (logID) => (dispatch) => {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
-      console.log('response', res.data);
       dispatch({
         type: ActionTypes.GET_SINGLE_LOGFILE,
         payload: res.data,
@@ -203,7 +197,6 @@ export const getData = () => (dispatch) => {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
-      console.log('response', res.data);
       dispatch({
         type: ActionTypes.GET_DATA,
         payload: res.data,

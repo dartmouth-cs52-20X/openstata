@@ -6,7 +6,7 @@ import PlayArrow from '@material-ui/icons/PlayArrow';
 import Typography from '@material-ui/core/Typography';
 
 export default function RunButton(props) {
-  const { onClick, loading } = props;
+  const { onClick, loading, logMode } = props;
 
   if (loading) {
     return (
@@ -26,7 +26,7 @@ export default function RunButton(props) {
       <IconButton
         variant="contained"
         onClick={onClick}
-        disabled={loading}
+        disabled={loading || logMode}
         color="primary"
         size="small"
         className="run-btn"
