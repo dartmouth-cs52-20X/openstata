@@ -69,6 +69,14 @@ const NavBar = (props) => {
     props.history.push('/profile');
   };
 
+  const openSignin = () => {
+    props.history.push('/signin');
+  };
+
+  const openSignup = () => {
+    props.history.push('/signup');
+  };
+
   return (
     <AppBar position="fixed" className={classes.appBar} color="secondary">
       <Grid container direction="row" justify="space-between">
@@ -112,10 +120,10 @@ const NavBar = (props) => {
         ) : undefined}
         {!props.authenticated ? (
           <Grid item>
-            <IconButton color="primary">
+            <IconButton onClick={openSignup} color="primary">
               <Typography variant="body1">Sign Up</Typography>
             </IconButton>
-            <IconButton color="primary">
+            <IconButton onClick={openSignin} color="primary">
               <Typography variant="body1">Log In</Typography>
             </IconButton>
           </Grid>

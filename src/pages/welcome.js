@@ -133,7 +133,6 @@ const Welcome = (props) => {
               <Computer />
             </IconButton>
           )}
-          )}
         </div>
       </div>
     </div>
