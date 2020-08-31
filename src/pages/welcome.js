@@ -128,8 +128,8 @@ const Welcome = (props) => {
               </IconButton>
             </div>
           ) : (
-            <IconButton component={NavLink} to="/editor">
-              <Typography variant="body1">Go to editor </Typography>
+            <IconButton component={NavLink} to="/home">
+              <Typography variant="body1">Go to homepage </Typography>
               <Computer />
             </IconButton>
           )}
