@@ -4,7 +4,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
-import axios from 'axios';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -29,6 +28,9 @@ import Tab from '@material-ui/core/Tab';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import StorageIcon from '@material-ui/icons/Storage';
 import uploadFile from '../actions/s3';
 import RunButton, { UploadButton } from '../components/custom-buttons';
 import TabPanel, { a11yProps } from '../components/tabs';
@@ -43,6 +45,7 @@ import {
   getLogFiles,
   getSingleLogFile,
   getData,
+  runCompilation,
 } from '../actions';
 
 const mapStateToProps = (reduxState) => ({
@@ -112,6 +115,7 @@ Statistics/Data Analysis`;
   const [logCollapse, setLogCollapse] = useState(false);
   const [dataCollapse, setDataCollapse] = useState(false);
   const [sampleCollapse, setSampleCollapse] = useState(false);
+  const [logMode, setLogMode] = useState(false);
 
   // file/url widget state
   const [value, setValue] = useState(0);
@@ -119,6 +123,9 @@ Statistics/Data Analysis`;
   const [fileToUpload, setFileToUpload] = useState('');
   const [urlToUpload, setURLToUpload] = useState('');
   const [alias, setAlias] = useState('');
+  const [uploadAlert, setUploadAlert] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [alertSeverity, setAlertSeverity] = useState('error');
 
   const [uploading, setUploading] = useState(false);
   const [runLoading, setRunLoading] = useState(false);
@@ -138,17 +145,26 @@ Statistics/Data Analysis`;
 
   useEffect(() => {
     props.getSingleDoFile(props.match.params.fileid, null);
+    props.getSingleLogFile(props.match.params.fileid, null);
     props.getDoFiles(setSideBarInitialized);
     props.getLogFiles();
     props.getData();
   }, []);
 
   useEffect(() => {
-    setCode(props.dofiles.current.content);
+    if (props.dofiles.current) {
+      console.log('code mode');
+      setCode(props.dofiles.current.content);
+      setLogMode(false);
+    }
   }, [props.dofiles.current]);
 
   useEffect(() => {
-    console.log('should update log');
+    if (props.logfiles.current) {
+      console.log('log mode');
+      setCode(props.logfiles.current.content);
+      setLogMode(true);
+    }
   }, [props.logfiles.current]);
 
   if (props.dofiles && sideBarInitialized) {
@@ -174,6 +190,12 @@ Statistics/Data Analysis`;
     }
   };
 
+  const handleAlert = (message, severity) => {
+    setSnackbarMessage(message);
+    setUploadAlert(true);
+    setAlertSeverity(severity);
+  };
+
   // when a file is chosen in file/url widget
   const onFileChosen = (event) => {
     const chosenFile = event.target.files[0];
@@ -181,8 +203,9 @@ Statistics/Data Analysis`;
 
     // The file must be smaller than 10 megabytes (1e7)
     if (fsize > 10000000) {
-      alert(
-        'The file selected is too big, please select a file less than 10MB'
+      handleAlert(
+        'The file selected is too big, please select a file less than 10MB',
+        'error'
       );
     } else {
       console.log('file chosen:', chosenFile);
@@ -194,24 +217,22 @@ Statistics/Data Analysis`;
 
   // handles the situation where we are downloading by file
   const handleFileUpload = () => {
-    console.log('load button pressed');
     if (fileToUpload && alias) {
       setUploading(true);
-      console.log('upload pressed and file exists');
-      console.log('alias:', alias);
-      uploadFile(fileToUpload).then((url) => {
-        const post = {
-          fileName: alias,
-          url,
-        };
-        console.log('post:', post);
-        setUploading(false);
-        props.saveURL(post);
-      }).catch((error) => {
-        console.log(error);
-      });
+      uploadFile(fileToUpload)
+        .then((url) => {
+          const post = {
+            fileName: alias,
+            url,
+          };
+          setUploading(false);
+          props.saveURL(post, handleAlert);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
-      alert('error: Must choose a file and give it an alias');
+      handleAlert('error: Must choose a file and give it an alias', 'error');
     }
   };
 
@@ -224,12 +245,21 @@ Statistics/Data Analysis`;
         fileName: alias,
         url: urlToUpload,
       };
-      console.log('post:', post);
       setUploading(false);
       props.saveURL(post);
     } else {
-      alert('error: Must input a valid url and and give it an alias');
+      handleAlert(
+        'error: Must input a valid url and and give it an alias',
+        'error'
+      );
     }
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setUploadAlert(false);
   };
 
   const runCode = () => {
@@ -237,27 +267,13 @@ Statistics/Data Analysis`;
       ? props.dofiles.current.tutorialID
       : null;
     setRunLoading(true);
-    axios
-      .post(
-        'https://open-stata.herokuapp.com/api/parse',
-        { dofile: code, tutorialID },
-        {
-          headers: { authorization: localStorage.getItem('token') },
-        }
-      )
-      .then((res) => {
-        setCompilation(
-          `${compilation}\n\n-----------------------------\n\n${res.data.output.join(
-            '\n\n'
-          )}`
-        );
-        setRunLoading(false);
-      })
-      .catch((err) => {
-        setCompilation(
-          `${compilation}\n\n-----------------------------\n\nError: ${err.response.data.output}`
-        );
-      });
+    runCompilation(
+      code,
+      tutorialID,
+      compilation,
+      setCompilation,
+      setRunLoading
+    );
   };
 
   const handleSave = () => {
@@ -270,15 +286,13 @@ Statistics/Data Analysis`;
   };
 
   const handleFileNav = (file) => {
-    console.log('new file', file.content);
     props.history.push(`/editor/${file.id}`);
     props.getSingleDoFile(file.id, null);
   };
 
   const handleLogNav = (log) => {
-    console.log('add functionality jared');
-    // props.history.push(`/editor/${log.id}`);
-    // props.getSingleLogFile(log.id, null);
+    props.history.push(`/editor/${log.id}`);
+    props.getSingleLogFile(log.id, null);
   };
 
   const handleDelete = () => {
@@ -291,7 +305,8 @@ Statistics/Data Analysis`;
       <NavBar
         className={classes.appBar}
         page="editor"
-        file={props.dofiles.current}
+        file={logMode ? props.logfiles.current : props.dofiles.current}
+        isLog={logMode}
       />
       <Drawer
         className={classes.drawer}
@@ -307,7 +322,7 @@ Statistics/Data Analysis`;
           </ListItem>
           <Divider />
           <Collapse in={fileCollapse} timeout="auto" unmountOnExit>
-            <List>
+            <List dense>
               {doFiles.map((file) => (
                 <ListItem
                   button
@@ -329,7 +344,7 @@ Statistics/Data Analysis`;
           </ListItem>
           <Divider />
           <Collapse in={logCollapse} timeout="auto" unmountOnExit>
-            <List>
+            <List dense>
               {logFiles.map((log) => (
                 <ListItem button key={log.id} onClick={() => handleLogNav(log)}>
                   <ListItemIcon>
@@ -347,11 +362,11 @@ Statistics/Data Analysis`;
           </ListItem>
           <Divider />
           <Collapse in={sampleCollapse} timeout="auto" unmountOnExit>
-            <List>
+            <List dense>
               {sampleFiles.map((data) => (
-                <ListItem button key={data.id}>
+                <ListItem key={data.id}>
                   <ListItemIcon>
-                    <Description />
+                    <StorageIcon />
                   </ListItemIcon>
                   <ListItemText primary={data.fileName} />
                 </ListItem>
@@ -365,11 +380,11 @@ Statistics/Data Analysis`;
           </ListItem>
           <Divider />
           <Collapse in={dataCollapse} timeout="auto" unmountOnExit>
-            <List>
+            <List dense>
               {dataFiles.map((data) => (
-                <ListItem button key={data.id}>
+                <ListItem key={data.id}>
                   <ListItemIcon>
-                    <Description />
+                    <StorageIcon />
                   </ListItemIcon>
                   <ListItemText primary={data.fileName} />
                 </ListItem>
@@ -425,6 +440,15 @@ Statistics/Data Analysis`;
               <UploadButton onClick={handleFileUpload} loading={uploading} />
             </TabPanel>
           )}
+          <Snackbar
+            open={uploadAlert}
+            autoHideDuration={6000}
+            onClose={handleClose}
+          >
+            <MuiAlert severity={alertSeverity} onClose={handleClose}>
+              {snackbarMessage}
+            </MuiAlert>
+          </Snackbar>
         </div>
       </Drawer>
       <div className={classes.content}>
@@ -461,22 +485,30 @@ Statistics/Data Analysis`;
             }}
             height="100%"
             width="100%"
+            readOnly={logMode}
           />
           <AppBar position="fixed" className={classes.codeBar}>
             <Grid container direction="row" justify="flex-end">
-              <IconButton onClick={() => handleDelete()}>
+              <IconButton onClick={() => handleDelete()} disabled={logMode}>
                 <Typography variant="body1">Delete File</Typography>
                 <DeleteIcon />
               </IconButton>
-              <IconButton onClick={() => setCompilation(headerText)}>
+              <IconButton
+                onClick={() => setCompilation(headerText)}
+                disabled={logMode}
+              >
                 <Typography variant="body1">Clear Compilation</Typography>
                 <Clear />
               </IconButton>
-              <IconButton onClick={() => handleSave()}>
+              <IconButton onClick={() => handleSave()} disabled={logMode}>
                 <Typography variant="body1">Save Code</Typography>
                 <Save />
               </IconButton>
-              <RunButton onClick={runCode} loading={runLoading} />
+              <RunButton
+                onClick={runCode}
+                loading={runLoading}
+                logMode={logMode}
+              />
             </Grid>
           </AppBar>
         </div>

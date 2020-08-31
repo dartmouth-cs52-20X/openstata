@@ -6,7 +6,6 @@ const initialState = {
 };
 
 const DoFileReducer = (state = initialState, action) => {
-  console.log('Action', action.type);
   switch (action.type) {
     case ActionTypes.GET_DOFILES:
       return { all: action.payload, current: state.current };

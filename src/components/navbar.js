@@ -24,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
   },
+  input: {
+    color: '#d2d2d2',
+  },
 }));
 
 const mapStateToProps = (reduxState) => ({
@@ -48,11 +51,13 @@ const NavBar = (props) => {
   };
 
   const handleSave = () => {
-    const post = {
-      fileName: filename,
-      content: props.file.content,
-    };
-    props.saveDoFile(post, props.file.id, updateSidebar);
+    if (props.file.fileName !== filename) {
+      const post = {
+        fileName: filename,
+        content: props.file.content,
+      };
+      props.saveDoFile(post, props.file.id, updateSidebar);
+    }
     setEditFilename(false);
   };
 
@@ -74,12 +79,16 @@ const NavBar = (props) => {
           editFilename ? (
             <Grid className="filename">
               <Input
+                color="primary"
                 value={filename}
                 onChange={(e) => {
                   setFilename(e.target.value);
                 }}
+                inputProps={{
+                  className: classes.input,
+                }}
               />
-              <IconButton onClick={() => handleSave()}>
+              <IconButton onClick={() => handleSave()} color="primary">
                 <Save />
               </IconButton>
             </Grid>
@@ -88,9 +97,14 @@ const NavBar = (props) => {
               <Typography variant="h6" color="primary">
                 {filename}
               </Typography>
-              <IconButton onClick={() => setEditFilename(true)} color="primary">
-                <Edit />
-              </IconButton>
+              {props.isLog ? undefined : (
+                <IconButton
+                  onClick={() => setEditFilename(true)}
+                  color="primary"
+                >
+                  <Edit />
+                </IconButton>
+              )}
             </Grid>
           )
         ) : undefined}

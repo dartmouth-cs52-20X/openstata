@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 import axios from 'axios';
 
 export const ROOT_URL = 'https://open-stata.herokuapp.com/api';
@@ -70,7 +71,6 @@ export const getDoFiles = (setInitialized) => (dispatch) => {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
-      console.log('response', res.data);
       dispatch({
         type: ActionTypes.GET_DOFILES,
         payload: res.data,
@@ -88,7 +88,6 @@ export const createDoFile = (file, history) => (dispatch) => {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
-      console.log('response', res.data);
       dispatch({ type: ActionTypes.CREATE_DOFILE });
       history.push(`/editor/${res.data}`);
     })
@@ -103,7 +102,6 @@ export const getSingleDoFile = (fileID, setInitialized) => (dispatch) => {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
-      console.log('response', res.data);
       dispatch({
         type: ActionTypes.GET_SINGLE_DOFILE,
         payload: res.data,
@@ -121,7 +119,6 @@ export const saveDoFile = (file, fileid, callback) => (dispatch) => {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
-      console.log('response', res.data);
       dispatch({
         type: ActionTypes.SAVE_DOFILE,
         payload: res.data,
@@ -139,7 +136,6 @@ export const deleteDoFile = (fileID, history) => (dispatch) => {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
-      console.log('response', res.data);
       history.push('/home');
     })
     .catch((err) => {
@@ -148,7 +144,7 @@ export const deleteDoFile = (fileID, history) => (dispatch) => {
 };
 
 // for saving URL and alias to server
-export function saveURL(post) {
+export function saveURL(post, callback) {
   return (dispatch) => {
     axios
       .post(`${ROOT_URL}/data`, post, {
@@ -157,7 +153,10 @@ export function saveURL(post) {
       .then((response) => {
         console.log(response.data);
         // eslint-disable-next-line no-alert
-        alert(`Successfully downloaded ${response.data.fileName}! You can now use this data set by typing the command "use ${response.data.fileName}" into the code editor!`);
+        callback(
+          `Successfully downloaded ${response.data.fileName}! You can now use this data set by typing the command "use ${response.data.fileName}" into the code editor!`,
+          'success'
+        );
       })
       .catch((error) => {
         dispatch(`Upload Failed: ${error.response.data}`);
@@ -182,7 +181,6 @@ export const getLogFiles = () => (dispatch) => {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
-      console.log('result', res.data);
       dispatch({
         type: ActionTypes.GET_LOGFILES,
         payload: res.data,
@@ -196,7 +194,6 @@ export const getSingleLogFile = (logID) => (dispatch) => {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
-      console.log('response', res.data);
       dispatch({
         type: ActionTypes.GET_SINGLE_LOGFILE,
         payload: res.data,
@@ -213,7 +210,6 @@ export const getData = () => (dispatch) => {
       headers: { authorization: localStorage.getItem('token') },
     })
     .then((res) => {
-      console.log('response', res.data);
       dispatch({
         type: ActionTypes.GET_DATA,
         payload: res.data,
@@ -221,5 +217,36 @@ export const getData = () => (dispatch) => {
     })
     .catch((err) => {
       console.error(err);
+    });
+};
+
+export const runCompilation = (
+  code,
+  tutorialID,
+  compilation,
+  setCompilation,
+  setRunLoading
+) => {
+  axios
+    .post(
+      'https://open-stata.herokuapp.com/api/parse',
+      { dofile: code, tutorialID },
+      {
+        headers: { authorization: localStorage.getItem('token') },
+      }
+    )
+    .then((res) => {
+      setCompilation(
+        `${compilation}\n\n-----------------------------\n\n${res.data.output.join(
+          '\n\n'
+        )}`
+      );
+      setRunLoading(false);
+    })
+    .catch((err) => {
+      setCompilation(
+        `${compilation}\n\n-----------------------------\n\nError: ${err.response.data.output}`
+      );
+      setRunLoading(false);
     });
 };

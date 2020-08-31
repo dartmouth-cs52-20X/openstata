@@ -6,7 +6,6 @@ const initialState = {
 };
 
 const LogfileReducer = (state = initialState, action) => {
-  console.log('Action', action.type);
   switch (action.type) {
     case ActionTypes.GET_LOGFILES:
       return { all: action.payload, current: state.current };
