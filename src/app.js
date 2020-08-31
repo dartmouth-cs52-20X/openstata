@@ -42,7 +42,7 @@ const SignupModal = (props) => {
 const App = () => {
   return (
     <Router>
-      <div>
+      <div id="app-div">
         <Switch>
           <Route exact path="/" component={Welcome} />
           <Route path="/signup" component={Welcome} />
