@@ -8,6 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Person from '@material-ui/icons/Person';
 import Computer from '@material-ui/icons/Computer';
+import ReactTypingEffect from 'react-typing-effect';
 
 import AceEditor from 'react-ace';
 import NavBar from '../components/navbar';
@@ -106,6 +107,7 @@ const Welcome = (props) => {
             wrapEnabled
             height="100%"
             width="100%"
+            min-width="330px"
             readOnly
           />
           {/* <h2> */}
@@ -115,23 +117,25 @@ const Welcome = (props) => {
         </div>
 
         <div id="welcome-right-container">
-          <h1 id="welcome-title">OPENSTATA</h1>
+          <ReactTypingEffect text="OpenStata" className="welcome-title" />
           { !props.authenticated ? (
-            <div>
-              <IconButton component={NavLink} to="/signup">
-                <Typography variant="body1">Sign Up</Typography>
-                <Person />
+            <div className="welcome-buttons">
+              <IconButton component={NavLink} color="secondary" to="/signup">
+                <Typography variant="body1" color="secondary">Sign Up</Typography>
+                <Person color="secondary" />
               </IconButton>
               <IconButton component={NavLink} to="/signin">
-                <Typography variant="body1">Sign In</Typography>
-                <Person />
+                <Typography variant="body1" color="secondary">Sign In</Typography>
+                <Person color="secondary" />
               </IconButton>
             </div>
           ) : (
-            <IconButton component={NavLink} to="/home">
-              <Typography variant="body1">Go to homepage </Typography>
-              <Computer />
-            </IconButton>
+            <div className="welcome-buttons">
+              <IconButton component={NavLink} color="secondary" to="/home">
+                <Typography variant="body1" color="secondary">Go to homepage </Typography>
+                <Computer color="secondary" />
+              </IconButton>
+            </div>
           )}
         </div>
       </div>
