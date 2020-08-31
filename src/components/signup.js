@@ -1,6 +1,6 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable operator-linebreak */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
@@ -79,6 +79,18 @@ const SignUp = (props) => {
       props.signupUser(user, props.history, onError);
     }
   };
+
+  useEffect(() => {
+    const listener = (event) => {
+      if (event.code === 'Enter') {
+        handleSignUp();
+      }
+    };
+    document.addEventListener('keydown', listener);
+    return () => {
+      document.removeEventListener('keydown', listener);
+    };
+  });
 
   return (
     <div>

@@ -1,7 +1,7 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import AppBar from '@material-ui/core/AppBar';
@@ -73,7 +73,9 @@ const NavBar = (props) => {
     <AppBar position="fixed" className={classes.appBar} color="secondary">
       <Grid container direction="row" justify="space-between">
         <Grid item className="logo">
-          <img src={logo} alt="logo" className="logoImg" />
+          <Link to="/home">
+            <img src={logo} alt="logo" className="logoImg" />
+          </Link>
         </Grid>
         {props.page === 'editor' ? (
           editFilename ? (
@@ -110,10 +112,10 @@ const NavBar = (props) => {
         ) : undefined}
         {!props.authenticated ? (
           <Grid item>
-            <IconButton>
+            <IconButton color="primary">
               <Typography variant="body1">Sign Up</Typography>
             </IconButton>
-            <IconButton>
+            <IconButton color="primary">
               <Typography variant="body1">Log In</Typography>
             </IconButton>
           </Grid>

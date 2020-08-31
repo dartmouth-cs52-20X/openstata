@@ -11,20 +11,6 @@ import Computer from '@material-ui/icons/Computer';
 
 import NavBar from '../components/navbar';
 
-// placeholder, will replace with our own NavBar
-/* const MUIAppBar = () => {
-  return (
-    <AppBar position="static">
-      <Grid container direction="row" justify="flex-end">
-        <IconButton component={NavLink} to="/signup">
-          <Typography variant="body1">Sign Up</Typography>
-          <Person />
-        </IconButton>
-      </Grid>
-    </AppBar>
-  );
-}; */
-
 const Welcome = (props) => {
   return (
     <div>
@@ -46,8 +32,8 @@ const Welcome = (props) => {
             </IconButton>
           </div>
         ) : (
-          <IconButton component={NavLink} to="/editor">
-            <Typography variant="body1">Go to editor </Typography>
+          <IconButton component={NavLink} to="/home">
+            <Typography variant="body1">Go to homepage </Typography>
             <Computer />
           </IconButton>
         )}

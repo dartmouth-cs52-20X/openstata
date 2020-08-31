@@ -18,7 +18,7 @@ export const ActionTypes = {
   GET_DATA: 'GET_DATA',
 };
 
-export function signinUser(user, history) {
+export function signinUser(user, history, onError) {
   return (dispatch) => {
     axios
       .post(`${ROOT_URL}/signin`, user)
@@ -30,6 +30,7 @@ export function signinUser(user, history) {
       .catch((error) => {
         console.error(error);
         // dispatch(`Sign In Failed: ${error.response.data}`);
+        onError();
       });
   };
 }

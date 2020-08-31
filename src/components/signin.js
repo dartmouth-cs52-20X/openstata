@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
@@ -68,6 +68,18 @@ const SignIn = (props) => {
     }
   };
 
+  useEffect(() => {
+    const listener = (event) => {
+      if (event.code === 'Enter') {
+        handleSignIn();
+      }
+    };
+    document.addEventListener('keydown', listener);
+    return () => {
+      document.removeEventListener('keydown', listener);
+    };
+  });
+
   return (
     <div>
       <Container component="main" maxWidth="sm" className="signin-modal">
@@ -124,7 +136,7 @@ const SignIn = (props) => {
             <Grid container direction="row" justify="center">
               {signInError ? (
                 <Typography variant="subtitle1">
-                  Error during sign up. Please try again.
+                  Error during sign in. Please try again.
                 </Typography>
               ) : undefined}
             </Grid>
