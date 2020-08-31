@@ -4,7 +4,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
-import axios from 'axios';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -31,6 +30,7 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import StorageIcon from '@material-ui/icons/Storage';
 import uploadFile from '../actions/s3';
 import RunButton, { UploadButton } from '../components/custom-buttons';
 import TabPanel, { a11yProps } from '../components/tabs';
@@ -45,6 +45,7 @@ import {
   getLogFiles,
   getSingleLogFile,
   getData,
+  runCompilation,
 } from '../actions';
 
 const mapStateToProps = (reduxState) => ({
@@ -258,7 +259,6 @@ Statistics/Data Analysis`;
     if (reason === 'clickaway') {
       return;
     }
-
     setUploadAlert(false);
   };
 
@@ -267,27 +267,13 @@ Statistics/Data Analysis`;
       ? props.dofiles.current.tutorialID
       : null;
     setRunLoading(true);
-    axios
-      .post(
-        'https://open-stata.herokuapp.com/api/parse',
-        { dofile: code, tutorialID },
-        {
-          headers: { authorization: localStorage.getItem('token') },
-        }
-      )
-      .then((res) => {
-        setCompilation(
-          `${compilation}\n\n-----------------------------\n\n${res.data.output.join(
-            '\n\n'
-          )}`
-        );
-        setRunLoading(false);
-      })
-      .catch((err) => {
-        setCompilation(
-          `${compilation}\n\n-----------------------------\n\nError: ${err.response.data.output}`
-        );
-      });
+    runCompilation(
+      code,
+      tutorialID,
+      compilation,
+      setCompilation,
+      setRunLoading
+    );
   };
 
   const handleSave = () => {
@@ -335,7 +321,7 @@ Statistics/Data Analysis`;
           </ListItem>
           <Divider />
           <Collapse in={fileCollapse} timeout="auto" unmountOnExit>
-            <List>
+            <List dense>
               {doFiles.map((file) => (
                 <ListItem
                   button
@@ -357,7 +343,7 @@ Statistics/Data Analysis`;
           </ListItem>
           <Divider />
           <Collapse in={logCollapse} timeout="auto" unmountOnExit>
-            <List>
+            <List dense>
               {logFiles.map((log) => (
                 <ListItem button key={log.id} onClick={() => handleLogNav(log)}>
                   <ListItemIcon>
@@ -375,11 +361,11 @@ Statistics/Data Analysis`;
           </ListItem>
           <Divider />
           <Collapse in={sampleCollapse} timeout="auto" unmountOnExit>
-            <List>
+            <List dense>
               {sampleFiles.map((data) => (
-                <ListItem button key={data.id}>
+                <ListItem key={data.id}>
                   <ListItemIcon>
-                    <Description />
+                    <StorageIcon />
                   </ListItemIcon>
                   <ListItemText primary={data.fileName} />
                 </ListItem>
@@ -393,11 +379,11 @@ Statistics/Data Analysis`;
           </ListItem>
           <Divider />
           <Collapse in={dataCollapse} timeout="auto" unmountOnExit>
-            <List>
+            <List dense>
               {dataFiles.map((data) => (
-                <ListItem button key={data.id}>
+                <ListItem key={data.id}>
                   <ListItemIcon>
-                    <Description />
+                    <StorageIcon />
                   </ListItemIcon>
                   <ListItemText primary={data.fileName} />
                 </ListItem>

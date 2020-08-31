@@ -206,3 +206,34 @@ export const getData = () => (dispatch) => {
       console.error(err);
     });
 };
+
+export const runCompilation = (
+  code,
+  tutorialID,
+  compilation,
+  setCompilation,
+  setRunLoading
+) => {
+  axios
+    .post(
+      'https://open-stata.herokuapp.com/api/parse',
+      { dofile: code, tutorialID },
+      {
+        headers: { authorization: localStorage.getItem('token') },
+      }
+    )
+    .then((res) => {
+      setCompilation(
+        `${compilation}\n\n-----------------------------\n\n${res.data.output.join(
+          '\n\n'
+        )}`
+      );
+      setRunLoading(false);
+    })
+    .catch((err) => {
+      setCompilation(
+        `${compilation}\n\n-----------------------------\n\nError: ${err.response.data.output}`
+      );
+      setRunLoading(false);
+    });
+};

@@ -194,8 +194,6 @@ function HomePage(props) {
   const [value, setValue] = useState(0);
   const [isTutorial, setIsTutorial] = useState(null);
   const [displayModule, setDisplayModule] = useState('');
-
-  console.log('token', localStorage.getItem('token'));
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
