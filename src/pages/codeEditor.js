@@ -305,7 +305,8 @@ Statistics/Data Analysis`;
       <NavBar
         className={classes.appBar}
         page="editor"
-        file={props.dofiles.current}
+        file={logMode ? props.logfiles.current : props.dofiles.current}
+        isLog={logMode}
       />
       <Drawer
         className={classes.drawer}
