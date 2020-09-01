@@ -107,7 +107,6 @@ const Welcome = (props) => {
             wrapEnabled
             height="100%"
             width="100%"
-            min-width="330px"
             readOnly
           />
           {/* <h2> */}
