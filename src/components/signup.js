@@ -106,6 +106,11 @@ const SignUp = (props) => {
                   autoComplete="username"
                   onChange={(event) => setUsername(event.target.value)}
                   error={usernameError}
+                  onKeyPress={(res) => {
+                    if (res.key === 'Enter') {
+                      handleSignUp();
+                    }
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>

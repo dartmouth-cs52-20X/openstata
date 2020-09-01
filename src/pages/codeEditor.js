@@ -214,6 +214,11 @@ Statistics/Data Analysis`;
     setAlertSeverity(severity);
   };
 
+  const reloadData = (message, severity) => {
+    props.getData();
+    handleAlert(message, severity);
+  };
+
   // when a file is chosen in file/url widget
   const onFileChosen = (event) => {
     const chosenFile = event.target.files[0];
@@ -230,7 +235,7 @@ Statistics/Data Analysis`;
     }
   };
 
-  // handles the situation where we are downloading by file
+  // handles the situation where we are uploading by file
   const handleFileUpload = () => {
     if (fileToUpload && alias) {
       setUploading(true);
@@ -241,7 +246,7 @@ Statistics/Data Analysis`;
             url,
           };
           setUploading(false);
-          props.saveURL(post, handleAlert);
+          props.saveURL(post, reloadData);
 
           // clears input
           setFileToUpload('');
@@ -256,7 +261,7 @@ Statistics/Data Analysis`;
     }
   };
 
-  // handles the situation where we are downloading by URL
+  // handles the situation where we are uploading by URL
   const handleURLUpload = () => {
     // directly save the non-s3 url and alias to endpoint Jeff is creating
     if (urlToUpload && alias) {
@@ -266,7 +271,7 @@ Statistics/Data Analysis`;
         url: urlToUpload,
       };
       setUploading(false);
-      props.saveURL(post, handleAlert);
+      props.saveURL(post, reloadData);
 
       // clears input
       setURLToUpload('');
@@ -286,6 +291,10 @@ Statistics/Data Analysis`;
     setUploadAlert(false);
   };
 
+  const updateLogs = () => {
+    props.getLogFiles();
+  };
+
   const runCode = () => {
     const tutorialID = props.dofiles.current.tutorialID
       ? props.dofiles.current.tutorialID
@@ -296,7 +305,8 @@ Statistics/Data Analysis`;
       tutorialID,
       compilation,
       setCompilation,
-      setRunLoading
+      setRunLoading,
+      updateLogs
     );
   };
 
@@ -330,7 +340,8 @@ Statistics/Data Analysis`;
         className={classes.appBar}
         page="editor"
         file={logMode ? props.logfiles.current : props.dofiles.current}
-        isLog={logMode}
+        isLog={logMode || tutorialMode}
+        showEdit={showSidebar}
       />
       <Drawer
         className={classes.drawer}

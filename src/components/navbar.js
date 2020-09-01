@@ -107,7 +107,7 @@ const NavBar = (props) => {
               <Typography variant="h6" color="primary">
                 {filename}
               </Typography>
-              {props.isLog ? undefined : (
+              {props.isLog || !props.showEdit ? undefined : (
                 <IconButton
                   onClick={() => setEditFilename(true)}
                   color="primary"

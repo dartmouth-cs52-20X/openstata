@@ -173,7 +173,7 @@ export function saveURL(post, callback) {
         console.log(response.data);
         // eslint-disable-next-line no-alert
         callback(
-          `Successfully downloaded ${response.data.fileName}! You can now use this data set by typing the command "use ${response.data.fileName}" into the code editor!`,
+          `Successfully uploaded ${response.data.fileName}! You can now use this data set by typing the command "use ${response.data.fileName}" into the code editor!`,
           'success'
         );
       })
@@ -246,7 +246,8 @@ export const runCompilation = (
   tutorialID,
   compilation,
   setCompilation,
-  setRunLoading
+  setRunLoading,
+  updateLogs
 ) => {
   axios
     .post(
@@ -263,6 +264,7 @@ export const runCompilation = (
         )}`
       );
       setRunLoading(false);
+      if (updateLogs) updateLogs();
     })
     .catch((err) => {
       setCompilation(
