@@ -32,6 +32,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
+import BookIcon from '@material-ui/icons/Book';
+import BookOutlinedIcon from '@material-ui/icons/BookOutlined';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
+import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import StorageIcon from '@material-ui/icons/Storage';
 import uploadFile from '../actions/s3';
 import RunButton, { UploadButton } from '../components/custom-buttons';
@@ -378,7 +382,11 @@ Statistics/Data Analysis`;
                           onClick={() => handleFileNav(file)}
                         >
                           <ListItemIcon>
-                            <Description />
+                            {props.match.params.fileid === file.id ? (
+                              <BookIcon />
+                            ) : (
+                              <BookOutlinedIcon />
+                            )}
                           </ListItemIcon>
                           <ListItemText primary={file.fileName} />
                         </ListItem>
@@ -400,7 +408,11 @@ Statistics/Data Analysis`;
                         onClick={() => handleLogNav(log)}
                       >
                         <ListItemIcon>
-                          <Description />
+                          {props.match.params.fileid === log.id ? (
+                            <FileCopyIcon />
+                          ) : (
+                            <FileCopyOutlinedIcon />
+                          )}
                         </ListItemIcon>
                         <ListItemText primary={log.fileName} />
                       </ListItem>
@@ -472,9 +484,9 @@ Statistics/Data Analysis`;
                       >
                         <ListItemIcon>
                           {props.match.params.fileid === log.id ? (
-                            <Description />
+                            <FileCopyIcon />
                           ) : (
-                            <DescriptionOutlinedIcon />
+                            <FileCopyOutlinedIcon />
                           )}
                         </ListItemIcon>
                         <ListItemText primary={log.fileName} />
