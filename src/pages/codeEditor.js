@@ -330,7 +330,7 @@ Statistics/Data Analysis`;
         className={classes.appBar}
         page="editor"
         file={logMode ? props.logfiles.current : props.dofiles.current}
-        isLog={logMode}
+        isLog={logMode || tutorialMode}
       />
       <Drawer
         className={classes.drawer}
