@@ -246,7 +246,8 @@ export const runCompilation = (
   tutorialID,
   compilation,
   setCompilation,
-  setRunLoading
+  setRunLoading,
+  updateLogs
 ) => {
   axios
     .post(
@@ -263,6 +264,7 @@ export const runCompilation = (
         )}`
       );
       setRunLoading(false);
+      if (updateLogs) updateLogs();
     })
     .catch((err) => {
       setCompilation(

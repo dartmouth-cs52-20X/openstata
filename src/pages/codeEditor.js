@@ -286,6 +286,10 @@ Statistics/Data Analysis`;
     setUploadAlert(false);
   };
 
+  const updateLogs = () => {
+    props.getLogFiles();
+  };
+
   const runCode = () => {
     const tutorialID = props.dofiles.current.tutorialID
       ? props.dofiles.current.tutorialID
@@ -296,7 +300,8 @@ Statistics/Data Analysis`;
       tutorialID,
       compilation,
       setCompilation,
-      setRunLoading
+      setRunLoading,
+      updateLogs
     );
   };
 
@@ -331,6 +336,7 @@ Statistics/Data Analysis`;
         page="editor"
         file={logMode ? props.logfiles.current : props.dofiles.current}
         isLog={logMode || tutorialMode}
+        showEdit={showSidebar}
       />
       <Drawer
         className={classes.drawer}
