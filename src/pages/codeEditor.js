@@ -74,6 +74,11 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#d2d2d2',
     height: 'calc(100% - 295px)',
   },
+  drawerPaperTutorial: {
+    width: drawerWidth,
+    backgroundColor: '#d2d2d2',
+    height: 'calc(100% - 94px)',
+  },
   drawerContainer: {
     overflow: 'auto',
   },
@@ -157,7 +162,6 @@ Statistics/Data Analysis`;
 
   useEffect(() => {
     if (props.dofiles.current) {
-      console.log('code mode');
       setCode(props.dofiles.current.content);
       setLogMode(false);
     }
@@ -165,7 +169,6 @@ Statistics/Data Analysis`;
 
   useEffect(() => {
     if (props.logfiles.current) {
-      console.log('log mode');
       setCode(props.logfiles.current.content);
       setLogMode(true);
     }
@@ -222,11 +225,8 @@ Statistics/Data Analysis`;
         'The file selected is too big, please select a file less than 10MB',
         'error'
       );
-    } else {
-      console.log('file chosen:', chosenFile);
-      if (chosenFile) {
-        setFileToUpload(chosenFile);
-      }
+    } else if (chosenFile) {
+      setFileToUpload(chosenFile);
     }
   };
 
@@ -336,7 +336,10 @@ Statistics/Data Analysis`;
         className={classes.drawer}
         variant="permanent"
         classes={{
-          paper: classes.drawerPaper,
+          paper:
+            tutorialMode || !showSidebar
+              ? classes.drawerPaperTutorial
+              : classes.drawerPaper,
         }}
       >
         <div className="drawerContainer">
@@ -371,11 +374,33 @@ Statistics/Data Analysis`;
                   </List>
                 </Collapse>
                 <Divider />
+                <ListItem button onClick={() => setLogCollapse(!logCollapse)}>
+                  <ListItemText primary="Log Files" />
+                  {logCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </ListItem>
+                <Divider />
+                <Collapse in={logCollapse} timeout="auto" unmountOnExit>
+                  <List dense>
+                    {logFiles.map((log) => (
+                      <ListItem
+                        button
+                        key={log.id}
+                        onClick={() => handleLogNav(log)}
+                      >
+                        <ListItemIcon>
+                          <Description />
+                        </ListItemIcon>
+                        <ListItemText primary={log.fileName} />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Collapse>
+                <Divider />
                 <ListItem
                   button
                   onClick={() => setSampleCollapse(!sampleCollapse)}
                 >
-                  <ListItemText primary="Tutorial Data" />
+                  <ListItemText primary="Sample Data" />
                   {sampleCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 </ListItem>
                 <Divider />
@@ -480,72 +505,74 @@ Statistics/Data Analysis`;
             )
           ) : undefined}
         </div>
-        <div className="file-widget">
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="simple tabs example"
-            indicatorColor="secondary"
-          >
-            <Tab style={tabStyle} label="Upload File" {...a11yProps(0)} />
-            <Tab style={tabStyle} label="Upload URL" {...a11yProps(1)} />
-          </Tabs>
-          {isFile ? (
-            <TabPanel value={value} index={1}>
-              <form
-                className={classes.urlWidgetButtons}
-                noValidate
-                autoComplete="off"
-              >
-                <TextField
-                  value={urlToUpload}
-                  id="standard-basic"
-                  label="URL"
-                  onChange={(e) => setURLToUpload(e.target.value)}
-                  color="secondary"
-                />
-                <TextField
-                  value={alias}
-                  id="standard-basic"
-                  label="Alias"
-                  onChange={(e) => setAlias(e.target.value)}
-                />
-              </form>
-              <UploadButton onClick={handleURLUpload} loading={uploading} />
-            </TabPanel>
-          ) : (
-            <TabPanel value={value} index={0}>
-              <form
-                className={classes.fileWidgetButtons}
-                noValidate
-                autoComplete="off"
-              >
-                <input
-                  id="fileInput"
-                  type="file"
-                  name="uploadFile"
-                  onChange={onFileChosen}
-                />
-                <TextField
-                  value={alias}
-                  id="standard-basic"
-                  label="Alias"
-                  onChange={(e) => setAlias(e.target.value)}
-                />
-              </form>
-              <UploadButton onClick={handleFileUpload} loading={uploading} />
-            </TabPanel>
-          )}
-          <Snackbar
-            open={uploadAlert}
-            autoHideDuration={6000}
-            onClose={handleClose}
-          >
-            <MuiAlert severity={alertSeverity} onClose={handleClose}>
-              {snackbarMessage}
-            </MuiAlert>
-          </Snackbar>
-        </div>
+        {!tutorialMode && showSidebar ? (
+          <div className="file-widget">
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="simple tabs example"
+              indicatorColor="secondary"
+            >
+              <Tab style={tabStyle} label="Upload File" {...a11yProps(0)} />
+              <Tab style={tabStyle} label="Upload URL" {...a11yProps(1)} />
+            </Tabs>
+            {isFile ? (
+              <TabPanel value={value} index={1}>
+                <form
+                  className={classes.urlWidgetButtons}
+                  noValidate
+                  autoComplete="off"
+                >
+                  <TextField
+                    value={urlToUpload}
+                    id="standard-basic"
+                    label="URL"
+                    onChange={(e) => setURLToUpload(e.target.value)}
+                    color="secondary"
+                  />
+                  <TextField
+                    value={alias}
+                    id="standard-basic"
+                    label="Alias"
+                    onChange={(e) => setAlias(e.target.value)}
+                  />
+                </form>
+                <UploadButton onClick={handleURLUpload} loading={uploading} />
+              </TabPanel>
+            ) : (
+              <TabPanel value={value} index={0}>
+                <form
+                  className={classes.fileWidgetButtons}
+                  noValidate
+                  autoComplete="off"
+                >
+                  <input
+                    id="fileInput"
+                    type="file"
+                    name="uploadFile"
+                    onChange={onFileChosen}
+                  />
+                  <TextField
+                    value={alias}
+                    id="standard-basic"
+                    label="Alias"
+                    onChange={(e) => setAlias(e.target.value)}
+                  />
+                </form>
+                <UploadButton onClick={handleFileUpload} loading={uploading} />
+              </TabPanel>
+            )}
+            <Snackbar
+              open={uploadAlert}
+              autoHideDuration={6000}
+              onClose={handleClose}
+            >
+              <MuiAlert severity={alertSeverity} onClose={handleClose}>
+                {snackbarMessage}
+              </MuiAlert>
+            </Snackbar>
+          </div>
+        ) : undefined}
       </Drawer>
       <div className={classes.content}>
         <div className="compContainer">
@@ -585,10 +612,12 @@ Statistics/Data Analysis`;
           />
           <AppBar position="fixed" className={classes.codeBar}>
             <Grid container direction="row" justify="flex-end">
-              <IconButton onClick={() => handleDelete()} disabled={logMode}>
-                <Typography variant="body1">Delete File</Typography>
-                <DeleteIcon />
-              </IconButton>
+              {!tutorialMode && showSidebar ? (
+                <IconButton onClick={() => handleDelete()} disabled={logMode}>
+                  <Typography variant="body1">Delete File</Typography>
+                  <DeleteIcon />
+                </IconButton>
+              ) : undefined}
               <IconButton
                 onClick={() => setCompilation(headerText)}
                 disabled={logMode}
