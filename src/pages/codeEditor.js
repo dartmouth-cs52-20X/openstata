@@ -31,6 +31,7 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import StorageIcon from '@material-ui/icons/Storage';
 import uploadFile from '../actions/s3';
 import RunButton, { UploadButton } from '../components/custom-buttons';
@@ -444,7 +445,11 @@ Statistics/Data Analysis`;
                         onClick={() => handleFileNav(file)}
                       >
                         <ListItemIcon>
-                          <Description />
+                          {props.match.params.fileid === file.id ? (
+                            <Description />
+                          ) : (
+                            <DescriptionOutlinedIcon />
+                          )}
                         </ListItemIcon>
                         <ListItemText primary={file.fileName} />
                       </ListItem>
@@ -466,7 +471,11 @@ Statistics/Data Analysis`;
                         onClick={() => handleLogNav(log)}
                       >
                         <ListItemIcon>
-                          <Description />
+                          {props.match.params.fileid === log.id ? (
+                            <Description />
+                          ) : (
+                            <DescriptionOutlinedIcon />
+                          )}
                         </ListItemIcon>
                         <ListItemText primary={log.fileName} />
                       </ListItem>
