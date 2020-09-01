@@ -11,6 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ExitToApp from '@material-ui/icons/ExitToApp';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
 import Home from '@material-ui/icons/Home';
 import Edit from '@material-ui/icons/Edit';
 import Save from '@material-ui/icons/Save';
@@ -120,11 +121,16 @@ const NavBar = (props) => {
         ) : undefined}
         {!props.authenticated ? (
           <Grid item>
+            <IconButton color="primary">
+              <a href="https://github.com/arjunsrini/open-stata-data/wiki/Open-Stata-Documentation" target="_blank" rel="noreferrer">
+                <Typography variant="body1">Docs</Typography>
+              </a>
+            </IconButton>
             <IconButton onClick={openSignup} color="primary">
               <Typography variant="body1">Sign Up</Typography>
             </IconButton>
             <IconButton onClick={openSignin} color="primary">
-              <Typography variant="body1">Log In</Typography>
+              <Typography variant="body1">Sign In</Typography>
             </IconButton>
           </Grid>
         ) : (
@@ -138,6 +144,12 @@ const NavBar = (props) => {
             <IconButton onClick={handleSignout} color="primary">
               <ExitToApp />
               <Typography variant="body1">Log Out</Typography>
+            </IconButton>
+            <IconButton color="primary">
+              <a href="https://github.com/arjunsrini/open-stata-data/wiki/Open-Stata-Documentation" target="_blank" rel="noreferrer">
+                <MenuBookIcon />
+                <Typography variant="body1">Docs</Typography>
+              </a>
             </IconButton>
             <IconButton onClick={goToProfile} color="primary">
               <AccountCircleIcon />
