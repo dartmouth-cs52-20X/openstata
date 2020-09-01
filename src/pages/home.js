@@ -7,28 +7,29 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import List from '@material-ui/core/List';
+/* import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import FolderIcon from '@material-ui/icons/Folder';
+import FolderIcon from '@material-ui/icons/Folder'; */
 import Fab from '@material-ui/core/Fab';
 import { NavLink } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
 
 import NavBar from '../components/navbar';
-import TutorialOptions from '../components/tutorialOptions';
+// import TutorialOptions from '../components/tutorialOptions';
 
-import { getDoFiles, createDoFile } from '../actions';
+import { getDoFiles, createDoFile, getTutorialFiles } from '../actions';
 
 const mapStateToProps = (reduxState) => ({
   dofiles: reduxState.dofiles.all,
+  tutorials: reduxState.dofiles.tutorials,
 });
 
 const drawerWidth = 248;
 
 // temporary until we set up the database...
-const data = {
+/* const data = {
   content: {
     tutorials: [
       {
@@ -131,7 +132,7 @@ const data = {
       },
     ],
   },
-};
+}; */
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -174,7 +175,7 @@ function a11yProps(index) {
   };
 }
 
-function populateProjectModules() {
+/* function populateProjectModules() {
   return (
     <List className="listItem" component="nav" aria-label="projects">
       {data.content.projects.map((key) => (
@@ -187,20 +188,21 @@ function populateProjectModules() {
       ))}
     </List>
   );
-}
+} */
 
 function HomePage(props) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [isTutorial, setIsTutorial] = useState(null);
-  const [displayModule, setDisplayModule] = useState('');
+  // const [displayModule, setDisplayModule] = useState('');
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    props.getDoFiles(setInitialized);
+    props.getDoFiles(props.getTutorialFiles, setInitialized);
   }, []);
 
-  let doFilesList;
+  let doFilesList,
+    tutorialsList;
 
   const handleCreate = () => {
     const file = {
@@ -239,6 +241,23 @@ function HomePage(props) {
         </Fab>
       </div>
     );
+    tutorialsList = Object.entries(props.tutorials)
+      .sort((a, b) => Number(a.tutorialID) - Number(b.tutorialID))
+      .map(([id, file]) => {
+        return (
+          <div className="full-name-edit-btn">
+            <Fab
+              className={classes.files}
+              component={NavLink}
+              to={`/editor/${file.id}`}
+              variant="extended"
+              aria-label="add"
+            >
+              {file.fileName}
+            </Fab>
+          </div>
+        );
+      });
   }
 
   const handleChange = (event, newValue) => {
@@ -279,38 +298,18 @@ function HomePage(props) {
               <Tab style={tabStyle} label="Do Files" {...a11yProps(1)} />
             </Tabs>
             {!isTutorial ? (
-              <TabPanel value={value} index={0}>
-                <List
-                  className="listItem"
-                  component="nav"
-                  aria-label="tutorials"
-                >
-                  {data.content.tutorials.map((key) => (
-                    <ListItem
-                      button
-                      onClick={() => setDisplayModule(key.mod.name)}
-                    >
-                      <ListItemIcon>
-                        <FolderIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={key.mod.name} />
-                    </ListItem>
-                  ))}
-                </List>
-              </TabPanel>
+              <TabPanel value={value} index={0} />
             ) : (
-              <TabPanel value={value} index={1}>
-                {populateProjectModules()}
-              </TabPanel>
+              <TabPanel value={value} index={1} />
             )}
           </Drawer>
         </div>
         {!isTutorial ? (
           <div className="main-page">
             <div className="main-page-title">
-              {displayModule ? <h1>{displayModule}</h1> : <h1>Introduction</h1>}
+              <h1>Tutorials:</h1>
             </div>
-            <TutorialOptions data={data} displayModule={displayModule} />
+            <div className="tutorials-container">{tutorialsList}</div>
           </div>
         ) : (
           <div className="main-page">
@@ -325,4 +324,4 @@ function HomePage(props) {
   );
 }
 
-export default connect(mapStateToProps, { getDoFiles, createDoFile })(HomePage);
+export default connect(mapStateToProps, { getDoFiles, createDoFile, getTutorialFiles })(HomePage);

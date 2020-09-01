@@ -16,6 +16,7 @@ export const ActionTypes = {
   GET_SINGLE_LOGFILE: 'GET_SINGLE_LOGFILE',
   CHANGE_PASSWORD: 'CHANGE_PASSWORD',
   GET_DATA: 'GET_DATA',
+  GET_TUTORIALS: 'GET_TUTORIALS',
 };
 
 export function signinUser(user, history, onError) {
@@ -66,7 +67,7 @@ export function authError(error) {
   };
 }
 
-export const getDoFiles = (setInitialized) => (dispatch) => {
+export const getDoFiles = (setNext, setInitialized) => (dispatch) => {
   axios
     .get(`${ROOT_URL}/dofiles`, {
       headers: { authorization: localStorage.getItem('token') },
@@ -74,6 +75,23 @@ export const getDoFiles = (setInitialized) => (dispatch) => {
     .then((res) => {
       dispatch({
         type: ActionTypes.GET_DOFILES,
+        payload: res.data,
+      });
+      if (setNext) setNext(setInitialized);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+export const getTutorialFiles = (setInitialized) => (dispatch) => {
+  axios
+    .get(`${ROOT_URL}/tutorials`, {
+      headers: { authorization: localStorage.getItem('token') },
+    })
+    .then((res) => {
+      dispatch({
+        type: ActionTypes.GET_TUTORIALS,
         payload: res.data,
       });
       if (setInitialized) setInitialized(true);
