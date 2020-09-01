@@ -239,7 +239,9 @@ Statistics/Data Analysis`;
 
   // handles the situation where we are uploading by file
   const handleFileUpload = () => {
-    if (fileToUpload && alias) {
+    if (alias.indexOf(' ') >= 0) {
+      handleAlert('error: Alias must not contain any white space characters', 'error');
+    } else if (fileToUpload && alias) {
       setUploading(true);
       uploadFile(fileToUpload)
         .then((url) => {
@@ -265,8 +267,10 @@ Statistics/Data Analysis`;
 
   // handles the situation where we are uploading by URL
   const handleURLUpload = () => {
-    // directly save the non-s3 url and alias to endpoint Jeff is creating
-    if (urlToUpload && alias) {
+    if (alias.indexOf(' ') >= 0) {
+      handleAlert('error: Alias must not contain any white space characters', 'error');
+    } else if (urlToUpload && alias) {
+      // directly save the non-s3 url and alias to endpoint Jeff is creating
       setUploading(true);
       const post = {
         fileName: alias,
