@@ -139,6 +139,8 @@ Statistics/Data Analysis`;
   const [uploading, setUploading] = useState(false);
   const [runLoading, setRunLoading] = useState(false);
 
+  // const validFileExtensions = ['.csv'];
+
   const tabStyle = {
     minWidth: 124,
     paddingLeft: 10,
@@ -237,7 +239,10 @@ Statistics/Data Analysis`;
 
   // handles the situation where we are uploading by file
   const handleFileUpload = () => {
-    if (fileToUpload && alias) {
+    // alias cannot have whitespace
+    if (alias.indexOf(' ') >= 0) {
+      handleAlert('error: Alias must not contain any white space characters', 'error');
+    } else if (fileToUpload && alias) {
       setUploading(true);
       uploadFile(fileToUpload)
         .then((url) => {
@@ -263,8 +268,11 @@ Statistics/Data Analysis`;
 
   // handles the situation where we are uploading by URL
   const handleURLUpload = () => {
-    // directly save the non-s3 url and alias to endpoint Jeff is creating
-    if (urlToUpload && alias) {
+    // alias cannot have whitespace
+    if (alias.indexOf(' ') >= 0) {
+      handleAlert('error: Alias must not contain any white space characters', 'error');
+    } else if (urlToUpload && alias) {
+      // directly save the non-s3 url and alias to endpoint Jeff is creating
       setUploading(true);
       const post = {
         fileName: alias,
@@ -562,6 +570,7 @@ Statistics/Data Analysis`;
                     type="file"
                     name="uploadFile"
                     onChange={onFileChosen}
+                    accept=".csv, .dta, .xlsx, .xls, .pkl, .hdf"
                   />
                   <TextField
                     value={alias}
