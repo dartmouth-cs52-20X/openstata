@@ -1,6 +1,6 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable operator-linebreak */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
@@ -80,18 +80,6 @@ const SignUp = (props) => {
     }
   };
 
-  useEffect(() => {
-    const listener = (event) => {
-      if (event.code === 'Enter') {
-        handleSignUp();
-      }
-    };
-    document.addEventListener('keydown', listener);
-    return () => {
-      document.removeEventListener('keydown', listener);
-    };
-  }, []);
-
   return (
     <div>
       <Container component="main" maxWidth="sm" className="signup-modal">
@@ -131,6 +119,11 @@ const SignUp = (props) => {
                   autoComplete="email"
                   onChange={(event) => setEmail(event.target.value)}
                   error={emailError}
+                  onKeyPress={(res) => {
+                    if (res.key === 'Enter') {
+                      handleSignUp();
+                    }
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -150,6 +143,11 @@ const SignUp = (props) => {
                       ? 'You need at least 8 characters with one uppercase letter, one lowercase letter, and one number'
                       : 'Password must at least 8 characters long with 1 uppercase letter, 1 lowercase letter, and 1 number.'
                   }
+                  onKeyPress={(res) => {
+                    if (res.key === 'Enter') {
+                      handleSignUp();
+                    }
+                  }}
                 />
               </Grid>
             </Grid>
