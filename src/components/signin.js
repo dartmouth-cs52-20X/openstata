@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
@@ -68,17 +68,17 @@ const SignIn = (props) => {
     }
   };
 
-  useEffect(() => {
-    const listener = (event) => {
-      if (event.code === 'Enter') {
-        handleSignIn();
-      }
-    };
-    document.addEventListener('keydown', listener);
-    return () => {
-      document.removeEventListener('keydown', listener);
-    };
-  }, []);
+  // useEffect(() => {
+  //   const listener = (event) => {
+  //     if (event.code === 'Enter') {
+  //       handleSignIn();
+  //     }
+  //   };
+  //   document.addEventListener('keydown', listener);
+  //   return () => {
+  //     document.removeEventListener('keydown', listener);
+  //   };
+  // }, []);
 
   return (
     <div>
@@ -106,6 +106,11 @@ const SignIn = (props) => {
                   autoComplete="email"
                   onChange={(event) => setEmail(event.target.value)}
                   error={emailError}
+                  onKeyPress={(res) => {
+                    if (res.key === 'Enter') {
+                      handleSignIn();
+                    }
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -120,6 +125,11 @@ const SignIn = (props) => {
                   autoComplete="current-password"
                   onChange={(event) => setPassword(event.target.value)}
                   error={passwordError}
+                  onKeyPress={(res) => {
+                    if (res.key === 'Enter') {
+                      handleSignIn();
+                    }
+                  }}
                 />
               </Grid>
             </Grid>
