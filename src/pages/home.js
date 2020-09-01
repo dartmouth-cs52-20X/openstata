@@ -198,7 +198,7 @@ function HomePage(props) {
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    props.getDoFiles(props.getTutorialFiles, setInitialized);
+    props.getTutorialFiles(props.getDoFiles, setInitialized);
   }, []);
 
   let doFilesList,
