@@ -201,8 +201,7 @@ function HomePage(props) {
     props.getTutorialFiles(props.getDoFiles, setInitialized);
   }, []);
 
-  let doFilesList,
-    tutorialsList;
+  let doFilesList, tutorialsList;
 
   const handleCreate = () => {
     const file = {
@@ -242,7 +241,11 @@ function HomePage(props) {
       </div>
     );
     tutorialsList = Object.entries(props.tutorials)
-      .sort((a, b) => Number(a.tutorialID) - Number(b.tutorialID))
+      .sort((a, b) => {
+        return a[1].tutorialID.localeCompare(b[1].tutorialID, 'en', {
+          numeric: true,
+        });
+      })
       .map(([id, file]) => {
         return (
           <div className="full-name-edit-btn">
@@ -324,4 +327,8 @@ function HomePage(props) {
   );
 }
 
-export default connect(mapStateToProps, { getDoFiles, createDoFile, getTutorialFiles })(HomePage);
+export default connect(mapStateToProps, {
+  getDoFiles,
+  createDoFile,
+  getTutorialFiles,
+})(HomePage);
