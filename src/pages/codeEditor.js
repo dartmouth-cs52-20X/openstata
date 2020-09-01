@@ -239,6 +239,7 @@ Statistics/Data Analysis`;
 
   // handles the situation where we are uploading by file
   const handleFileUpload = () => {
+    // alias cannot have whitespace
     if (alias.indexOf(' ') >= 0) {
       handleAlert('error: Alias must not contain any white space characters', 'error');
     } else if (fileToUpload && alias) {
@@ -267,6 +268,7 @@ Statistics/Data Analysis`;
 
   // handles the situation where we are uploading by URL
   const handleURLUpload = () => {
+    // alias cannot have whitespace
     if (alias.indexOf(' ') >= 0) {
       handleAlert('error: Alias must not contain any white space characters', 'error');
     } else if (urlToUpload && alias) {
