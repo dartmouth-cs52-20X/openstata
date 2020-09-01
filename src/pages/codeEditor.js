@@ -375,7 +375,7 @@ Statistics/Data Analysis`;
                   button
                   onClick={() => setSampleCollapse(!sampleCollapse)}
                 >
-                  <ListItemText primary="Tutorial Data" />
+                  <ListItemText primary="Sample Data" />
                   {sampleCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 </ListItem>
                 <Divider />
