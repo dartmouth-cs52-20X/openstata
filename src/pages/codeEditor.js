@@ -46,6 +46,7 @@ import {
   getSingleLogFile,
   getData,
   runCompilation,
+  getTutorialFiles,
 } from '../actions';
 
 const mapStateToProps = (reduxState) => ({
@@ -116,6 +117,7 @@ Statistics/Data Analysis`;
   const [dataCollapse, setDataCollapse] = useState(false);
   const [sampleCollapse, setSampleCollapse] = useState(false);
   const [logMode, setLogMode] = useState(false);
+  const [tutorialMode, setTutorialMode] = useState(false);
 
   // file/url widget state
   const [value, setValue] = useState(0);
@@ -146,7 +148,7 @@ Statistics/Data Analysis`;
   useEffect(() => {
     props.getSingleDoFile(props.match.params.fileid, null);
     props.getSingleLogFile(props.match.params.fileid, null);
-    props.getDoFiles(setSideBarInitialized);
+    props.getTutorialFiles(props.getDoFiles, setSideBarInitialized);
     props.getLogFiles();
     props.getData();
   }, []);
@@ -177,6 +179,14 @@ Statistics/Data Analysis`;
         sampleFiles.push(df);
       }
     });
+    // const isTutorial = false;
+    if (!tutorialMode) {
+      props.dofiles.tutorials.forEach((file) => {
+        if (props.match.params.fileid === file.id) {
+          setTutorialMode(true);
+        }
+      });
+    }
   }
 
   // handles widget tab change
@@ -325,81 +335,143 @@ Statistics/Data Analysis`;
         }}
       >
         <div className="drawerContainer">
-          <ListItem button onClick={() => setFileCollapse(!fileCollapse)}>
-            <ListItemText primary="Do Files" />
-            {fileCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </ListItem>
-          <Divider />
-          <Collapse in={fileCollapse} timeout="auto" unmountOnExit>
-            <List dense>
-              {doFiles.map((file) => (
-                <ListItem
-                  button
-                  key={file.id}
-                  onClick={() => handleFileNav(file)}
-                >
-                  <ListItemIcon>
-                    <Description />
-                  </ListItemIcon>
-                  <ListItemText primary={file.fileName} />
-                </ListItem>
-              ))}
-            </List>
-          </Collapse>
-          <Divider />
-          <ListItem button onClick={() => setLogCollapse(!logCollapse)}>
-            <ListItemText primary="Log Files" />
-            {logCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </ListItem>
-          <Divider />
-          <Collapse in={logCollapse} timeout="auto" unmountOnExit>
-            <List dense>
-              {logFiles.map((log) => (
-                <ListItem button key={log.id} onClick={() => handleLogNav(log)}>
-                  <ListItemIcon>
-                    <Description />
-                  </ListItemIcon>
-                  <ListItemText primary={log.fileName} />
-                </ListItem>
-              ))}
-            </List>
-          </Collapse>
-          <Divider />
-          <ListItem button onClick={() => setSampleCollapse(!sampleCollapse)}>
-            <ListItemText primary="Sample Data" />
-            {sampleCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </ListItem>
-          <Divider />
-          <Collapse in={sampleCollapse} timeout="auto" unmountOnExit>
-            <List dense>
-              {sampleFiles.map((data) => (
-                <ListItem key={data.id}>
-                  <ListItemIcon>
-                    <StorageIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={data.fileName} />
-                </ListItem>
-              ))}
-            </List>
-          </Collapse>
-          <Divider />
-          <ListItem button onClick={() => setDataCollapse(!dataCollapse)}>
-            <ListItemText primary="Your Data" />
-            {dataCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </ListItem>
-          <Divider />
-          <Collapse in={dataCollapse} timeout="auto" unmountOnExit>
-            <List dense>
-              {dataFiles.map((data) => (
-                <ListItem key={data.id}>
-                  <ListItemIcon>
-                    <StorageIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={data.fileName} />
-                </ListItem>
-              ))}
-            </List>
-          </Collapse>
+          {tutorialMode ? (
+            <div>
+              <ListItem button onClick={() => setFileCollapse(!fileCollapse)}>
+                <ListItemText primary="Do Files" />
+                {fileCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </ListItem>
+              <Divider />
+              <Collapse in={fileCollapse} timeout="auto" unmountOnExit>
+                <List dense>
+                  {props.dofiles.tutorials
+                    .sort((a, b) => {
+                      return a.tutorialID.localeCompare(b.tutorialID, 'en', {
+                        numeric: true,
+                      });
+                    })
+                    .map((file) => (
+                      <ListItem
+                        button
+                        key={file.id}
+                        onClick={() => handleFileNav(file)}
+                      >
+                        <ListItemIcon>
+                          <Description />
+                        </ListItemIcon>
+                        <ListItemText primary={file.fileName} />
+                      </ListItem>
+                    ))}
+                </List>
+              </Collapse>
+              <Divider />
+              <ListItem
+                button
+                onClick={() => setSampleCollapse(!sampleCollapse)}
+              >
+                <ListItemText primary="Sample Data" />
+                {sampleCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </ListItem>
+              <Divider />
+              <Collapse in={sampleCollapse} timeout="auto" unmountOnExit>
+                <List dense>
+                  {sampleFiles.map((data) => (
+                    <ListItem key={data.id}>
+                      <ListItemIcon>
+                        <StorageIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={data.fileName} />
+                    </ListItem>
+                  ))}
+                </List>
+              </Collapse>
+            </div>
+          ) : (
+            <div>
+              <ListItem button onClick={() => setFileCollapse(!fileCollapse)}>
+                <ListItemText primary="Do Files" />
+                {fileCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </ListItem>
+              <Divider />
+              <Collapse in={fileCollapse} timeout="auto" unmountOnExit>
+                <List dense>
+                  {doFiles.map((file) => (
+                    <ListItem
+                      button
+                      key={file.id}
+                      onClick={() => handleFileNav(file)}
+                    >
+                      <ListItemIcon>
+                        <Description />
+                      </ListItemIcon>
+                      <ListItemText primary={file.fileName} />
+                    </ListItem>
+                  ))}
+                </List>
+              </Collapse>
+              <Divider />
+              <ListItem button onClick={() => setLogCollapse(!logCollapse)}>
+                <ListItemText primary="Log Files" />
+                {logCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </ListItem>
+              <Divider />
+              <Collapse in={logCollapse} timeout="auto" unmountOnExit>
+                <List dense>
+                  {logFiles.map((log) => (
+                    <ListItem
+                      button
+                      key={log.id}
+                      onClick={() => handleLogNav(log)}
+                    >
+                      <ListItemIcon>
+                        <Description />
+                      </ListItemIcon>
+                      <ListItemText primary={log.fileName} />
+                    </ListItem>
+                  ))}
+                </List>
+              </Collapse>
+              <Divider />
+              <ListItem
+                button
+                onClick={() => setSampleCollapse(!sampleCollapse)}
+              >
+                <ListItemText primary="Sample Data" />
+                {sampleCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </ListItem>
+              <Divider />
+              <Collapse in={sampleCollapse} timeout="auto" unmountOnExit>
+                <List dense>
+                  {sampleFiles.map((data) => (
+                    <ListItem key={data.id}>
+                      <ListItemIcon>
+                        <StorageIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={data.fileName} />
+                    </ListItem>
+                  ))}
+                </List>
+              </Collapse>
+              <Divider />
+              <ListItem button onClick={() => setDataCollapse(!dataCollapse)}>
+                <ListItemText primary="Your Data" />
+                {dataCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </ListItem>
+              <Divider />
+              <Collapse in={dataCollapse} timeout="auto" unmountOnExit>
+                <List dense>
+                  {dataFiles.map((data) => (
+                    <ListItem key={data.id}>
+                      <ListItemIcon>
+                        <StorageIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={data.fileName} />
+                    </ListItem>
+                  ))}
+                </List>
+              </Collapse>
+            </div>
+          )}
         </div>
         <div className="file-widget">
           <Tabs
@@ -441,7 +513,12 @@ Statistics/Data Analysis`;
                 noValidate
                 autoComplete="off"
               >
-                <input id="fileInput" type="file" name="uploadFile" onChange={onFileChosen} />
+                <input
+                  id="fileInput"
+                  type="file"
+                  name="uploadFile"
+                  onChange={onFileChosen}
+                />
                 <TextField
                   value={alias}
                   id="standard-basic"
@@ -538,4 +615,5 @@ export default connect(mapStateToProps, {
   getLogFiles,
   getSingleLogFile,
   getData,
+  getTutorialFiles,
 })(CodeEditor);

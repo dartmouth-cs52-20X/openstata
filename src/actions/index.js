@@ -178,6 +178,7 @@ export function saveURL(post, callback) {
         );
       })
       .catch((error) => {
+        console.log('wut');
         dispatch(`Upload Failed: ${error.response.data}`);
       });
   };
@@ -185,9 +186,10 @@ export function saveURL(post, callback) {
 
 export function changePassword(newPassword, onError) {
   return (dispatch) => {
-    axios.post(`${ROOT_URL}/changepwd`, newPassword, {
-      headers: { authorization: localStorage.getItem('token') },
-    })
+    axios
+      .post(`${ROOT_URL}/changepwd`, newPassword, {
+        headers: { authorization: localStorage.getItem('token') },
+      })
       .catch((error) => {
         console.error(error);
         onError();
