@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "NODE_ENV=development webpack-dev-server",
+    "winstart": "SET NODE_ENV=development& webpack-dev-server",
     "test": "./node_modules/.bin/eslint src",
     "build": "yarn clean; NODE_ENV=production webpack --colors; cp -f _redirects dist/",
     "clean": "rimraf dist",
@@ -58,6 +59,7 @@
     "react-router-dom": "^5.2.0",
     "react-router-modal": "^1.5.2",
     "react-simple-code-editor": "^0.11.0",
+    "react-typing-effect": "^2.0.3",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0"
   }
