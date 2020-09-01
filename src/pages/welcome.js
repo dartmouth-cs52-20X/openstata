@@ -116,7 +116,7 @@ const Welcome = (props) => {
         </div>
 
         <div id="welcome-right-container">
-          <ReactTypingEffect text="OpenStata" className="welcome-title" />
+          <ReactTypingEffect text="OPENSTATA" className="welcome-title" />
           { !props.authenticated ? (
             <div className="welcome-buttons">
               <IconButton component={NavLink} color="secondary" to="/signup">
