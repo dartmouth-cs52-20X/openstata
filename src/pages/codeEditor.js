@@ -139,6 +139,8 @@ Statistics/Data Analysis`;
   const [uploading, setUploading] = useState(false);
   const [runLoading, setRunLoading] = useState(false);
 
+  // const validFileExtensions = ['.csv'];
+
   const tabStyle = {
     minWidth: 124,
     paddingLeft: 10,
@@ -562,6 +564,7 @@ Statistics/Data Analysis`;
                     type="file"
                     name="uploadFile"
                     onChange={onFileChosen}
+                    accept=".csv, .dta, .xlsx, .xls, .pkl, .hdf"
                   />
                   <TextField
                     value={alias}
