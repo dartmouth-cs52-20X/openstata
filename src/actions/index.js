@@ -67,7 +67,7 @@ export function authError(error) {
   };
 }
 
-export const getDoFiles = (setNext, setInitialized) => (dispatch) => {
+export const getDoFiles = (setInitialized) => (dispatch) => {
   axios
     .get(`${ROOT_URL}/dofiles`, {
       headers: { authorization: localStorage.getItem('token') },
@@ -77,14 +77,14 @@ export const getDoFiles = (setNext, setInitialized) => (dispatch) => {
         type: ActionTypes.GET_DOFILES,
         payload: res.data,
       });
-      if (setNext) setNext(setInitialized);
+      if (setInitialized) setInitialized(true);
     })
     .catch((err) => {
       console.error(err);
     });
 };
 
-export const getTutorialFiles = (setInitialized) => (dispatch) => {
+export const getTutorialFiles = (setNext, setInitialized) => (dispatch) => {
   axios
     .get(`${ROOT_URL}/tutorials`, {
       headers: { authorization: localStorage.getItem('token') },
@@ -94,7 +94,7 @@ export const getTutorialFiles = (setInitialized) => (dispatch) => {
         type: ActionTypes.GET_TUTORIALS,
         payload: res.data,
       });
-      if (setInitialized) setInitialized(true);
+      if (setNext) setNext(setInitialized);
     })
     .catch((err) => {
       console.error(err);
