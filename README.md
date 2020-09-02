@@ -26,9 +26,26 @@ combined with free tutorials and sample datasets to get anyone started with lear
 - Platform: Flask
 - Statistics: econtools, pandas.
 
+## Demo
+
+#### Landing Page and Login
+![](docs/img/landing.gif)
+
+#### Edit and run a do-file
+![](docs/img/do.gif)
+
+#### Tutorials and log files
+![](docs/img/tutorial.gif)
+
+#### Uploading and describing your own dataset
+![](docs/img/upload.gif)
+
+#### Changing password
+![](docs/img/profile.gif)
+
 ## Setup
 
-To get frontend running, yarn start.
+To get the frontend running, just do `yarn` to install packages, then `yarn start`.
 
 ## Deployment
 
