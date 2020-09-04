@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - "13"
+install:
+  - yarn --ignore-engines
+script:
+  - yarn build
+deploy:
+  provider: netlify
+  site: open-stata.netlify.app
+  auth:
+    secure: cszkK9i5KF6Qj8LgVKnDizqV8jSFn3HV7IIHKEQO0Bbg3ivb6jvdZtQqe2qTxGC7lc7LWKUAUFIraVQUnwk74q+5Ewcg7gsDqL5+I5bjRwfWeUYTQ5jycUggbDpmjylwemyacoF0FcV4NmJjn6c+RL0Vu7CAOks0QdIHEUtr717+kW5oP8+Djs68QIE1bi0oCNdp4phH81+vL8veiQumrZAXa8hFyJok4o4vUZD/TcZUxk80pgizyxruH9L4tFChxim1g0Ae2Uy+hp9btxxalbwIghpmB1x0NfNLA3RlKCqrrP5oX6iA+aGzuOZ2FtnD+kVQoqqnGu36+97KKEHWHwcGy5iSOIXnNsHHZMysQsTg6cFwD+UJ2ERq9iJUEtYtL3n2GWJtP0m4GdkNwjrR2DSNOsJdrgFpXPJG5U5RxiiavJmLsPomcCjoGaHBJ+KN7DG/GyJfl1A2VkBwEx99ulhalE/QeU6AozTT//T/gt5Vf84WlltxaatJTuP4+WYYzhp3OCtYWCGehRgYs4vA34FzMXPaI3HJHY5ZLz/mTN0v3e6TnuzD2uAChCYTBHUc8wo5bAX8UtQf4Gq3/oogeHfmJEsNQhfj438/4tAxInWUFd2LE5Au+K+yDEdDulVN7XmycP4ajjxBwPRCu17riN0nkMMmgFhDPkmecFfiZUA=
+  edge: true
+  dir: "dist/"
+  on:
+    branch: master

@@ -1,0 +1,313 @@
+body,
+html {
+  font-family: 'Roboto', sans-serif;
+  background-color: #a2a2a2;
+  height: 100%;
+  margin: 0 !important;
+}
+
+.active {
+  color: pink;
+}
+
+img.logoImg {
+  max-height: 30px;
+}
+
+// new landing page
+#main {
+  height: 100%;
+}
+
+#app-div {
+  height: 100%;
+}
+
+#welcome-div {
+  height: 100%;
+  overflow: hidden;
+}
+
+#welcome-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 100%;
+}
+
+#welcome-left-container {
+  min-width: 550px;
+  height: 100%;
+
+  color: #1b1464;
+
+  padding-top: 50px;
+  padding-left: 5px;
+
+  font-size: 15px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  overflow: auto;
+  position: relative;
+  padding-bottom: 48px;
+  margin-top: 100px;
+  margin-left: -4px;
+}
+
+#welcome-right-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #1b1464;
+  color: white;
+
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right, white 1px, transparent 1px),
+    linear-gradient(to bottom, white 1px, transparent 1px);
+}
+
+#welcome-title {
+  font-size: 150px;
+  font-style: italic;
+  padding-top: 20px;
+  text-shadow: 8px 8px gray;
+  background-image: none;
+}
+
+button a {
+  text-decoration-line: none;
+  color: #d2d2d2;
+  display: flex;
+  flex-direction: row;
+  font-size: 1.5em;
+}
+
+.lfm__typing_effect_text {
+  font-size: 120px;
+  font-style: italic;
+  font-weight: bold;
+  padding-top: 20px;
+  text-shadow: 8px 8px gray;
+  background-image: none;
+}
+.lfm__typing_effect_cursor {
+  font-size: 120px;
+}
+
+.welcome-buttons {
+  background-color: #ffffff;
+  border-radius: 5px;
+}
+
+div.logo {
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+div.compContainer {
+  overflow: auto;
+  position: relative;
+  width: 48%;
+  padding-bottom: 48px;
+  padding-top: 48px;
+}
+
+div.comp {
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-bottom: 50px;
+  padding-top: 50px;
+}
+
+div.editorContainer {
+  overflow: auto;
+  position: relative;
+  width: 52%;
+  padding-bottom: 48px;
+  padding-top: 48px;
+}
+
+div.filename {
+  display: flex;
+  align-items: center;
+}
+
+p.compText {
+  white-space: pre-line;
+}
+
+div.editorView {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+}
+
+.signup-container {
+  background-color: lightgrey;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+.profile-content {
+  background-color: white;
+  margin-top: 10%;
+  padding-top: 20%;
+  padding-bottom: 20%;
+  padding: 30px;
+  width: 100%;
+  height: 70%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .username-fixed,
+  .email-fixed {
+    color: black;
+    font-size: 20px;
+  }
+}
+
+div.divider {
+  background-color: black;
+  width: 2px;
+}
+
+div.drawerContainer {
+  overflow: auto;
+}
+
+.homepage-container {
+  margin-top: 45px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.sidebar {
+  margin-top: 45px;
+  width: 285px;
+  height: 100vh;
+  background-color: white;
+}
+
+.MuiDrawer-paperAnchorLeft {
+  margin-top: 45px !important;
+}
+
+.MuiListItemIcon-root {
+  min-width: 60px !important;
+}
+
+.main-page {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background-color: white;
+}
+
+.main-page-title {
+  margin: 20px;
+}
+
+.lessons-container {
+  width: 85%;
+}
+
+.do-files-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  width: 85%;
+
+  .full-name-edit-btn {
+    margin: 10px;
+    width: 200px;
+  }
+}
+
+.tutorials-container {
+  .full-name-edit-btn {
+    margin: 40px;
+    width: 600px;
+  }
+}
+
+.MuiFab-label {
+  justify-content: flex-start !important;
+}
+
+.full-name-edit-btn .edit-btn {
+  width: 100%;
+  height: 100px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+button.run-btn {
+  color: #626262;
+  width: 100px;
+}
+
+.create-btn {
+  border-style: solid;
+  border-radius: 100px;
+  border-width: 1px;
+}
+
+.listItem {
+  width: 100%;
+}
+
+.file-widget {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  position: fixed;
+  height: 200px;
+  width: 248px;
+  bottom: 40px;
+  text-align: center;
+  padding-bottom: 10px;
+  color: white;
+  border-top: 1px solid black;
+}
+
+input {
+  padding: 0.2em;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+@media only screen and (max-width: 1250px) {
+  #welcome-box {
+    flex-direction: column-reverse;
+  }
+
+  #welcome-left-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    margin-top: -50px;
+    margin-bottom: -50px;
+  }
+}
